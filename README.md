@@ -1,6 +1,6 @@
-# 🏗 Scaffold-ETH
+# ⛓ Kitso
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+🧪 An open-source, up-to-date starter-Kit for building decentralized applications on the Lukso blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
 
 ⚙️ Built using React Native, Hardhat, Wagmi, Viem, and Typescript.
 
@@ -23,14 +23,14 @@ Before you begin, you need to install the following tools:
 
 ## Quickstart
 
-To get started with Scaffold-ETH 2, follow the steps below:
+To get started with Kitso, follow the steps below:
 
 1. Clone this repo & install dependencies
 
 ```
-git clone https://github.com/ValentineCodes/scaffold-eth-react-native.git
+git clone https://github.com/ValentineCodes/kitso.git
 
-cd scaffold-eth-react-native
+cd kitso
 
 yarn install && yarn patch-ethers
 
@@ -97,8 +97,8 @@ Run smart contract test with `yarn hardhat:test`
 - Edit your frontend in `packages/reactnative/src/screens`
 - Edit your deployment scripts in `packages/hardhat/deploy`
 
-## Contributing to Scaffold-ETH
+## Contributing to Kitso
 
-We welcome contributions to Scaffold-ETH!
+We welcome contributions to Kitso!
 
-Please see [CONTRIBUTING.MD](https://github.com/ValentineCodes/scaffold-eth-react-native/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH.
+Please see [CONTRIBUTING.MD](https://github.com/ValentineCodes/kitso/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Kitso.
