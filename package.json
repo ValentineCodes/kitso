@@ -1,7 +1,9 @@
 {
-  "name": "se-2",
+  "name": "kitso",
+  "author": "Valentine Orga",
   "version": "0.0.1",
   "private": true,
+  "license": "MIT",
   "workspaces": {
     "packages": [
       "packages/hardhat",
@@ -9,25 +11,25 @@
     ]
   },
   "scripts": {
-    "account": "yarn workspace @se-2/hardhat account",
-    "chain": "yarn workspace @se-2/hardhat chain",
-    "clean": "yarn workspace @se-2/hardhat clean",
-    "fork": "yarn workspace @se-2/hardhat fork",
-    "deploy": "yarn workspace @se-2/hardhat deploy",
-    "verify": "yarn workspace @se-2/hardhat verify",
-    "hardhat-verify": "yarn workspace @se-2/hardhat hardhat-verify",
-    "compile": "yarn workspace @se-2/hardhat compile",
-    "generate": "yarn workspace @se-2/hardhat generate",
-    "hardhat:lint": "yarn workspace @se-2/hardhat lint",
-    "hardhat:lint-staged": "yarn workspace @se-2/hardhat lint-staged",
-    "hardhat:test": "yarn workspace @se-2/hardhat test",
+    "account": "yarn workspace @kitso/hardhat account",
+    "chain": "yarn workspace @kitso/hardhat chain",
+    "clean": "yarn workspace @kitso/hardhat clean",
+    "fork": "yarn workspace @kitso/hardhat fork",
+    "deploy": "yarn workspace @kitso/hardhat deploy",
+    "verify": "yarn workspace @kitso/hardhat verify",
+    "hardhat-verify": "yarn workspace @kitso/hardhat hardhat-verify",
+    "compile": "yarn workspace @kitso/hardhat compile",
+    "generate": "yarn workspace @kitso/hardhat generate",
+    "hardhat:lint": "yarn workspace @kitso/hardhat lint",
+    "hardhat:lint-staged": "yarn workspace @kitso/hardhat lint-staged",
+    "hardhat:test": "yarn workspace @kitso/hardhat test",
     "test": "yarn hardhat:test",
     "postinstall": "husky install",
     "precommit": "lint-staged",
-    "android": "yarn workspace @se-2/reactnative android",
-    "ios": "yarn workspace @se-2/reactnative ios",
-    "start": "yarn workspace @se-2/reactnative start",
-    "patch-ethers": "yarn workspace @se-2/reactnative patch-ethers"
+    "android": "yarn workspace @kitso/reactnative android",
+    "ios": "yarn workspace @kitso/reactnative ios",
+    "start": "yarn workspace @kitso/reactnative start",
+    "patch-ethers": "yarn workspace @kitso/reactnative patch-ethers"
   },
   "packageManager": "yarn@3.2.3",
   "devDependencies": {
