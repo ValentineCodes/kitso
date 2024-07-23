@@ -6,10 +6,13 @@ import { COLORS } from '../../utils/constants'
 import { FONT_SIZE } from '../../utils/styles'
 import ProgressIndicatorHeader from '../../components/headers/ProgressIndicatorHeader'
 import Button from '../../components/Button'
+import { useNavigation } from '@react-navigation/native'
 
 type Props = {}
 
 export default function CreateUsername({ }: Props) {
+    const navigation = useNavigation()
+
     const [name, setName] = useState("")
     const [error, setError] = useState("")
 
@@ -20,15 +23,17 @@ export default function CreateUsername({ }: Props) {
         }
     }
 
-    const handleSubmission = () => {
-        if (name.trim().length === 0) {
-            setError("Username cannot be empty")
-            return
-        }
+    const addUsername = () => {
         if (name !== name.toLowerCase()) {
             setError("Lowercase letters only!")
             return
         }
+
+        navigation.navigate("CreatePassword")
+    }
+
+    const stayAnonymous = () => {
+        navigation.navigate("CreatePassword")
     }
     return (
         <View style={styles.screenContainer} justifyContent={"flex-end"}>
@@ -48,7 +53,7 @@ export default function CreateUsername({ }: Props) {
                     placeholder='e.g spongebob3000'
                     value={name}
                     onChangeText={handleInputChange}
-                    onSubmitEditing={handleSubmission}
+                    onSubmitEditing={addUsername}
                     borderRadius="lg"
                     variant="filled"
                     fontSize="md"
@@ -65,8 +70,8 @@ export default function CreateUsername({ }: Props) {
             </VStack>
 
 
-            <Button text="Add username" onPress={() => null} style={{ marginTop: 40, borderRadius: 15 }} />
-            <Button text="Stay anonymous" type="outline" onPress={() => null} style={{ marginVertical: 15, borderRadius: 15 }} />
+            <Button text="Add username" onPress={addUsername} style={{ marginTop: 40, borderRadius: 15 }} />
+            <Button text="Stay anonymous" type="outline" onPress={stayAnonymous} style={{ marginVertical: 15, borderRadius: 15 }} />
         </View>
     )
 }
