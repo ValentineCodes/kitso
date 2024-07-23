@@ -47,6 +47,8 @@ function CreatePassword({ }: Props) {
             })
             return
         }
+
+        navigation.navigate("SelectProfile")
     }
 
     // set suggested password

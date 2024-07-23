@@ -36,7 +36,7 @@ export default function CreateUsername({ }: Props) {
         navigation.navigate("CreatePassword")
     }
     return (
-        <View style={styles.screenContainer} justifyContent={"flex-end"}>
+        <View style={styles.screenContainer}>
             <ProgressIndicatorHeader progress={1} steps={4} />
 
             <Divider bgColor="muted.100" my="4" />
@@ -70,8 +70,8 @@ export default function CreateUsername({ }: Props) {
             </VStack>
 
 
-            <Button text="Add username" onPress={addUsername} style={{ marginTop: 40, borderRadius: 15 }} />
-            <Button text="Stay anonymous" type="outline" onPress={stayAnonymous} style={{ marginVertical: 15, borderRadius: 15 }} />
+            <Button text="Add username" onPress={addUsername} style={{ marginTop: 40 }} />
+            <Button text="Stay anonymous" type="outline" onPress={stayAnonymous} style={{ marginVertical: 15 }} />
         </View>
     )
 }

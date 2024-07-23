@@ -6,13 +6,15 @@ import { useSelector } from 'react-redux';
 import Onboarding from './Auth/Onboarding'
 import CreateUsername from './Auth/CreateUsername'
 import CreatePassword from './Auth/CreatePassword'
+import SelectProfile from './Auth/SelectProfile'
 
 type Props = {}
 
 type AppStackParamsList = {
     Onboarding: undefined;
     CreateUsername: undefined;
-    CreatePassword: undefined
+    CreatePassword: undefined;
+    SelectProfile: undefined;
 }
 
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
@@ -32,6 +34,7 @@ export default function Navigation({ }: Props) {
                             <AppStack.Screen name="Onboarding" component={Onboarding} />
                             <AppStack.Screen name="CreateUsername" component={CreateUsername} />
                             <AppStack.Screen name="CreatePassword" component={CreatePassword} />
+                            <AppStack.Screen name="SelectProfile" component={SelectProfile} />
                         </>
                     )
                 }

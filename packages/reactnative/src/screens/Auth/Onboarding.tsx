@@ -54,8 +54,8 @@ export default function Onboarding({ }: Props) {
                 </Text>
 
                 <HStack w="full" mt="5" alignItems="center" justifyContent="space-between">
-                    <Button text="Create Profile" onPress={createProfile} style={{ width: "49%", borderRadius: 15 }} />
-                    <Button text="Recover Profile" type="outline" onPress={() => null} style={{ width: "49%", borderRadius: 15 }} />
+                    <Button text="Create Profile" onPress={createProfile} style={{ width: "49%" }} />
+                    <Button text="Recover Profile" type="outline" onPress={() => null} style={{ width: "49%" }} />
                 </HStack>
             </VStack>
         </ScrollView>
