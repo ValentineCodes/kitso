@@ -56,15 +56,19 @@ export default function DeployProfile({ }: Props) {
 
             <Text textAlign="center" color={COLORS.primary} fontSize={1.4 * FONT_SIZE["xl"]} bold>Deploying your profile</Text>
 
-            <VStack flex={1} alignItems={"center"} mt={"20"}>
-                <VStack space={"4"}>
-                    <Process title="Initiating Universal Profile" status='complete' />
-                    <Process title="Channelling profile data" status='complete' />
-                    <Process title="Transferring controls" status='complete' />
-                    <Process title="Universal Profile created!" status='complete' />
-                </VStack>
+            <VStack space={"4"} alignSelf={"center"} mt={"20"}>
+                <Process title="Initiating Universal Profile" status='complete' />
+                <Process title="Channelling profile data" status='complete' />
+                <Process title="Transferring controls" status='complete' />
+                <Process title="Universal Profile created!" status='complete' />
+            </VStack>
 
-                {isDeploying && <ActivityIndicator size={"large"} color={COLORS.primary} style={{ marginTop: 100 }} />}
+            <VStack flex={1} justifyContent={"center"} alignItems={"center"}>
+                {isDeploying ?
+                    <ActivityIndicator size={"large"} color={COLORS.primary} />
+                    :
+                    <Icon as={<Ionicons name="checkmark-circle" />} size={2.7 * FONT_SIZE['xl']} color={COLORS.primary} />
+                }
             </VStack>
 
 
@@ -73,7 +77,14 @@ export default function DeployProfile({ }: Props) {
                 alignSelf={"center"}
                 fontSize={FONT_SIZE['lg']}
                 color={"gray.600"}
-            >Please be patient during the creation process</Text> : <Button text="Setup recovery method" onPress={setupRecovery} style={{ marginBottom: 15 }} />}
+            >Please be patient during the creation process</Text> : (
+                <>
+                    <Button text="Setup recovery method" onPress={setupRecovery} style={{ marginTop: 40 }} />
+                    <Button text="Go to dashboard" type="outline" onPress={() => null} style={{ marginVertical: 15 }} />
+
+                </>
+            )
+            }
         </View>
     )
 }
