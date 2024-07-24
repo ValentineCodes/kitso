@@ -59,12 +59,12 @@ export default function SelectRecoveryMethod({ }: Props) {
                         w={"10"}
                         style={{ aspectRatio: 1 }}
                     />}
-                    onPress={() => null}
+                    onPress={() => navigation.navigate("ConfirmEmail")}
                 />
                 <RecoveryOption
                     title='Email'
                     icon={<Icon as={<Ionicons name="mail-outline" />} size={1.3 * FONT_SIZE['xl']} color="gray.400" mr={"2"} />}
-                    onPress={() => null}
+                    onPress={() => navigation.navigate("ConfirmEmail")}
                 />
             </VStack>
 
