@@ -4,11 +4,11 @@ import { useNavigation } from '@react-navigation/native'
 import { useToast } from 'react-native-toast-notifications';
 import Ionicons from 'react-native-vector-icons/dist/Ionicons'
 
-import styles from "../../styles/global"
-import { COLORS } from '../../utils/constants'
-import { FONT_SIZE } from '../../utils/styles'
-import ProgressIndicatorHeader from '../../components/headers/ProgressIndicatorHeader'
-import Button from '../../components/Button'
+import styles from "../../../styles/global"
+import { COLORS } from '../../../utils/constants'
+import { FONT_SIZE } from '../../../utils/styles'
+import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader'
+import Button from '../../../components/Button'
 import { ActivityIndicator } from 'react-native';
 
 type Props = {}
@@ -46,7 +46,7 @@ export default function DeployProfile({ }: Props) {
     const [isDeploying, setIsDeploying] = useState(false)
 
     const setupRecovery = () => {
-
+        navigation.navigate("SelectRecoveryMethod")
     }
     return (
         <View style={styles.screenContainer}>

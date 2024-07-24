@@ -5,12 +5,12 @@ import { useNavigation } from '@react-navigation/native'
 import Clipboard from '@react-native-clipboard/clipboard';
 import { useToast } from 'react-native-toast-notifications';
 
-import styles from "../../styles/global"
-import { COLORS } from '../../utils/constants'
-import { FONT_SIZE } from '../../utils/styles'
-import ProgressIndicatorHeader from '../../components/headers/ProgressIndicatorHeader'
-import Button from '../../components/Button'
-import Blockie from '../../components/Blockie'
+import styles from "../../../styles/global"
+import { COLORS } from '../../../utils/constants'
+import { FONT_SIZE } from '../../../utils/styles'
+import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader'
+import Button from '../../../components/Button'
+import Blockie from '../../../components/Blockie'
 import { StyleSheet } from 'react-native';
 
 type Props = {}

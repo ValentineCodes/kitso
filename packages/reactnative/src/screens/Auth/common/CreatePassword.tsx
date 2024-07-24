@@ -5,14 +5,14 @@ import ReactNativeBiometrics from 'react-native-biometrics'
 import { useToast } from 'react-native-toast-notifications'
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import PasswordInput from '../../components/forms/PasswordInput'
+import PasswordInput from '../../../components/forms/PasswordInput'
 
-import { COLORS } from '../../utils/constants'
-import Button from '../../components/Button'
-import ProgressIndicatorHeader from '../../components/headers/ProgressIndicatorHeader'
-import { FONT_SIZE } from '../../utils/styles'
-import styles from "../../styles/global"
-import { useProcedureContext } from '../../context/ProcedureContext';
+import { COLORS } from '../../../utils/constants'
+import Button from '../../../components/Button'
+import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader'
+import { FONT_SIZE } from '../../../utils/styles'
+import styles from "../../../styles/global"
+import { useProcedureContext } from '../../../context/ProcedureContext';
 
 type Props = {}
 

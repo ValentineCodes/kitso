@@ -3,13 +3,13 @@ import { Icon, Image, Input, Pressable, Text, View, VStack } from 'native-base'
 import Ionicons from 'react-native-vector-icons/dist/Ionicons'
 import { useNavigation } from '@react-navigation/native'
 
-import styles from "../../styles/global"
-import { COLORS } from '../../utils/constants'
-import { FONT_SIZE } from '../../utils/styles'
-import Button from '../../components/Button'
-import Blockie from '../../components/Blockie'
-import { DEVICE_WIDTH } from '../../styles/screenDimensions'
-import { truncateAddress } from '../../utils/helperFunctions'
+import styles from "../../../styles/global"
+import { COLORS } from '../../../utils/constants'
+import { FONT_SIZE } from '../../../utils/styles'
+import Button from '../../../components/Button'
+import Blockie from '../../../components/Blockie'
+import { DEVICE_WIDTH } from '../../../styles/screenDimensions'
+import { truncateAddress } from '../../../utils/helperFunctions'
 
 type Props = {}
 
@@ -40,7 +40,7 @@ export default function ReviewProfile({ }: Props) {
                 h={"25%"}
             >
                 <Image
-                    source={require("../../../assets/images/profile_cover.jpg")}
+                    source={require("../../../../assets/images/profile_cover.jpg")}
                     alt="profile cover"
                     w={"full"}
                     h={"full"}
@@ -78,7 +78,7 @@ export default function ReviewProfile({ }: Props) {
                     mt={-(DEVICE_WIDTH * 0.25 / 2)}
                 >
                     <Image
-                        source={require("../../../assets/images/profile_image.jpeg")}
+                        source={require("../../../../assets/images/profile_image.jpeg")}
                         alt="profile image"
                         w={"full"}
                         h={"full"}

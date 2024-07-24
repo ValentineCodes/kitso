@@ -4,10 +4,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
 
 import Onboarding from './Auth/Onboarding'
-import CreatePassword from './Auth/CreatePassword'
-import SelectProfile from './Auth/SelectProfile'
-import ReviewProfile from './Auth/ReviewProfile'
-import DeployProfile from './Auth/DeployProfile'
+import CreatePassword from './Auth/common/CreatePassword'
+import SelectProfile from './Auth/creation/SelectProfile'
+import ReviewProfile from './Auth/creation/ReviewProfile'
+import DeployProfile from './Auth/creation/DeployProfile'
+
+import SelectRecoveryMethod from './Auth/recovery/SelectReoveryMethod';
 
 type Props = {}
 
@@ -17,6 +19,7 @@ type AppStackParamsList = {
     SelectProfile: undefined;
     ReviewProfile: undefined;
     DeployProfile: undefined;
+    SelectRecoveryMethod: undefined;
 }
 
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
@@ -38,6 +41,8 @@ export default function Navigation({ }: Props) {
                             <AppStack.Screen name="SelectProfile" component={SelectProfile} />
                             <AppStack.Screen name="ReviewProfile" component={ReviewProfile} />
                             <AppStack.Screen name="DeployProfile" component={DeployProfile} />
+
+                            <AppStack.Screen name="SelectRecoveryMethod" component={SelectRecoveryMethod} />
                         </>
                     )
                 }
