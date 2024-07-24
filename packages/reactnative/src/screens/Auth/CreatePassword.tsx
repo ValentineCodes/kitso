@@ -12,10 +12,13 @@ import Button from '../../components/Button'
 import ProgressIndicatorHeader from '../../components/headers/ProgressIndicatorHeader'
 import { FONT_SIZE } from '../../utils/styles'
 import styles from "../../styles/global"
+import { useProcedureContext } from '../../context/ProcedureContext';
 
 type Props = {}
 
 function CreatePassword({ }: Props) {
+    const { authContext } = useProcedureContext()
+
     const navigation = useNavigation()
     const toast = useToast()
 
@@ -48,7 +51,15 @@ function CreatePassword({ }: Props) {
             return
         }
 
-        navigation.navigate("SelectProfile")
+        switch (authContext) {
+            case 'profile_creation':
+                navigation.navigate("SelectProfile")
+                break;
+
+            default:
+                navigation.navigate("SelectProfile")
+                break;
+        }
     }
 
     // set suggested password

@@ -5,6 +5,7 @@ import { ToastProvider } from 'react-native-toast-notifications';
 import { MenuProvider } from 'react-native-popup-menu';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ModalOptions, ModalProvider, createModalStack } from 'react-native-modalfy';
+import { ProcedureProvider } from '../context/ProcedureContext';
 
 type Props = {
   children: JSX.Element
@@ -22,7 +23,9 @@ export default function Providers({ children }: Props) {
         <MenuProvider>
           <SafeAreaProvider>
             <ModalProvider stack={modalStack}>
-              {children}
+              <ProcedureProvider>
+                {children}
+              </ProcedureProvider>
             </ModalProvider>
           </SafeAreaProvider>
         </MenuProvider>
