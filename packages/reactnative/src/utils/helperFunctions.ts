@@ -1,4 +1,3 @@
-import {EIP155_CHAINS, TEIP155Chain} from '../data/EIP155';
 import {utils} from 'ethers';
 
 export const shuffleArray = (array: any[]) => {
@@ -13,7 +12,7 @@ export const shuffleArray = (array: any[]) => {
 };
 
 export const truncateAddress = (address: string) => {
-  return `${address.slice(0, 5)}...${address.slice(address.length - 4, address.length)}`
+  return `${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`
 }
 
 /**
@@ -109,16 +108,6 @@ export function isCosmosChain(chain: string) {
  */
 export function isSolanaChain(chain: string) {
   return chain.includes('solana');
-}
-
-/**
- * Formats chainId to its name
- */
-export function formatChainName(chainId: string) {
-  return (
-    EIP155_CHAINS[chainId as TEIP155Chain]?.name ??
-    chainId
-  );
 }
 
 export function parseFloat(str: string, val: number) {

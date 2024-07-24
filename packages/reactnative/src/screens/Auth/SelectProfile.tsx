@@ -33,7 +33,7 @@ export default function SelectProfile({ }: Props) {
     }
 
     const confirm = () => {
-
+        navigation.navigate("ReviewProfile")
     }
 
     const copyProfile = () => {

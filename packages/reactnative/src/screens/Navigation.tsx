@@ -7,6 +7,7 @@ import Onboarding from './Auth/Onboarding'
 import CreateUsername from './Auth/CreateUsername'
 import CreatePassword from './Auth/CreatePassword'
 import SelectProfile from './Auth/SelectProfile'
+import ReviewProfile from './Auth/ReviewProfile'
 
 type Props = {}
 
@@ -15,6 +16,7 @@ type AppStackParamsList = {
     CreateUsername: undefined;
     CreatePassword: undefined;
     SelectProfile: undefined;
+    ReviewProfile: undefined;
 }
 
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
@@ -35,6 +37,7 @@ export default function Navigation({ }: Props) {
                             <AppStack.Screen name="CreateUsername" component={CreateUsername} />
                             <AppStack.Screen name="CreatePassword" component={CreatePassword} />
                             <AppStack.Screen name="SelectProfile" component={SelectProfile} />
+                            <AppStack.Screen name="ReviewProfile" component={ReviewProfile} />
                         </>
                     )
                 }
