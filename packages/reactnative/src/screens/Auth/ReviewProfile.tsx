@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
-import { Divider, HStack, Icon, Image, Pressable, Text, View, VStack } from 'native-base'
+import { Icon, Image, Pressable, Text, View, VStack } from 'native-base'
 import Ionicons from 'react-native-vector-icons/dist/Ionicons'
 import { useNavigation } from '@react-navigation/native'
 
 import styles from "../../styles/global"
 import { COLORS } from '../../utils/constants'
 import { FONT_SIZE } from '../../utils/styles'
-import ProgressIndicatorHeader from '../../components/headers/ProgressIndicatorHeader'
 import Button from '../../components/Button'
 import Blockie from '../../components/Blockie'
 import { DEVICE_WIDTH } from '../../styles/screenDimensions'
@@ -20,7 +19,7 @@ export default function ReviewProfile({ }: Props) {
     const navigation = useNavigation()
 
     const createProfile = () => {
-
+        navigation.navigate("DeployProfile")
     }
 
     return (
