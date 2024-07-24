@@ -10,6 +10,7 @@ import ReviewProfile from './Auth/creation/ReviewProfile'
 import DeployProfile from './Auth/creation/DeployProfile'
 import SelectRecoveryMethod from './Auth/recovery/SelectReoveryMethod';
 import ConfirmEmail from './Auth/common/ConfirmEmail';
+import RecoverProfile from './Auth/recovery/RecoverProfile';
 
 type Props = {}
 
@@ -21,6 +22,7 @@ type AppStackParamsList = {
     DeployProfile: undefined;
     SelectRecoveryMethod: undefined;
     ConfirmEmail: undefined;
+    RecoverProfile: undefined;
 }
 
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
@@ -44,6 +46,7 @@ export default function Navigation({ }: Props) {
                             <AppStack.Screen name="DeployProfile" component={DeployProfile} />
                             <AppStack.Screen name="SelectRecoveryMethod" component={SelectRecoveryMethod} />
                             <AppStack.Screen name="ConfirmEmail" component={ConfirmEmail} />
+                            <AppStack.Screen name="RecoverProfile" component={RecoverProfile} />
                         </>
                     )
                 }

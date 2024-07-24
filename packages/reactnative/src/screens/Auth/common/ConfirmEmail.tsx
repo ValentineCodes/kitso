@@ -20,7 +20,7 @@ export default function ConfirmEmail({ }: Props) {
     const [code, setCode] = useState("")
 
     const confirm = () => {
-
+        navigation.navigate("RecoverProfile")
     }
 
     return (
