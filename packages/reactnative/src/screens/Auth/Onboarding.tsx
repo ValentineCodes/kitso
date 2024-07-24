@@ -15,7 +15,7 @@ export default function Onboarding({ }: Props) {
     const navigation = useNavigation()
 
     const createProfile = () => {
-        navigation.navigate("CreateUsername")
+        navigation.navigate("CreatePassword")
         backHandler?.remove()
     }
 
