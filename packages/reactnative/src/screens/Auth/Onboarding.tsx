@@ -53,7 +53,7 @@ export default function Onboarding({ }: Props) {
             paddingHorizontal: 15,
             backgroundColor: 'white'
         }}>
-            <Image source={require("../../../assets/images/app_logo.jpg")} alt='Kitso' width={WINDOW_WIDTH * 0.3} height={WINDOW_WIDTH * 0.3} />
+            <Image source={require("../../../assets/images/app_logo.png")} alt='Kitso' width={WINDOW_WIDTH * 0.3} height={WINDOW_WIDTH * 0.3} />
             <VStack w="full" mt="10">
                 <Text textAlign="center" color={COLORS.primary} fontSize={2 * FONT_SIZE["xl"]} bold>Build Great Ideas!</Text>
                 <Text textAlign="center" fontSize={FONT_SIZE["lg"]} my="4">
