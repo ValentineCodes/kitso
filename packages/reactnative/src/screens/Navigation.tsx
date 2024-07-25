@@ -8,9 +8,11 @@ import CreatePassword from './Auth/common/CreatePassword'
 import SelectProfile from './Auth/creation/SelectProfile'
 import ReviewProfile from './Auth/creation/ReviewProfile'
 import DeployProfile from './Auth/creation/DeployProfile'
-import SelectRecoveryMethod from './Auth/recovery/SelectReoveryMethod';
+import SetupRecovery from './Auth/recovery/SetupRecovery';
 import ConfirmEmail from './Auth/common/ConfirmEmail';
 import RecoverProfile from './Auth/recovery/RecoverProfile';
+
+import Dashboard from './Dashboard';
 
 type Props = {}
 
@@ -20,9 +22,10 @@ type AppStackParamsList = {
     SelectProfile: undefined;
     ReviewProfile: undefined;
     DeployProfile: undefined;
-    SelectRecoveryMethod: undefined;
+    SetupRecovery: undefined;
     ConfirmEmail: undefined;
     RecoverProfile: undefined;
+    Dashboard: undefined;
 }
 
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
@@ -44,12 +47,14 @@ export default function Navigation({ }: Props) {
                             <AppStack.Screen name="SelectProfile" component={SelectProfile} />
                             <AppStack.Screen name="ReviewProfile" component={ReviewProfile} />
                             <AppStack.Screen name="DeployProfile" component={DeployProfile} />
-                            <AppStack.Screen name="SelectRecoveryMethod" component={SelectRecoveryMethod} />
+                            <AppStack.Screen name="SetupRecovery" component={SetupRecovery} />
                             <AppStack.Screen name="ConfirmEmail" component={ConfirmEmail} />
                             <AppStack.Screen name="RecoverProfile" component={RecoverProfile} />
                         </>
                     )
                 }
+
+                <AppStack.Screen name="Dashboard" component={Dashboard} />
             </AppStack.Navigator>
         </NavigationContainer>
     )

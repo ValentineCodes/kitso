@@ -10,6 +10,7 @@ import { FONT_SIZE } from '../../../utils/styles'
 import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader'
 import Button from '../../../components/Button';
 import { DEVICE_WIDTH } from '../../../styles/screenDimensions';
+import { useProcedureContext } from '../../../context/ProcedureContext';
 
 type Props = {}
 
@@ -17,10 +18,20 @@ export default function ConfirmEmail({ }: Props) {
     const navigation = useNavigation()
     const toast = useToast()
 
+    const { authContext } = useProcedureContext()
+
     const [code, setCode] = useState("")
 
     const confirm = () => {
-        navigation.navigate("RecoverProfile")
+        switch (authContext) {
+            case 'profile_creation':
+                navigation.navigate("Dashboard")
+                break;
+
+            default:
+                navigation.navigate("RecoverProfile")
+                break;
+        }
     }
 
     return (

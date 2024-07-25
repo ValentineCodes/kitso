@@ -46,7 +46,7 @@ export default function DeployProfile({ }: Props) {
     const [isDeploying, setIsDeploying] = useState(false)
 
     const setupRecovery = () => {
-        navigation.navigate("SelectRecoveryMethod")
+        navigation.navigate("SetupRecovery")
     }
     return (
         <View style={styles.screenContainer}>
@@ -80,7 +80,7 @@ export default function DeployProfile({ }: Props) {
             >Please be patient during the creation process</Text> : (
                 <>
                     <Button text="Setup recovery" onPress={setupRecovery} style={{ marginTop: 40 }} />
-                    <Button text="No, I don't need recovery" type="outline" onPress={() => null} style={{ marginVertical: 15 }} />
+                    <Button text="No, I don't need recovery" type="outline" onPress={() => navigation.navigate("Dashboard")} style={{ marginVertical: 15 }} />
 
                 </>
             )

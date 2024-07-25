@@ -6,6 +6,7 @@ import Button from '../../components/Button'
 import { COLORS } from '../../utils/constants'
 import { FONT_SIZE } from '../../utils/styles'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { useProcedureContext } from '../../context/ProcedureContext'
 
 let backHandler: NativeEventSubscription;
 
@@ -14,13 +15,17 @@ type Props = {}
 export default function Onboarding({ }: Props) {
     const navigation = useNavigation()
 
+    const { setAuthContext } = useProcedureContext()
+
     const createProfile = () => {
         navigation.navigate("CreatePassword")
+        setAuthContext("profile_creation")
         backHandler?.remove()
     }
 
     const recoverProfile = () => {
-        navigation.navigate("SelectRecoveryMethod")
+        navigation.navigate("SetupRecovery")
+        setAuthContext("profile_recovery")
         backHandler?.remove()
     }
 

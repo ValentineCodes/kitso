@@ -34,7 +34,7 @@ const RecoveryOption = ({ icon, title, onPress }: RecoveryOptionProps) => {
     )
 }
 
-export default function SelectRecoveryMethod({ }: Props) {
+export default function SetupRecovery({ }: Props) {
     const navigation = useNavigation()
     const toast = useToast()
 

@@ -57,7 +57,7 @@ function CreatePassword({ }: Props) {
                 break;
 
             default:
-                navigation.navigate("SelectProfile")
+                navigation.navigate("Dashboard")
                 break;
         }
     }

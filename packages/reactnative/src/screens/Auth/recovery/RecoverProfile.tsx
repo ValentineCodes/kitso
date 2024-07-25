@@ -102,7 +102,7 @@ export default function RecoverProfile({ }: Props) {
     const toast = useToast()
 
     const recover = () => {
-
+        navigation.navigate("CreatePassword")
     }
 
     return (
