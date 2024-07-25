@@ -8,6 +8,7 @@ import styles from "../../../styles/global"
 import { COLORS } from '../../../utils/constants'
 import { FONT_SIZE } from '../../../utils/styles'
 import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader'
+import { useProcedureContext } from '../../../context/ProcedureContext';
 
 type Props = {}
 
@@ -38,9 +39,11 @@ export default function SetupRecovery({ }: Props) {
     const navigation = useNavigation()
     const toast = useToast()
 
+    const { authContext } = useProcedureContext()
+
     return (
         <View style={styles.screenContainer}>
-            <ProgressIndicatorHeader progress={1} steps={4} />
+            <ProgressIndicatorHeader progress={1} steps={authContext === "profile_recovery" ? 4 : 2} />
 
             <Divider bgColor="muted.100" my="4" />
 

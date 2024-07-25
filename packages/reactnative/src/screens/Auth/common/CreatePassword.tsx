@@ -84,7 +84,7 @@ function CreatePassword({ }: Props) {
 
     return (
         <View style={styles.screenContainer}>
-            <ProgressIndicatorHeader progress={2} steps={4} />
+            <ProgressIndicatorHeader progress={authContext === "profile_creation" ? 1 : 4} steps={4} />
 
             <Divider bgColor="muted.100" my="4" />
 

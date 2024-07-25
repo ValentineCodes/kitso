@@ -36,7 +36,7 @@ export default function ConfirmEmail({ }: Props) {
 
     return (
         <View style={styles.screenContainer}>
-            <ProgressIndicatorHeader progress={2} steps={4} />
+            <ProgressIndicatorHeader progress={2} steps={authContext === "profile_recovery" ? 4 : 2} />
 
             <Divider bgColor="muted.100" my="4" />
 

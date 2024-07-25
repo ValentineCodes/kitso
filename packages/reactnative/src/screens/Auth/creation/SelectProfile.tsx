@@ -44,7 +44,7 @@ export default function SelectProfile({ }: Props) {
     }
     return (
         <View style={styles.screenContainer}>
-            <ProgressIndicatorHeader progress={3} steps={4} />
+            <ProgressIndicatorHeader progress={2} steps={4} />
 
             <Divider bgColor="muted.100" my="4" />
 
