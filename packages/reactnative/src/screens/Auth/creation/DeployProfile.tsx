@@ -79,8 +79,8 @@ export default function DeployProfile({ }: Props) {
                 color={"gray.600"}
             >Please be patient during the creation process</Text> : (
                 <>
-                    <Button text="Setup recovery method" onPress={setupRecovery} style={{ marginTop: 40 }} />
-                    <Button text="Go to dashboard" type="outline" onPress={() => null} style={{ marginVertical: 15 }} />
+                    <Button text="Setup recovery" onPress={setupRecovery} style={{ marginTop: 40 }} />
+                    <Button text="No, I don't need recovery" type="outline" onPress={() => null} style={{ marginVertical: 15 }} />
 
                 </>
             )
