@@ -8,7 +8,7 @@ import { COLORS } from '../../../utils/constants'
 import { FONT_SIZE } from '../../../utils/styles'
 import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader'
 import Button from '../../../components/Button';
-import { DEVICE_WIDTH } from '../../../styles/screenDimensions';
+import { WINDOW_WIDTH } from '../../../styles/screenDimensions';
 import { truncateAddress } from '../../../utils/helperFunctions';
 import Blockie from '../../../components/Blockie';
 
@@ -39,7 +39,7 @@ const Profile = ({ address, username, image, cover }: ProfileProps) => {
                 source={require("../../../../assets/images/profile_cover.jpg")}
                 alt="profile cover"
                 w={"full"}
-                h={DEVICE_WIDTH * 0.4}
+                h={WINDOW_WIDTH * 0.4}
                 resizeMode="cover"
                 borderTopRadius={15}
             />
@@ -54,12 +54,12 @@ const Profile = ({ address, username, image, cover }: ProfileProps) => {
             >
                 {/* Profile image */}
                 <View
-                    w={DEVICE_WIDTH * 0.25}
+                    w={WINDOW_WIDTH * 0.25}
                     style={{ aspectRatio: 1 }}
                     borderRadius={"full"}
                     borderWidth={5}
                     borderColor={"white"}
-                    mt={-(DEVICE_WIDTH * 0.25 / 2)}
+                    mt={-(WINDOW_WIDTH * 0.25 / 2)}
                 >
                     <Image
                         source={require("../../../../assets/images/profile_image.jpeg")}

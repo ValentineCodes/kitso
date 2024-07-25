@@ -9,7 +9,7 @@ import { COLORS } from '../../../utils/constants'
 import { FONT_SIZE } from '../../../utils/styles'
 import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader'
 import Button from '../../../components/Button';
-import { DEVICE_WIDTH } from '../../../styles/screenDimensions';
+import { WINDOW_WIDTH } from '../../../styles/screenDimensions';
 import { useProcedureContext } from '../../../context/ProcedureContext';
 
 type Props = {}
@@ -52,8 +52,8 @@ export default function ConfirmEmail({ }: Props) {
                     handleTextChange={code => setCode(code)}
                     tintColor="#001433"
                     textInputStyle={{
-                        width: DEVICE_WIDTH * 0.1,
-                        height: DEVICE_WIDTH * 0.1,
+                        width: WINDOW_WIDTH * 0.1,
+                        height: WINDOW_WIDTH * 0.1,
                         borderWidth: 1,
                         color: COLORS.primary
                     }}

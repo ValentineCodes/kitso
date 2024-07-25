@@ -7,6 +7,7 @@ import { COLORS } from '../../utils/constants'
 import { FONT_SIZE } from '../../utils/styles'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { useProcedureContext } from '../../context/ProcedureContext'
+import { WINDOW_WIDTH } from '../../styles/screenDimensions'
 
 let backHandler: NativeEventSubscription;
 
@@ -52,7 +53,7 @@ export default function Onboarding({ }: Props) {
             paddingHorizontal: 15,
             backgroundColor: 'white'
         }}>
-            <Text fontSize={"6xl"}>Kitso</Text>
+            <Image source={require("../../../assets/images/app_logo.jpg")} alt='Kitso' width={WINDOW_WIDTH * 0.3} height={WINDOW_WIDTH * 0.3} />
             <VStack w="full" mt="10">
                 <Text textAlign="center" color={COLORS.primary} fontSize={2 * FONT_SIZE["xl"]} bold>Build Great Ideas!</Text>
                 <Text textAlign="center" fontSize={FONT_SIZE["lg"]} my="4">

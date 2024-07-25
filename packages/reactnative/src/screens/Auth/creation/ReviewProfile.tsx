@@ -8,7 +8,7 @@ import { COLORS } from '../../../utils/constants'
 import { FONT_SIZE } from '../../../utils/styles'
 import Button from '../../../components/Button'
 import Blockie from '../../../components/Blockie'
-import { DEVICE_WIDTH } from '../../../styles/screenDimensions'
+import { WINDOW_WIDTH } from '../../../styles/screenDimensions'
 import { truncateAddress } from '../../../utils/helperFunctions'
 
 type Props = {}
@@ -70,12 +70,12 @@ export default function ReviewProfile({ }: Props) {
             >
                 {/* Profile image */}
                 <View
-                    w={DEVICE_WIDTH * 0.25}
+                    w={WINDOW_WIDTH * 0.25}
                     style={{ aspectRatio: 1 }}
                     borderRadius={"full"}
                     borderWidth={5}
                     borderColor={"white"}
-                    mt={-(DEVICE_WIDTH * 0.25 / 2)}
+                    mt={-(WINDOW_WIDTH * 0.25 / 2)}
                 >
                     <Image
                         source={require("../../../../assets/images/profile_image.jpeg")}

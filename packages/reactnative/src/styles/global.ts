@@ -1,5 +1,5 @@
 import {Dimensions, StyleSheet} from 'react-native';
-import { DEVICE_WIDTH } from './screenDimensions';
+import { WINDOW_WIDTH } from './screenDimensions';
 
 export default StyleSheet.create({
   screenContainer: {
@@ -13,7 +13,7 @@ export default StyleSheet.create({
     left: 10,
   },
   scanIcon: {
-    width: DEVICE_WIDTH * 0.07,
+    width: WINDOW_WIDTH * 0.07,
     aspectRatio: 1
   }
 });
