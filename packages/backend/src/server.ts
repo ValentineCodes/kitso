@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 
 //Routes
-import createProfile from "./routes/create_profile.route.ts";
+import authRoute from "./routes/auth.route.ts";
 
 const app = express();
 
@@ -19,7 +19,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 //Mount routers
-app.use("/create_profile", createProfile);
+app.use("/auth", authRoute);
 
 const PORT = process.env.PORT || 5000;
 
