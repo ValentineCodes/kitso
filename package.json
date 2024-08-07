@@ -30,7 +30,8 @@
     "android": "yarn workspace @kitso/reactnative android",
     "ios": "yarn workspace @kitso/reactnative ios",
     "start": "yarn workspace @kitso/reactnative start",
-    "patch-ethers": "yarn workspace @kitso/reactnative patch-ethers"
+    "patch-ethers": "yarn workspace @kitso/reactnative patch-ethers",
+    "server": "yarn workspace @kitso/backend dev"
   },
   "packageManager": "yarn@3.2.3",
   "devDependencies": {
