@@ -1,8 +1,12 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv"
 
 //Routes
 import authRoute from "./routes/auth.route.ts";
+
+// Load env vars
+dotenv.config();
 
 const app = express();
 
