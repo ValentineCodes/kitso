@@ -15,6 +15,7 @@ import LSP1UniversalReceiverDelegateSchemas from '@erc725/erc725.js/schemas/LSP1
 import LSP3ProfileMetadataSchemas from '@erc725/erc725.js/schemas/LSP3ProfileMetadata.json' assert { type: 'json' };
 import LSP6KeyManagerSchemas from '@erc725/erc725.js/schemas/LSP6KeyManager.json' assert { type: 'json' };
 import { SERVER_ERROR, SUCCESS } from '../../utils/status_code.ts';
+import { generateSalt } from '../../utils/helpers.ts';
 
 const LSP23_FACTORY_ADDRESS = '0x2300000A84D25dF63081feAa37ba6b62C4c89a30';
 const LSP23_POST_DEPLOYMENT_MODULE =
@@ -30,7 +31,6 @@ const PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY;
 export async function createProfile(req: Request, res: Response) {
   try{
     const {
-      salt,
       lsp3DataValue,
       mainController,
       universalReceiverAddress
@@ -58,7 +58,7 @@ const universalProfileImplementationContract = new Contract(
 
 // create the init structs
 const universalProfileInitStruct = {
-  salt: salt,
+  salt: generateSalt(),
   fundingAmount: 0,
   implementationContract: UNIVERSAL_PROFILE_IMPLEMENTATION_ADDRESS,
   initializationCalldata:
