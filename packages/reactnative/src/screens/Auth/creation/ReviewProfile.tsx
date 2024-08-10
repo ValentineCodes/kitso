@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Icon, Image, Input, Pressable, Text, View, VStack } from 'native-base'
+// @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons'
 import { useNavigation } from '@react-navigation/native'
 
@@ -10,6 +11,7 @@ import Button from '../../../components/Button'
 import Blockie from '../../../components/Blockie'
 import { WINDOW_WIDTH } from '../../../styles/screenDimensions'
 import { truncateAddress } from '../../../utils/helperFunctions'
+import UsernameEdit from '../../../components/forms/UsernameEdit'
 
 type Props = {}
 
@@ -18,18 +20,14 @@ const profile = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
 export default function ReviewProfile({ }: Props) {
     const navigation = useNavigation()
 
-    const [isUsernameAdded, setIsUsernameAdded] = useState(false);
     const [username, setUsername] = useState("")
 
-    const handleUsernameInput = (value: string) => {
-        setUsername(value.toLowerCase())
-    }
-
-    const addUsername = () => {
-        setIsUsernameAdded(true)
+    const addUsername = (_username: string) => {
+        setUsername(_username)
     }
 
     const createProfile = () => {
+        // @ts-ignore
         navigation.navigate("DeployProfile")
     }
 
@@ -97,31 +95,12 @@ export default function ReviewProfile({ }: Props) {
                     </View>
                 </View>
 
-                <VStack w={"60%"} mt={"2"}>
-                    {/* Username input field */}
-                    <Input
-                        autoFocus
-                        placeholder="username -> spongebob3000"
-                        value={username}
-                        onChangeText={handleUsernameInput}
-                        onSubmitEditing={addUsername}
-                        borderRadius="lg"
-                        variant="filled"
-                        fontSize="md"
-                        focusOutlineColor={COLORS.primary}
-                        selectTextOnFocus
-                        _input={{
-                            selectionColor: COLORS.highlight,
-                            cursorColor: COLORS.primary,
-                        }}
-                    />
-                </VStack>
+                <UsernameEdit
+                    value={username}
+                    placeholder="username -> spongebob3000"
+                    onSubmit={addUsername}
+                />
 
-                {!!username && <Text textAlign="center" color={COLORS.primary} fontSize={FONT_SIZE["xl"]} bold mt={"2"}>
-                    @{username}
-                    <Text color={"purple.500"}>#742d</Text>
-                </Text>
-                }
                 <Text textAlign="center" alignSelf={"center"} fontSize={FONT_SIZE['lg']} fontWeight={"medium"} mt={1} my="2" w={"75%"}>
                     {truncateAddress(profile)}
                 </Text>
