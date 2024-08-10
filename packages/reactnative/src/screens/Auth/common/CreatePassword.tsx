@@ -4,6 +4,7 @@ import { generate } from "random-words";
 import ReactNativeBiometrics from 'react-native-biometrics'
 import { useToast } from 'react-native-toast-notifications'
 
+
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import PasswordInput from '../../../components/forms/PasswordInput'
 
@@ -13,6 +14,7 @@ import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicat
 import { FONT_SIZE } from '../../../utils/styles'
 import styles from "../../../styles/global"
 import { useProcedureContext } from '../../../context/ProcedureContext';
+import useSecurity from '../../../hooks/useSecurity';
 
 type Props = {}
 
@@ -28,6 +30,8 @@ function CreatePassword({ }: Props) {
     const [isBiometricsEnabled, setIsBiometricsEnabled] = useState(false)
     const [isCreating, setIsCreating] = useState(false)
     const [isBiometricsAvailable, setIsBiometricsAvailable] = useState(false)
+
+    const { setSecurity } = useSecurity()
 
     const createPassword = async () => {
         if (!password) {
@@ -51,14 +55,37 @@ function CreatePassword({ }: Props) {
             return
         }
 
-        switch (authContext) {
-            case 'profile_creation':
-                navigation.navigate("SelectProfile")
-                break;
+        try {
+            // store password and biometrics
+            setIsCreating(true)
 
-            default:
-                navigation.navigate("Dashboard")
-                break;
+            const security = {
+                password,
+                isBiometricsEnabled
+            }
+
+            await setSecurity(security)
+
+            // clean up
+            setPassword("")
+            setConfirmPassword("")
+            setIsBiometricsEnabled(false)
+
+            switch (authContext) {
+                case 'profile_creation':
+                    navigation.navigate("SelectProfile")
+                    break;
+
+                default:
+                    navigation.navigate("Dashboard")
+                    break;
+            }
+        } catch (error) {
+            toast.show("Failed to create password. Please try again", {
+                type: "danger"
+            })
+        } finally {
+            setIsCreating(false)
         }
     }
 
