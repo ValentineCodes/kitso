@@ -4376,6 +4376,7 @@ __metadata:
     react-native-camera-kit: ^13.0.0
     react-native-gesture-handler: ^2.16.0
     react-native-get-random-values: ^1.11.0
+    react-native-image-crop-picker: ^0.41.2
     react-native-modal: ^13.0.1
     react-native-modalfy: ^3.5.3
     react-native-navigation-bar-color: ^2.0.2
@@ -21543,6 +21544,15 @@ __metadata:
   version: 0.71.19
   resolution: "react-native-gradle-plugin@npm:0.71.19"
   checksum: 2e3ab679f0b81edd81b9fb88a73a16c8b9b6dbef4e7158fd894c42e6dff04ba8d11f1b9663ffa2c30d0d9deee3cd44b033cd280322c010be3c290e4422088a7a
+  languageName: node
+  linkType: hard
+
+"react-native-image-crop-picker@npm:^0.41.2":
+  version: 0.41.2
+  resolution: "react-native-image-crop-picker@npm:0.41.2"
+  peerDependencies:
+    react-native: ">=0.40.0"
+  checksum: c1333b3b761e948bd0bc856773f68dcc859c7ce39dda3e14d2c32c17d55927735bfc5cbbb7ac5e8bac21feda87c93399f2a596aca7d5b0611cc1e8203d97ad2e
   languageName: node
   linkType: hard
 
