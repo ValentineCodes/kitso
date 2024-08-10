@@ -31,7 +31,13 @@
     "ios": "yarn workspace @kitso/reactnative ios",
     "start": "yarn workspace @kitso/reactnative start",
     "patch-ethers": "yarn workspace @kitso/reactnative patch-ethers",
-    "server": "yarn workspace @kitso/backend dev"
+    "server": "yarn workspace @kitso/backend dev",
+    "add:frontend": "yarn workspace @kitso/reactnative add",
+    "add:backend": "yarn workspace @kitso/backend add",
+    "add:contract": "yarn workspace @kitso/hardhat add",
+    "remove:frontend": "yarn workspace @kitso/reactnative remove",
+    "remove:backend": "yarn workspace @kitso/backend remove",
+    "remove:contract": "yarn workspace @kitso/hardhat remove"
   },
   "packageManager": "yarn@3.2.3",
   "devDependencies": {
