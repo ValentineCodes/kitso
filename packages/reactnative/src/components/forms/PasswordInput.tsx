@@ -49,7 +49,7 @@ function PasswordInput({ label, value, suggestion, defaultValue, infoText, error
             </HStack>
           ) : (
             <TouchableOpacity activeOpacity={0.4} onPress={useSuggestion}>
-              <Text fontSize={FONT_SIZE['lg']} color={COLORS.primary} mr="2">Use Suggestion</Text>
+              <Text fontSize={FONT_SIZE['lg']} color={COLORS.primary} mr="2">Suggest</Text>
             </TouchableOpacity>
           )
         }
