@@ -35,8 +35,8 @@ function ImageCaptureModal({ isOpen, onClose, onCapture }: Props) {
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                 // capture photo from camera
                 const image = await ImagePicker.openCamera({
-                    width: 100,
-                    height: 100,
+                    width: 1024,
+                    height: 1024,
                     cropping: true,
                     mediaType: 'photo',
                 })
@@ -72,8 +72,8 @@ function ImageCaptureModal({ isOpen, onClose, onCapture }: Props) {
     async function choosePhoto() {
         try {
             const image = await ImagePicker.openPicker({
-                width: 100,
-                height: 100,
+                width: 1024,
+                height: 1024,
                 cropping: true,
                 mediaType: 'photo',
             })
