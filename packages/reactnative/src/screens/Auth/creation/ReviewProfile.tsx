@@ -12,6 +12,7 @@ import Blockie from '../../../components/Blockie'
 import { WINDOW_WIDTH } from '../../../styles/screenDimensions'
 import { truncateAddress } from '../../../utils/helperFunctions'
 import UsernameEdit from '../../../components/forms/UsernameEdit'
+import ImageCaptureModal from '../../../components/modals/ImageCaptureModal'
 
 type Props = {}
 
@@ -21,6 +22,7 @@ export default function ReviewProfile({ }: Props) {
     const navigation = useNavigation()
 
     const [username, setUsername] = useState("")
+    const [isCapturingProfileImage, setIsCapturingProfileImage] = useState(false)
 
     const addUsername = (_username: string) => {
         setUsername(_username)
@@ -83,7 +85,8 @@ export default function ReviewProfile({ }: Props) {
                         resizeMode="cover"
                         borderRadius={"full"}
                     />
-                    <View
+                    <Pressable
+                        onPress={() => setIsCapturingProfileImage(true)}
                         position={"absolute"}
                         bottom={0}
                         right={0}
@@ -92,7 +95,7 @@ export default function ReviewProfile({ }: Props) {
                         borderRadius={"full"}
                     >
                         <Blockie address={profile} size={20} />
-                    </View>
+                    </Pressable>
                 </View>
 
                 <UsernameEdit
@@ -118,6 +121,13 @@ export default function ReviewProfile({ }: Props) {
 
 
             <Button text="Got it, create my profile!" onPress={createProfile} style={{ marginBottom: 15, width: "95%", alignSelf: "center" }} />
+
+            {/* Modals */}
+            <ImageCaptureModal
+                isOpen={isCapturingProfileImage}
+                onClose={() => setIsCapturingProfileImage(false)}
+                onCapture={image => console.log(image)}
+            />
         </View>
     )
 }

@@ -118,3 +118,11 @@ export function parseFloat(str: string, val: number) {
 
 export const isENS = (name = "") =>
   name.endsWith(".eth") || name.endsWith(".xyz");
+
+export function isValidImage(type: string): boolean {
+  return (
+    type === 'image/jpeg' ||
+    type === 'image/png' ||
+    type === 'image/gif'
+  )
+}
