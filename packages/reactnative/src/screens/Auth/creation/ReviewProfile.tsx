@@ -12,7 +12,7 @@ import Blockie from '../../../components/Blockie'
 import { WINDOW_WIDTH } from '../../../styles/screenDimensions'
 import { truncateAddress } from '../../../utils/helperFunctions'
 import UsernameEdit from '../../../components/forms/UsernameEdit'
-import ImageCaptureModal from '../../../components/modals/ImageCaptureModal'
+import ImageCaptureModal, { ImageType } from '../../../components/modals/ImageCaptureModal'
 
 type Props = {}
 
@@ -22,7 +22,11 @@ export default function ReviewProfile({ }: Props) {
     const navigation = useNavigation()
 
     const [username, setUsername] = useState("")
+
+    const [isCapturingCoverImage, setIsCapturingCoverImage] = useState(false)
     const [isCapturingProfileImage, setIsCapturingProfileImage] = useState(false)
+    const [coverImage, setCoverImage] = useState<ImageType>()
+    const [profileImage, setProfileImage] = useState<ImageType>()
 
     const addUsername = (_username: string) => {
         setUsername(_username)
@@ -36,11 +40,16 @@ export default function ReviewProfile({ }: Props) {
     return (
         <View style={[styles.screenContainer, { padding: 0 }]}>
             {/* Profile cover */}
-            <View
+            <Pressable
+                onPress={() => setIsCapturingCoverImage(true)}
                 h={"25%"}
             >
                 <Image
-                    source={require("../../../../assets/images/profile_cover.jpg")}
+                    source={coverImage ?
+                        { uri: coverImage.uri }
+                        :
+                        require("../../../../assets/images/profile_cover.jpg")
+                    }
                     alt="profile cover"
                     w={"full"}
                     h={"full"}
@@ -58,7 +67,7 @@ export default function ReviewProfile({ }: Props) {
                 >
                     <Icon as={<Ionicons name="arrow-back-outline" />} size={1.3 * FONT_SIZE['xl']} color="black" />
                 </Pressable>
-            </View>
+            </Pressable>
 
             <VStack
                 flex={1}
@@ -78,7 +87,12 @@ export default function ReviewProfile({ }: Props) {
                     mt={-(WINDOW_WIDTH * 0.25 / 2)}
                 >
                     <Image
-                        source={require("../../../../assets/images/profile_image.jpeg")}
+                        source={
+                            profileImage ?
+                                { uri: profileImage.uri }
+                                :
+                                require("../../../../assets/images/profile_image.jpeg")
+                        }
                         alt="profile image"
                         w={"full"}
                         h={"full"}
@@ -124,9 +138,15 @@ export default function ReviewProfile({ }: Props) {
 
             {/* Modals */}
             <ImageCaptureModal
+                isOpen={isCapturingCoverImage}
+                onClose={() => setIsCapturingCoverImage(false)}
+                onCapture={setCoverImage}
+            />
+
+            <ImageCaptureModal
                 isOpen={isCapturingProfileImage}
                 onClose={() => setIsCapturingProfileImage(false)}
-                onCapture={image => console.log(image)}
+                onCapture={setProfileImage}
             />
         </View>
     )
