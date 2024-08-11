@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { HStack, Icon, Image, Input, Pressable, StatusBar, Text, View, VStack } from 'native-base'
+import { HStack, Icon, Image, Input, Pressable, ScrollView, StatusBar, Text, View, VStack } from 'native-base'
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons'
 import { useNavigation } from '@react-navigation/native'
@@ -139,65 +139,67 @@ export default function CreateProfile({ }: Props) {
                     </View>
                 </VStack>
 
-                <UsernameEdit
-                    value={username}
-                    placeholder="username -> spongebob3000"
-                    onSubmit={addUsername}
-                />
-
-                <Text textAlign="center" alignSelf={"center"} fontSize={FONT_SIZE['lg']} fontWeight={"medium"} mt={1} my="2" w={"75%"}>
-                    {truncateAddress(profile)}
-                </Text>
-
-                <VStack>
-                    <Text fontSize={"md"} fontWeight={"medium"}>Bio</Text>
-                    <Input
-                        multiline
-                        value={bio}
-                        onChangeText={setBio}
-                        onSubmitEditing={() => null}
-                        borderWidth={0}
-                        borderBottomWidth={1}
-                        borderRadius="lg"
-                        variant="outline"
-                        fontSize="md"
-                        w={"95%"}
-                        focusOutlineColor={COLORS.primary}
-                        selectTextOnFocus
-                        _input={{
-                            selectionColor: COLORS.highlight,
-                            cursorColor: COLORS.primary,
-                        }}
+                <ScrollView flex={1}>
+                    <UsernameEdit
+                        value={username}
+                        placeholder="username -> spongebob3000"
+                        onSubmit={addUsername}
                     />
-                </VStack>
 
-                <VStack mt={4}>
-                    <HStack alignItems={"center"} space={2}>
-                        <Text fontSize={"md"} fontWeight={"medium"}>
-                            Links
-                        </Text>
+                    <Text textAlign="center" alignSelf={"center"} fontSize={FONT_SIZE['lg']} fontWeight={"medium"} mt={1} my="2" w={"75%"}>
+                        {truncateAddress(profile)}
+                    </Text>
 
-                        <Icon
-                            as={<Ionicons name="add-outline" />}
-                            size={5}
-                            color={COLORS.primary}
-                            onPress={addLink}
-                            bgColor={COLORS.primaryLight}
+                    <VStack>
+                        <Text fontSize={"md"} fontWeight={"medium"}>Bio</Text>
+                        <Input
+                            multiline
+                            value={bio}
+                            onChangeText={setBio}
+                            onSubmitEditing={() => null}
+                            borderWidth={0}
+                            borderBottomWidth={1}
+                            borderRadius="lg"
+                            variant="outline"
+                            fontSize="md"
+                            w={"95%"}
+                            focusOutlineColor={COLORS.primary}
+                            selectTextOnFocus
+                            _input={{
+                                selectionColor: COLORS.highlight,
+                                cursorColor: COLORS.primary,
+                            }}
                         />
-                    </HStack>
+                    </VStack>
 
-                    {links.map(link => (
-                        <LinkInput
-                            key={link.id}
-                            title={link.title}
-                            url={link.url}
-                            onCancel={() => removeLink(link.id)}
-                            onChangeTitle={title => setLinkTitle(link.id, title)}
-                            onChangeUrl={url => setLinkUrl(link.id, url)}
-                        />
-                    ))}
+                    <VStack mt={4}>
+                        <HStack alignItems={"center"} space={2}>
+                            <Text fontSize={"md"} fontWeight={"medium"}>
+                                Links
+                            </Text>
 
-                </VStack>
+                            <Icon
+                                as={<Ionicons name="add-outline" />}
+                                size={5}
+                                color={COLORS.primary}
+                                onPress={addLink}
+                                bgColor={COLORS.primaryLight}
+                            />
+                        </HStack>
+
+                        {links.map(link => (
+                            <LinkInput
+                                key={link.id}
+                                title={link.title}
+                                url={link.url}
+                                onCancel={() => removeLink(link.id)}
+                                onChangeTitle={title => setLinkTitle(link.id, title)}
+                                onChangeUrl={url => setLinkUrl(link.id, url)}
+                            />
+                        ))}
+
+                    </VStack>
+                </ScrollView>
             </VStack>
 
 
