@@ -109,8 +109,12 @@ function ImageCaptureModal({ isOpen, onClose, onCapture }: Props) {
                         Take Photo
                     </Text>
                 </Pressable>
-                <Pressable onPress={choosePhoto}>
-                    <Text>Choose Photo</Text>
+                <Pressable w="100%" h={60} px={4} justifyContent="center" onPress={choosePhoto}>
+                    <Text fontSize="16" color="gray.500" _dark={{
+                        color: "gray.300"
+                    }}>
+                        Choose Photo
+                    </Text>
                 </Pressable>
             </Actionsheet.Content>
         </Actionsheet>
