@@ -93,9 +93,8 @@ function ImageCaptureModal({ isOpen, onClose, onCapture }: Props) {
                     type: "warning"
                 });
             }
-
         } catch (error) {
-
+            toast.show(JSON.stringify(error))
         }
     }
 
