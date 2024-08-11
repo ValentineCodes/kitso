@@ -14,6 +14,7 @@ import { truncateAddress } from '../../../utils/helperFunctions'
 import UsernameEdit from '../../../components/forms/UsernameEdit'
 import ImageCaptureModal, { ImageType } from '../../../components/modals/ImageCaptureModal'
 import LinkInput, { LinkType } from '../../../components/forms/LinkInput'
+import useImageUploader from '../../../hooks/useImageUploader'
 
 type Props = {}
 
@@ -21,6 +22,9 @@ const profile = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
 
 export default function CreateProfile({ }: Props) {
     const navigation = useNavigation()
+    const {
+        upload: uploadImage
+    } = useImageUploader({ enabled: false })
 
     const [username, setUsername] = useState("")
 
@@ -57,7 +61,9 @@ export default function CreateProfile({ }: Props) {
         }))
     }
 
-    const createProfile = () => {
+
+
+    const createProfile = async () => {
         // @ts-ignore
         navigation.navigate("DeployProfile")
     }
