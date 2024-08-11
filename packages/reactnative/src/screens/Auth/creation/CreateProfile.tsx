@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Icon, Image, Input, Pressable, Text, View, VStack } from 'native-base'
+import { Icon, Image, Input, Pressable, StatusBar, Text, View, VStack } from 'native-base'
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons'
 import { useNavigation } from '@react-navigation/native'
@@ -40,6 +40,7 @@ export default function CreateProfile({ }: Props) {
 
     return (
         <View style={[styles.screenContainer, { padding: 0 }]}>
+            <StatusBar translucent backgroundColor={"rgba(0,0,0,0)"} />
             {/* Profile cover */}
             <Pressable
                 onPress={() => setIsCapturingCoverImage(true)}
@@ -60,7 +61,7 @@ export default function CreateProfile({ }: Props) {
                     onPress={() => navigation.goBack()}
                     _pressed={{ opacity: 0.4 }}
                     position={"absolute"}
-                    top={4}
+                    top={12}
                     left={4}
                     bgColor={"gray.300"}
                     borderRadius={"full"}
