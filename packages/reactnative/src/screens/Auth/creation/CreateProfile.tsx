@@ -27,6 +27,7 @@ export default function CreateProfile({ }: Props) {
     const [isCapturingProfileImage, setIsCapturingProfileImage] = useState(false)
     const [coverImage, setCoverImage] = useState<ImageType>()
     const [profileImage, setProfileImage] = useState<ImageType>()
+    const [bio, setBio] = useState("")
 
     const addUsername = (_username: string) => {
         setUsername(_username)
@@ -122,13 +123,35 @@ export default function CreateProfile({ }: Props) {
                     {truncateAddress(profile)}
                 </Text>
 
+                <VStack>
+                    <Text fontSize={"md"} fontWeight={"medium"}>Bio</Text>
+                    <Input
+                        multiline
+                        value={bio}
+                        onChangeText={setBio}
+                        onSubmitEditing={() => null}
+                        borderWidth={0}
+                        borderBottomWidth={1}
+                        borderRadius="lg"
+                        variant="outline"
+                        fontSize="md"
+                        w={"95%"}
+                        focusOutlineColor={COLORS.primary}
+                        selectTextOnFocus
+                        _input={{
+                            selectionColor: COLORS.highlight,
+                            cursorColor: COLORS.primary,
+                        }}
+                    />
+                </VStack>
+
                 <VStack
                     flex={1}
                     justifyContent={"center"}
                     alignItems={"center"}
                 >
                     <Text textAlign="center" fontSize={FONT_SIZE["xl"]} bold>Review your profile</Text>
-                    <Text textAlign="center" fontSize={FONT_SIZE["xl"]} mx={5} mt={2}><Text fontWeight={"medium"}>Don't worry</Text> You can add a profile image and cover image later</Text>
+                    <Text textAlign="center" fontSize={FONT_SIZE["xl"]} mx={5} mt={2}><Text fontWeight={"medium"}>Don't worry!</Text> You can do all this later</Text>
                 </VStack>
 
             </VStack>
