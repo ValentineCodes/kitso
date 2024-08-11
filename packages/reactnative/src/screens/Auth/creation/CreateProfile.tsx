@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Icon, Image, Input, Pressable, StatusBar, Text, View, VStack } from 'native-base'
+import { HStack, Icon, Image, Input, Pressable, StatusBar, Text, View, VStack } from 'native-base'
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons'
 import { useNavigation } from '@react-navigation/native'
@@ -13,6 +13,7 @@ import { WINDOW_WIDTH } from '../../../styles/screenDimensions'
 import { truncateAddress } from '../../../utils/helperFunctions'
 import UsernameEdit from '../../../components/forms/UsernameEdit'
 import ImageCaptureModal, { ImageType } from '../../../components/modals/ImageCaptureModal'
+import LinkInput, { LinkType } from '../../../components/forms/LinkInput'
 
 type Props = {}
 
@@ -28,9 +29,32 @@ export default function CreateProfile({ }: Props) {
     const [coverImage, setCoverImage] = useState<ImageType>()
     const [profileImage, setProfileImage] = useState<ImageType>()
     const [bio, setBio] = useState("")
+    const [links, setLinks] = useState<({ id: string } & LinkType)[]>([])
 
     const addUsername = (_username: string) => {
         setUsername(_username)
+    }
+
+    const addLink = () => {
+        setLinks(links => ([...links, { id: links.length.toString(), title: "", url: "" }]))
+    }
+
+    const removeLink = (id: string) => {
+        setLinks(links => links.filter(link => link.id !== id))
+    }
+
+    const setLinkTitle = (id: string, title: string) => {
+        setLinks(links => links.map(link => {
+            if (link.id != id) return link
+            return { ...link, title }
+        }))
+    }
+
+    const setLinkUrl = (id: string, url: string) => {
+        setLinks(links => links.map(link => {
+            if (link.id != id) return link
+            return { ...link, url }
+        }))
     }
 
     const createProfile = () => {
@@ -76,43 +100,44 @@ export default function CreateProfile({ }: Props) {
                 bgColor={"white"}
                 borderTopRadius={20}
                 mt={-5}
-                alignItems={"center"}
                 p={15}
             >
-                {/* Profile image */}
-                <View
-                    w={WINDOW_WIDTH * 0.25}
-                    style={{ aspectRatio: 1 }}
-                    borderRadius={"full"}
-                    borderWidth={5}
-                    borderColor={"white"}
-                    mt={-(WINDOW_WIDTH * 0.25 / 2)}
-                >
-                    <Image
-                        source={
-                            profileImage ?
-                                { uri: profileImage.uri }
-                                :
-                                require("../../../../assets/images/default_profile_image.jpeg")
-                        }
-                        alt="profile image"
-                        w={"full"}
-                        h={"full"}
-                        resizeMode="cover"
+                <VStack alignItems={"center"}>
+                    {/* Profile image */}
+                    <View
+                        w={WINDOW_WIDTH * 0.25}
+                        style={{ aspectRatio: 1 }}
                         borderRadius={"full"}
-                    />
-                    <Pressable
-                        onPress={() => setIsCapturingProfileImage(true)}
-                        position={"absolute"}
-                        bottom={0}
-                        right={0}
-                        borderWidth={3}
+                        borderWidth={5}
                         borderColor={"white"}
-                        borderRadius={"full"}
+                        mt={-(WINDOW_WIDTH * 0.25 / 2)}
                     >
-                        <Blockie address={profile} size={20} />
-                    </Pressable>
-                </View>
+                        <Image
+                            source={
+                                profileImage ?
+                                    { uri: profileImage.uri }
+                                    :
+                                    require("../../../../assets/images/default_profile_image.jpeg")
+                            }
+                            alt="profile image"
+                            w={"full"}
+                            h={"full"}
+                            resizeMode="cover"
+                            borderRadius={"full"}
+                        />
+                        <Pressable
+                            onPress={() => setIsCapturingProfileImage(true)}
+                            position={"absolute"}
+                            bottom={0}
+                            right={0}
+                            borderWidth={3}
+                            borderColor={"white"}
+                            borderRadius={"full"}
+                        >
+                            <Blockie address={profile} size={20} />
+                        </Pressable>
+                    </View>
+                </VStack>
 
                 <UsernameEdit
                     value={username}
@@ -146,15 +171,33 @@ export default function CreateProfile({ }: Props) {
                     />
                 </VStack>
 
-                <VStack
-                    flex={1}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                >
-                    <Text textAlign="center" fontSize={FONT_SIZE["xl"]} bold>Review your profile</Text>
-                    <Text textAlign="center" fontSize={FONT_SIZE["xl"]} mx={5} mt={2}><Text fontWeight={"medium"}>Don't worry!</Text> You can do all this later</Text>
-                </VStack>
+                <VStack mt={4}>
+                    <HStack alignItems={"center"} space={2}>
+                        <Text fontSize={"md"} fontWeight={"medium"}>
+                            Links
+                        </Text>
 
+                        <Icon
+                            as={<Ionicons name="add-outline" />}
+                            size={5}
+                            color={COLORS.primary}
+                            onPress={addLink}
+                            bgColor={COLORS.primaryLight}
+                        />
+                    </HStack>
+
+                    {links.map(link => (
+                        <LinkInput
+                            key={link.id}
+                            title={link.title}
+                            url={link.url}
+                            onCancel={() => removeLink(link.id)}
+                            onChangeTitle={title => setLinkTitle(link.id, title)}
+                            onChangeUrl={url => setLinkUrl(link.id, url)}
+                        />
+                    ))}
+
+                </VStack>
             </VStack>
 
 

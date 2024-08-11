@@ -1,0 +1,103 @@
+{
+    "LSP3Profile": {
+        "name": "voulex",
+        "description": "Hey 👋🏻 I'm a web3 developer interested in account abstraction, identity, nodes, and communities. I spend my free-time reading books in a hammock or playing Guild Wars with friends. 👾 🌱",
+        "links": [
+            {
+                "title": "LENS",
+                "url": "https://hey.xyz/u/fhildeb"
+            },
+            {
+                "title": "TWITTER",
+                "url": "https://twitter.com/voulex"
+            },
+            {
+                "title": "WEBPAGE",
+                "url": "https://www.fhildeb.xyz"
+            },
+            {
+                "title": "GITHUB",
+                "url": "https://github.com/fhildeb"
+            },
+            {
+                "title": "ENS",
+                "url": "https://app.ens.domains/fhildeb.eth"
+            },
+            {
+                "title": "MEDIUM",
+                "url": "https://fhildeb.medium.com"
+            }
+        ],
+        "tags": [
+            "dev-at-lukso",
+            "node-operator"
+        ],
+        "profileImage": [
+            {
+                "width": 1024,
+                "height": 1024,
+                "verification": {
+                    "method": "keccak256(bytes)",
+                    "data": "0xf7db0fa45fdf18cab18dae26962fd8b5c4d5f2513788b327a39ea7308620ee3b"
+                },
+                "url": "ipfs://QmY2JevD4askLg4BKEBrD8Tmvbm5fy21WbMRXLoXKUqTL2"
+            },
+            {
+                "width": 640,
+                "height": 640,
+                "verification": {
+                    "method": "keccak256(bytes)",
+                    "data": "0x7a0d9bec09f76659817f46a51b5eb48f21aa74af250d9e6cdd41080c4802c65c"
+                },
+                "url": "ipfs://Qmbzvvr9xujHgkBL9HQK3pTvqi5dVLntfdvm13mEPaPwJy"
+            },
+            {
+                "width": 320,
+                "height": 320,
+                "verification": {
+                    "method": "keccak256(bytes)",
+                    "data": "0x2dac9c1218ab406d1322bfad9150fac61a4079ed38de45385f436a10d6fff03b"
+                },
+                "url": "ipfs://QmNXjxGXrzhp3zEvvv1tiK3eEBUQkaa5Xquj9GeGxtqZKW"
+            },
+            {
+                "width": 180,
+                "height": 180,
+                "verification": {
+                    "method": "keccak256(bytes)",
+                    "data": "0x186e1ad2a9cc74a563b5af8d879ece0d45f396b78af9acbe3881920140b087ab"
+                },
+                "url": "ipfs://QmTXH86q14YLp4vAVmjGeezX88BrjkKw1NosdWfCLTKLVu"
+            }
+        ],
+        "backgroundImage": [
+            {
+                "width": 640,
+                "height": 236,
+                "verification": {
+                    "method": "keccak256(bytes)",
+                    "data": "0x4f4359a7f001721e3ffa1ccc234405ac2e675e3c65351acb1fb90513f611aad0"
+                },
+                "url": "ipfs://QmWvnVZnpkMg2zQiFT3WMjke5ZpKEFtfjvkXNQZpjZw4DW"
+            },
+            {
+                "width": 320,
+                "height": 118,
+                "verification": {
+                    "method": "keccak256(bytes)",
+                    "data": "0x0dc715bc8f880c3594f21c7f6a96753283895730ba37a611b375b168f6f822d9"
+                },
+                "url": "ipfs://QmRVFRRAW3SNKxk2ZTS9JLpL98y3tDAqLhDYShBXuERtn8"
+            },
+            {
+                "width": 180,
+                "height": 66,
+                "verification": {
+                    "method": "keccak256(bytes)",
+                    "data": "0x523504bc09a5706dd08c66c81035195dabae658e88328e2db94562b27b9d92ba"
+                },
+                "url": "ipfs://QmT9aq7iANGSBck93RoNfCrpdCzmKi61yF5u2kPUuRqigZ"
+            }
+        ]
+    }
+}
