@@ -48,7 +48,7 @@ export default function ReviewProfile({ }: Props) {
                     source={coverImage ?
                         { uri: coverImage.uri }
                         :
-                        require("../../../../assets/images/profile_cover.jpg")
+                        require("../../../../assets/images/default_profile_cover.jpg")
                     }
                     alt="profile cover"
                     w={"full"}
@@ -91,7 +91,7 @@ export default function ReviewProfile({ }: Props) {
                             profileImage ?
                                 { uri: profileImage.uri }
                                 :
-                                require("../../../../assets/images/profile_image.jpeg")
+                                require("../../../../assets/images/default_profile_image.jpeg")
                         }
                         alt="profile image"
                         w={"full"}

@@ -36,7 +36,7 @@ const Profile = ({ address, username, image, cover }: ProfileProps) => {
         >
             {/* Profile cover */}
             <Image
-                source={require("../../../../assets/images/profile_cover.jpg")}
+                source={require("../../../../assets/images/default_profile_cover.jpg")}
                 alt="profile cover"
                 w={"full"}
                 h={WINDOW_WIDTH * 0.4}
@@ -62,7 +62,7 @@ const Profile = ({ address, username, image, cover }: ProfileProps) => {
                     mt={-(WINDOW_WIDTH * 0.25 / 2)}
                 >
                     <Image
-                        source={require("../../../../assets/images/profile_image.jpeg")}
+                        source={require("../../../../assets/images/default_profile_image.jpeg")}
                         alt="profile image"
                         w={"full"}
                         h={"full"}
