@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { keccak256 } from 'ethers/lib/utils'
+import RNFetchBlob from "rn-fetch-blob"
+import {Buffer} from "buffer"
 
 import { ImageType } from '../components/modals/ImageCaptureModal'
 
@@ -17,6 +20,7 @@ interface UseImageUploaderConfig {
 
 interface ImageData {
     ipfsHash: string;
+    bufferHash: string;
     size: number;
     timestamp: string;
 }
@@ -38,6 +42,9 @@ export default function useImageUploader({image, enabled, onUpload, onError}: Us
     const upload = async (image: ImageType): Promise<ImageData | undefined> => {
         try {
             setIsUploading(true)
+
+            const base64Image = await RNFetchBlob.fs.readFile(image.uri, 'base64')
+            const imageBuffer = Buffer.from(base64Image, 'base64')
 
             const formData = new FormData();
             formData.append('file', image)
@@ -76,6 +83,7 @@ export default function useImageUploader({image, enabled, onUpload, onError}: Us
 
             const result = {
                 ipfsHash: data.IpfsHash,
+                bufferHash: keccak256(imageBuffer),
                 size: data.PinSize,
                 timestamp: data.Timestamp
             }

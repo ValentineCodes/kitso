@@ -15,6 +15,7 @@ import UsernameEdit from '../../../components/forms/UsernameEdit'
 import ImageCaptureModal, { ImageType } from '../../../components/modals/ImageCaptureModal'
 import LinkInput, { LinkType } from '../../../components/forms/LinkInput'
 import useImageUploader from '../../../hooks/useImageUploader'
+import { useToast } from 'react-native-toast-notifications'
 
 type Props = {}
 
@@ -22,9 +23,15 @@ const profile = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
 
 export default function CreateProfile({ }: Props) {
     const navigation = useNavigation()
+    const toast = useToast()
+
     const {
         upload: uploadImage
-    } = useImageUploader({ enabled: false })
+    } = useImageUploader({
+        enabled: false, onUpload(progress) {
+            console.log(`${progress}%`)
+        },
+    })
 
     const [username, setUsername] = useState("")
 
@@ -64,8 +71,70 @@ export default function CreateProfile({ }: Props) {
 
 
     const createProfile = async () => {
-        // @ts-ignore
-        navigation.navigate("DeployProfile")
+        try {
+            let profileMetadata = {
+                LSP3Profile: {
+                    name: username,
+                    description: bio,
+                    links: links.map(link => ({ title: link.title, url: link.url })),
+                    tags: [],
+                    profileImage: [] as any,
+                    backgroundImage: [] as any
+                }
+            }
+
+            if (profileImage) {
+                // upload profile image 
+                const _profileImage = await uploadImage({
+                    name: profileImage.name,
+                    type: profileImage.type,
+                    uri: profileImage.uri
+                })
+
+                if (_profileImage) {
+                    profileMetadata.LSP3Profile.profileImage.push({
+                        width: 1024,
+                        height: 1024,
+                        verification: {
+                            method: "keccak256(bytes)",
+                            data: _profileImage.bufferHash
+                        },
+                        url: `ipfs://${_profileImage.ipfsHash}`
+                    })
+                } else {
+                    toast.show("Failed to upload profile image", { type: "danger" })
+                }
+            }
+
+            if (coverImage) {
+                // upload cover image 
+                const _coverImage = await uploadImage({
+                    name: coverImage.name,
+                    type: coverImage.type,
+                    uri: coverImage.uri
+                })
+
+                if (_coverImage) {
+                    profileMetadata.LSP3Profile.backgroundImage.push({
+                        width: 1024,
+                        height: 1024,
+                        verification: {
+                            method: "keccak256(bytes)",
+                            data: _coverImage.bufferHash
+                        },
+                        url: `ipfs://${_coverImage.ipfsHash}`
+                    })
+                } else {
+                    toast.show("Failed to upload cover image", { type: "danger" })
+                }
+            }
+
+            // @ts-ignore
+            navigation.navigate("DeployProfile")
+        } catch (error) {
+            toast.show("Failed to create profile!", { type: 'danger' })
+            console.error(error)
+        }
     }
 
     return (
