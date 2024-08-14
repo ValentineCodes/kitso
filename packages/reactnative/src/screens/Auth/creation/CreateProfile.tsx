@@ -16,6 +16,7 @@ import ImageCaptureModal, { ImageType } from '../../../components/modals/ImageCa
 import LinkInput, { LinkType } from '../../../components/forms/LinkInput'
 import useImageUploader from '../../../hooks/useImageUploader'
 import { useToast } from 'react-native-toast-notifications'
+import useJSONUploader from '../../../hooks/useJSONUploader'
 
 type Props = {}
 
@@ -25,13 +26,8 @@ export default function CreateProfile({ }: Props) {
     const navigation = useNavigation()
     const toast = useToast()
 
-    const {
-        upload: uploadImage
-    } = useImageUploader({
-        enabled: false, onUpload(progress) {
-            console.log(`${progress}%`)
-        },
-    })
+    const { upload: uploadImage } = useImageUploader({ enabled: false })
+    const { upload: uploadProfile } = useJSONUploader({ enabled: false })
 
     const [username, setUsername] = useState("")
 
@@ -41,6 +37,7 @@ export default function CreateProfile({ }: Props) {
     const [profileImage, setProfileImage] = useState<ImageType>()
     const [bio, setBio] = useState("")
     const [links, setLinks] = useState<({ id: string } & LinkType)[]>([])
+    const [isUploading, setIsUploading] = useState(false)
 
     const addUsername = (_username: string) => {
         setUsername(_username)
@@ -72,6 +69,8 @@ export default function CreateProfile({ }: Props) {
 
     const createProfile = async () => {
         try {
+            setIsUploading(true)
+
             let profileMetadata = {
                 LSP3Profile: {
                     name: username,
@@ -129,11 +128,17 @@ export default function CreateProfile({ }: Props) {
                 }
             }
 
+            const profile = await uploadProfile(profileMetadata)
+
+            console.log(profile)
+
             // @ts-ignore
-            navigation.navigate("DeployProfile")
+            // navigation.navigate("DeployProfile")
         } catch (error) {
             toast.show("Failed to create profile!", { type: 'danger' })
             console.error(error)
+        } finally {
+            setIsUploading(false)
         }
     }
 
@@ -278,7 +283,12 @@ export default function CreateProfile({ }: Props) {
             </VStack>
 
 
-            <Button text="Got it, create my profile!" onPress={createProfile} style={{ marginBottom: 15, width: "95%", alignSelf: "center" }} />
+            <Button
+                text="Got it, create my profile!"
+                loading={isUploading}
+                onPress={createProfile}
+                style={{ marginBottom: 15, width: "95%", alignSelf: "center" }}
+            />
 
             {/* Modals */}
             <ImageCaptureModal
