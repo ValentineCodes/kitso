@@ -240,7 +240,7 @@ export default function CreateProfile({ }: Props) {
                 <ScrollView flex={1}>
                     <UsernameEdit
                         value={username}
-                        placeholder="username -> spongebob3000"
+                        placeholder="spongebob3000"
                         onSubmit={addUsername}
                     />
 
@@ -253,6 +253,7 @@ export default function CreateProfile({ }: Props) {
                         <Input
                             multiline
                             value={bio}
+                            placeholder='Tell me about yourself'
                             onChangeText={setBio}
                             onSubmitEditing={() => null}
                             borderWidth={0}
