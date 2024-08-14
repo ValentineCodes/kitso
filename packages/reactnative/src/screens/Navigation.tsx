@@ -21,7 +21,15 @@ type AppStackParamsList = {
     CreatePassword: undefined;
     SelectProfile: undefined;
     CreateProfile: undefined;
-    DeployProfile: undefined;
+    DeployProfile: {
+        lsp3DataValue: {
+            verification: {
+                method: string;
+                data: string;
+            },
+            url: string
+        }
+    };
     SetupRecovery: undefined;
     ConfirmEmail: undefined;
     RecoverProfile: undefined;

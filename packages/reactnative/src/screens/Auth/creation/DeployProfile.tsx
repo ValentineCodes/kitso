@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Divider, HStack, Icon, Text, View, VStack } from 'native-base'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { useToast } from 'react-native-toast-notifications';
+// @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons'
 
 import styles from "../../../styles/global"
@@ -41,12 +42,18 @@ const Process = ({ title, status }: ProcessProps) => {
 
 export default function DeployProfile({ }: Props) {
     const navigation = useNavigation()
+    const route = useRoute()
+    // @ts-ignore
+    const { lsp3DataValue } = route.params
     const toast = useToast()
 
     const [isDeploying, setIsDeploying] = useState(false)
 
     const setupRecovery = () => {
-        navigation.navigate("SetupRecovery")
+        // @ts-ignore
+        // navigation.navigate("SetupRecovery")
+
+        console.log(lsp3DataValue)
     }
     return (
         <View style={styles.screenContainer}>
@@ -80,6 +87,7 @@ export default function DeployProfile({ }: Props) {
             >Please be patient during the creation process</Text> : (
                 <>
                     <Button text="Setup recovery" onPress={setupRecovery} style={{ marginTop: 40 }} />
+                    {/* @ts-ignore */}
                     <Button text="No, I don't need recovery" type="outline" onPress={() => navigation.navigate("Dashboard")} style={{ marginVertical: 15 }} />
 
                 </>

@@ -90,19 +90,21 @@ export default function CreateProfile({ }: Props) {
                     uri: profileImage.uri
                 })
 
-                if (_profileImage) {
-                    profileMetadata.LSP3Profile.profileImage.push({
-                        width: 1024,
-                        height: 1024,
-                        verification: {
-                            method: "keccak256(bytes)",
-                            data: _profileImage.bufferHash
-                        },
-                        url: `ipfs://${_profileImage.ipfsHash}`
-                    })
-                } else {
+                if (!_profileImage) {
                     toast.show("Failed to upload profile image", { type: "danger" })
+                    return
                 }
+
+                profileMetadata.LSP3Profile.profileImage.push({
+                    width: 1024,
+                    height: 1024,
+                    verification: {
+                        method: "keccak256(bytes)",
+                        data: _profileImage.bufferHash
+                    },
+                    url: `ipfs://${_profileImage.ipfsHash}`
+                })
+
             }
 
             if (coverImage) {
@@ -113,27 +115,43 @@ export default function CreateProfile({ }: Props) {
                     uri: coverImage.uri
                 })
 
-                if (_coverImage) {
-                    profileMetadata.LSP3Profile.backgroundImage.push({
-                        width: 1024,
-                        height: 1024,
-                        verification: {
-                            method: "keccak256(bytes)",
-                            data: _coverImage.bufferHash
-                        },
-                        url: `ipfs://${_coverImage.ipfsHash}`
-                    })
-                } else {
+                if (!_coverImage) {
                     toast.show("Failed to upload cover image", { type: "danger" })
+                    return
                 }
+
+                profileMetadata.LSP3Profile.backgroundImage.push({
+                    width: 1024,
+                    height: 1024,
+                    verification: {
+                        method: "keccak256(bytes)",
+                        data: _coverImage.bufferHash
+                    },
+                    url: `ipfs://${_coverImage.ipfsHash}`
+                })
+
             }
 
             const profile = await uploadProfile(profileMetadata)
 
-            console.log(profile)
+            if (!profile) {
+                toast.show("Failed to upload profile metadata", { type: "danger" })
+                return
+            }
+
+            const lsp3DataValue = {
+                verification: {
+                    method: 'keccak256(utf8)',
+                    data: '0x6d6d08aafb0ee059e3e4b6b3528a5be37308a5d4f4d19657d26dd8a5ae799de0',
+                },
+                // this is an IPFS CID of a LSP3 Profile Metadata example, you can use your own
+                url: `ipfs://${profile.ipfsHash}`,
+            }
 
             // @ts-ignore
-            // navigation.navigate("DeployProfile")
+            navigation.navigate("DeployProfile", {
+                lsp3DataValue
+            })
         } catch (error) {
             toast.show("Failed to create profile!", { type: 'danger' })
             console.error(error)
