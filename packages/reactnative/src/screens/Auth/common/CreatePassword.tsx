@@ -73,7 +73,7 @@ function CreatePassword({ }: Props) {
 
             switch (authContext) {
                 case 'profile_creation':
-                    navigation.navigate("SelectProfile")
+                    navigation.navigate("CreateController")
                     break;
 
                 default:

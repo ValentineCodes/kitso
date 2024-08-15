@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Divider, HStack, Icon, Pressable, Text, View, VStack } from 'native-base'
+// @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons'
 import { useNavigation } from '@react-navigation/native'
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -22,7 +23,7 @@ const profiles = [
     '0x66f820a414680b5bcda5eeca5dea238543f42054',
 ]
 
-export default function SelectProfile({ }: Props) {
+export default function CreateController({ }: Props) {
     const navigation = useNavigation()
     const toast = useToast()
 
@@ -33,6 +34,7 @@ export default function SelectProfile({ }: Props) {
     }
 
     const confirm = () => {
+        // @ts-ignore
         navigation.navigate("CreateProfile")
     }
 

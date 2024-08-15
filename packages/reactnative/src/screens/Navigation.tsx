@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 import Onboarding from './Auth/Onboarding'
 import CreatePassword from './Auth/common/CreatePassword'
-import SelectProfile from './Auth/creation/SelectProfile'
+import CreateController from './Auth/creation/CreateController'
 import CreateProfile from './Auth/creation/CreateProfile'
 import DeployProfile from './Auth/creation/DeployProfile'
 import SetupRecovery from './Auth/recovery/SetupRecovery';
@@ -19,7 +19,7 @@ type Props = {}
 type AppStackParamsList = {
     Onboarding: undefined;
     CreatePassword: undefined;
-    SelectProfile: undefined;
+    CreateController: undefined;
     CreateProfile: undefined;
     DeployProfile: {
         lsp3DataValue: {
@@ -52,7 +52,7 @@ export default function Navigation({ }: Props) {
                         <>
                             <AppStack.Screen name="Onboarding" component={Onboarding} />
                             <AppStack.Screen name="CreatePassword" component={CreatePassword} />
-                            <AppStack.Screen name="SelectProfile" component={SelectProfile} />
+                            <AppStack.Screen name="CreateController" component={CreateController} />
                             <AppStack.Screen name="CreateProfile" component={CreateProfile} />
                             <AppStack.Screen name="DeployProfile" component={DeployProfile} />
                             <AppStack.Screen name="SetupRecovery" component={SetupRecovery} />
