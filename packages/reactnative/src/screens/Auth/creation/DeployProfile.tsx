@@ -56,7 +56,7 @@ export default function DeployProfile({ }: Props) {
         console.log(lsp3DataValue)
     }
     return (
-        <View style={styles.screenContainer}>
+        <View style={styles.screenContainer} pt={"10"}>
             <ProgressIndicatorHeader progress={4} steps={4} />
 
             <Divider bgColor="muted.100" my="4" />

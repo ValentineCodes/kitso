@@ -5,7 +5,7 @@ export default StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: 'white',
-    padding: 15,
+    padding: 15
   },
   logo: {
     position: 'absolute',
