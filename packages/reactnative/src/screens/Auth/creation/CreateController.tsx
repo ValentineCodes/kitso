@@ -61,15 +61,13 @@ export default function CreateController({ }: Props) {
             // store mnemonic in secure storage
             await SInfo.setItem("mnemonic", wallet.mnemonic, STORAGE_KEY);
 
-            const newAccount = {
+            const controller = {
                 address: wallet.address,
                 privateKey: wallet.privateKey,
             }
 
             // store controller account in secure and redux storage
-            await SInfo.setItem("accounts", JSON.stringify([newAccount]), STORAGE_KEY)
-
-            dispatch(initAccounts([{ ...newAccount, isImported: false }]))
+            await SInfo.setItem("controller", JSON.stringify(controller), STORAGE_KEY)
 
             // @ts-ignore
             navigation.navigate("CreateProfile")

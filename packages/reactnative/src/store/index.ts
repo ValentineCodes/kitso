@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Auth from './reducers/Auth';
 import Accounts from './reducers/Accounts';
+import Profiles from './reducers/Profiles';
 import Transactions from './reducers/Transactions';
 import Balance from './reducers/Balance';
 import Recipients from './reducers/Recipients';
@@ -27,6 +28,7 @@ const persistConfig = {
 const reducers = combineReducers({
   auth: Auth,
   accounts: Accounts,
+  profiles: Profiles,
   transactions: Transactions,
   balance: Balance,
   recipients: Recipients

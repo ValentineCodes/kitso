@@ -14,9 +14,18 @@ interface ProfileCreationDataType {
     universalReceiverAddress: string;
 }
 
+interface ProfileCreationResponse {
+    universalProfileAddress: string;
+    keyManagerAddress: string;
+}
+
 class ProfileAPI {
-    async createProfile(body: ProfileCreationDataType){
-        const {data} = await axios.post(`${domain}/create_profile`, body)
+    async createProfile(body: ProfileCreationDataType): Promise<ProfileCreationResponse>{
+        const {data} = await axios.post(`${domain}/auth/create_profile`, body, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
 
         return data
     }
