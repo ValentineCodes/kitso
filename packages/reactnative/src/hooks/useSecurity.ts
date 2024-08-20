@@ -6,6 +6,11 @@ export interface Security {
     isBiometricsEnabled: boolean;
 }
 
+const STORAGE_KEY = {
+    sharedPreferencesName: "kitso.android.storage",
+    keychainService: "kitso.ios.storage",
+}
+
 /**
  * @notice hook to read and write security data
  */
@@ -18,10 +23,7 @@ export default function useSecurity(){
      */
     async function _getSecurity(): Promise<Security>{
         // read security data from secure storage
-        const _security = await SInfo.getItem("security", {
-            sharedPreferencesName: "kitso.android.storage",
-            keychainService: "kitso.ios.storage",
-        });
+        const _security = await SInfo.getItem("security", STORAGE_KEY);
         const security = JSON.parse(_security!)
 
         setSecurity(security)
@@ -37,10 +39,7 @@ export default function useSecurity(){
         setSecurity(security)
         
         // encrypt and store security data
-        await SInfo.setItem("security", JSON.stringify(security), {
-            sharedPreferencesName: "kitso.android.storage",
-            keychainService: "kitso.ios.storage",
-        });
+        await SInfo.setItem("security", JSON.stringify(security), STORAGE_KEY);
     }
 
     useEffect(() => {
@@ -49,6 +48,7 @@ export default function useSecurity(){
 
     return {
         security,
+        getSecurity: _getSecurity,
         setSecurity: _setSecurity
     }
 }

@@ -73,10 +73,12 @@ function CreatePassword({ }: Props) {
 
             switch (authContext) {
                 case 'profile_creation':
+                    // @ts-ignore
                     navigation.navigate("CreateController")
                     break;
 
                 default:
+                    // @ts-ignore
                     navigation.navigate("Dashboard")
                     break;
             }
