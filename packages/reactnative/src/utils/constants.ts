@@ -10,3 +10,9 @@ export const COLORS = {
 
 // The local IP address via WIFI-HOTSPOT
 export const LOCAL_PROVIDER = "http://192.168.161.72:8545"
+
+// secure storage key 
+export const STORAGE_KEY = {
+  sharedPreferencesName: "kitso.android.storage",
+  keychainService: "kitso.ios.storage",
+}

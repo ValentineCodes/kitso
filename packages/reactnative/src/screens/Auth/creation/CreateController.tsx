@@ -13,9 +13,11 @@ import { useToast } from 'react-native-toast-notifications'
 import { createWallet } from 'react-native-web3-wallet'
 
 import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader';
-import { COLORS } from '../../../utils/constants';
+import { COLORS, STORAGE_KEY } from '../../../utils/constants';
 import { FONT_SIZE } from '../../../utils/styles';
 import Button from '../../../components/Button';
+import { useDispatch } from 'react-redux';
+import { initAccounts } from '../../../store/reducers/Accounts';
 
 interface Wallet {
     mnemonic: string;
@@ -33,6 +35,8 @@ export default function CreateController({ }: Props) {
     const [wallet, setWallet] = useState<Wallet>()
     const [showSeedPhrase, setShowSeedPhrase] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
+
+    const dispatch = useDispatch()
 
     const copySeedPhrase = () => {
         if (!wallet) {
@@ -54,10 +58,18 @@ export default function CreateController({ }: Props) {
             return
         }
         try {
-            await SInfo.setItem("mnemonic", wallet.mnemonic, {
-                sharedPreferencesName: "kitso.android.storage",
-                keychainService: "kitso.ios.storage",
-            });
+            // store mnemonic in secure storage
+            await SInfo.setItem("mnemonic", wallet.mnemonic, STORAGE_KEY);
+
+            const newAccount = {
+                address: wallet.address,
+                privateKey: wallet.privateKey,
+            }
+
+            // store controller account in secure and redux storage
+            await SInfo.setItem("accounts", JSON.stringify([newAccount]), STORAGE_KEY)
+
+            dispatch(initAccounts([{ ...newAccount, isImported: false }]))
 
             // @ts-ignore
             navigation.navigate("CreateProfile")
@@ -71,6 +83,8 @@ export default function CreateController({ }: Props) {
             const newWallet = await createWallet("")
             const wallet = {
                 mnemonic: newWallet.mnemonic.join(" "),
+                address: newWallet.address,
+                privateKey: newWallet.privateKey
             }
 
             // @ts-ignore

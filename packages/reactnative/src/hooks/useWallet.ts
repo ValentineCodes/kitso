@@ -2,15 +2,11 @@ import { useEffect, useState } from "react";
 import SInfo from "react-native-sensitive-info";
 import { useDispatch } from "react-redux";
 import { addAccount } from "../store/reducers/Accounts";
+import { STORAGE_KEY } from "../utils/constants";
 
 export interface Account {
     address: string;
     privateKey: string;
-}
-
-const STORAGE_KEY = {
-    sharedPreferencesName: "kitso.android.storage",
-    keychainService: "kitso.ios.storage",
 }
 
 /**
@@ -38,7 +34,7 @@ export default function useWallet(){
     async function _getAccounts(): Promise<Account[]>{
         // read accounts from secure storage
         const _accounts = await SInfo.getItem("accounts", STORAGE_KEY);
-        const accounts = JSON.parse(_accounts!)
+        const accounts = JSON.parse(_accounts!) || []
 
         setAccounts(accounts)
 
@@ -49,7 +45,7 @@ export default function useWallet(){
      * @notice encrypts and stores mnemonic in secure storage
      * @param _mnemonic mnemonic string
      */
-    async function _setMnemonic(_mnemonic: string){
+    async function _storeMnemonic(_mnemonic: string){
         setMnemonic(_mnemonic)
 
         // encrypt and store mnemonic
@@ -61,12 +57,12 @@ export default function useWallet(){
      * @param _account address and private key of account 
      * @param _isImported `true` if account was imported using private key
      */
-    async function _setAccount(_account: Account, _isImported: boolean) {
+    async function _storeAccount(_account: Account, _isImported: boolean) {
         // read accounts from secure storage
         const _accounts = await SInfo.getItem("accounts", STORAGE_KEY);
-        const accounts = JSON.parse(_accounts!)
+        const accounts = JSON.parse(_accounts!) || []
 
-        const newAccounts = [...JSON.parse(accounts), { privateKey: _account.privateKey, address: _account.address }]
+        const newAccounts = [...JSON.parse(accounts), _account]
 
         // encrypt and store accounts 
         await SInfo.setItem("accounts", JSON.stringify(newAccounts), STORAGE_KEY)
@@ -86,7 +82,7 @@ export default function useWallet(){
         accounts,
         getMnemonic: _getMnemonic,
         getAccounts: _getAccounts,
-        setMnemonic: _setMnemonic,
-        setAccount: _setAccount
+        storeMnemonic: _storeMnemonic,
+        storeAccount: _storeAccount
     }
 }

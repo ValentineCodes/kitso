@@ -1,14 +1,10 @@
 import { useEffect, useState } from "react";
 import SInfo from "react-native-sensitive-info";
+import { STORAGE_KEY } from "../utils/constants";
 
 export interface Security {
     password: string;
     isBiometricsEnabled: boolean;
-}
-
-const STORAGE_KEY = {
-    sharedPreferencesName: "kitso.android.storage",
-    keychainService: "kitso.ios.storage",
 }
 
 /**
