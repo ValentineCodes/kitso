@@ -15,6 +15,7 @@ import { ActivityIndicator } from 'react-native';
 import ProfileAPI from '../../../apis/ProfileAPI';
 import { useDispatch } from 'react-redux';
 import { initProfiles } from '../../../store/reducers/Profiles';
+import { loginUser } from '../../../store/reducers/Auth';
 
 type DeploymentStatusProps = 'loading' | 'success' | 'error';
 
@@ -56,6 +57,8 @@ export default function DeployProfile() {
                 address: profile.universalProfileAddress,
                 keyManager: profile.keyManagerAddress
             }))
+
+            dispatch(loginUser())
 
             setDeploymentStatus("success")
         } catch (error) {
