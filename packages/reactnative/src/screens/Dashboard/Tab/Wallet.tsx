@@ -14,6 +14,7 @@ import { truncateAddress } from '../../../utils/helperFunctions'
 import CopyableText from '../../../components/CopyableText'
 import useAccount from '../../../hooks/scaffold-eth/useAccount'
 import useNetwork from '../../../hooks/scaffold-eth/useNetwork'
+import { useProfile } from '../../../context/UniversalProfileContext'
 
 let backHandler: NativeEventSubscription;
 
@@ -133,8 +134,9 @@ function Link({ title, url }: LinkProps) {
 
 function Wallet({ }: WalletProps) {
     const isFocused = useIsFocused()
-
+    const { profile } = useProfile()
     const account = useAccount()
+    const network = useNetwork()
 
     useFocusEffect(() => {
         backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -158,13 +160,25 @@ function Wallet({ }: WalletProps) {
 
             {/* Profile cover */}
             <View h={WINDOW_HEIGHT * 0.25} zIndex={1}>
-                <Image
-                    source={require("../../../../assets/images/default_profile_cover.jpg")}
-                    alt="profile cover"
-                    w={"full"}
-                    h={"full"}
-                    resizeMode="cover"
-                />
+                {
+                    profile?.backgroundImage && profile.backgroundImage.length > 0 ? (
+                        <Image
+                            source={{ uri: profile.backgroundImage[0].url.replace("ipfs://", network.ipfsGateway) }}
+                            alt="profile cover"
+                            w={"full"}
+                            h={"full"}
+                            resizeMode="cover"
+                        />
+                    ) : (
+                        <Image
+                            source={require("../../../../assets/images/default_profile_cover.jpg")}
+                            alt="profile cover"
+                            w={"full"}
+                            h={"full"}
+                            resizeMode="cover"
+                        />
+                    )
+                }
 
                 {/* Profile image */}
                 <VStack
@@ -180,14 +194,26 @@ function Wallet({ }: WalletProps) {
                         borderWidth={5}
                         borderColor={"white"}
                     >
-                        <Image
-                            source={require("../../../../assets/images/default_profile_image.jpeg")}
-                            alt="profile image"
-                            w={"full"}
-                            h={"full"}
-                            resizeMode="cover"
-                            borderRadius={"full"}
-                        />
+                        {
+                            profile?.profileImage && profile.profileImage.length > 0 ? (
+                                <Image
+                                    source={{ uri: profile.profileImage[0].url.replace("ipfs://", network.ipfsGateway) }}
+                                    alt="profile image"
+                                    w={"full"}
+                                    h={"full"}
+                                    resizeMode="cover"
+                                />
+                            ) : (
+                                <Image
+                                    source={require("../../../../assets/images/default_profile_image.jpeg")}
+                                    alt="profile image"
+                                    w={"full"}
+                                    h={"full"}
+                                    resizeMode="cover"
+                                    borderRadius={"full"}
+                                />
+                            )
+                        }
                         <View
                             position={"absolute"}
                             bottom={0}
@@ -196,7 +222,7 @@ function Wallet({ }: WalletProps) {
                             borderColor={"white"}
                             borderRadius={"full"}
                         >
-                            <Blockie address={"0x123..."} size={20} />
+                            <Blockie address={account.address} size={20} />
                         </View>
                     </View>
                 </VStack>
@@ -222,7 +248,7 @@ function Wallet({ }: WalletProps) {
             <VStack px={"2"}>
                 {/* Username */}
                 <Text color={COLORS.primary} fontSize={FONT_SIZE["xl"] * 1.2} bold>
-                    @valentineorga
+                    @{profile?.name || "anonymous"}
                 </Text>
 
                 {/* Profile address */}
@@ -234,34 +260,40 @@ function Wallet({ }: WalletProps) {
                 />
 
                 {/* Bio */}
-                <Text fontSize={"md"} fontWeight={"normal"} my={2}>
-                    My journey through Lukso as a Full-stack Blockchain Engineer | go right go wrong still going
-                </Text>
+                {!!profile?.description && (
+                    <Text fontSize={"md"} fontWeight={"normal"} my={2}>
+                        {profile.description}
+                    </Text>
+                )}
 
                 {/* Links */}
-                <HStack flexWrap={"wrap"} space={"2"} mb={1}>
-                    {[{ title: "My Portfolio", url: "https://valentineorga.vercel.app" }].map((link: LinkProps) => <Link key={link.url} title={link.title} url={link.url} />)}
-                </HStack>
+                {!!profile?.links && (
+                    <HStack flexWrap={"wrap"} space={"2"} mb={1}>
+                        {profile.links.map((link: LinkProps) => <Link key={link.url} title={link.title} url={link.url} />)}
+                    </HStack>
+                )}
 
                 {/* Tags */}
-                <HStack flexWrap={"wrap"} space={"2"}>
-                    {["profile"].map((tag: string) => (
-                        <Text
-                            key={tag}
-                            fontSize={"sm"}
-                            fontWeight={"light"}
-                            mt={2}
-                            px={2}
-                            py={0.5}
-                            borderWidth={"1"}
-                            borderRadius={"md"}
-                            borderColor={"gray.300"}
-                            alignSelf={"flex-start"}
-                        >
-                            {tag}
-                        </Text>
-                    ))}
-                </HStack>
+                {!!profile?.tags && (
+                    <HStack flexWrap={"wrap"} space={"2"}>
+                        {profile.tags.map((tag: string) => (
+                            <Text
+                                key={tag}
+                                fontSize={"sm"}
+                                fontWeight={"light"}
+                                mt={2}
+                                px={2}
+                                py={0.5}
+                                borderWidth={"1"}
+                                borderRadius={"md"}
+                                borderColor={"gray.300"}
+                                alignSelf={"flex-start"}
+                            >
+                                {tag}
+                            </Text>
+                        ))}
+                    </HStack>
+                )}
             </VStack>
 
             {/* Tokens */}
