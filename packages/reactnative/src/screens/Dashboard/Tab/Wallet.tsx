@@ -68,7 +68,7 @@ function Wallet({ }: WalletProps) {
 
     const account = useAccount()
 
-    const { profile } = useProfile()
+    // const { profile } = useProfile()
 
     useFocusEffect(() => {
         backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -84,9 +84,9 @@ function Wallet({ }: WalletProps) {
         };
     }, [])
 
-    useEffect(() => {
-        console.log(profile)
-    }, [profile])
+    // useEffect(() => {
+    //     console.log(profile)
+    // }, [profile])
 
     if (!isFocused) return
 
@@ -98,7 +98,7 @@ function Wallet({ }: WalletProps) {
     }
 
     return (
-        <View flex={1} bgColor={"white"}>
+        <ScrollView flex={1} contentContainerStyle={{ flexGrow: 1 }} bgColor={"white"}>
             <StatusBar translucent barStyle={"light-content"} backgroundColor={"black"} />
 
             {/* Profile cover */}
@@ -210,7 +210,7 @@ function Wallet({ }: WalletProps) {
             </VStack>
 
             {/* Tokens */}
-        </View>
+        </ScrollView>
     )
 }
 
