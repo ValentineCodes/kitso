@@ -17,6 +17,7 @@ import LinkInput, { LinkType } from '../../../components/forms/LinkInput'
 import useImageUploader from '../../../hooks/useImageUploader'
 import { useToast } from 'react-native-toast-notifications'
 import useJSONUploader from '../../../hooks/useJSONUploader'
+import { ethers } from 'ethers'
 
 type Props = {}
 
@@ -95,6 +96,8 @@ export default function CreateProfile({ }: Props) {
                     return
                 }
 
+                console.log("Profile Image hash: ", _profileImage.bufferHash)
+
                 profileMetadata.LSP3Profile.profileImage.push({
                     width: 1024,
                     height: 1024,
@@ -120,6 +123,8 @@ export default function CreateProfile({ }: Props) {
                     return
                 }
 
+                console.log("Cover Image hash: ", _coverImage.bufferHash)
+
                 profileMetadata.LSP3Profile.backgroundImage.push({
                     width: 1024,
                     height: 1024,
@@ -139,10 +144,13 @@ export default function CreateProfile({ }: Props) {
                 return
             }
 
+            const profileHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(JSON.stringify(profileMetadata)))
+            console.log("LSP3Profile hash: ", profileHash)
+
             const lsp3DataValue = {
                 verification: {
                     method: 'keccak256(utf8)',
-                    data: '0x6d6d08aafb0ee059e3e4b6b3528a5be37308a5d4f4d19657d26dd8a5ae799de0',
+                    data: profileHash
                 },
                 // this is an IPFS CID of a LSP3 Profile Metadata example, you can use your own
                 url: `ipfs://${profile.ipfsHash}`,
