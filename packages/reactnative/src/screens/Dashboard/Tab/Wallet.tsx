@@ -5,18 +5,15 @@ import { BackHandler, Linking, NativeEventSubscription, StatusBar } from 'react-
 import Ionicons from 'react-native-vector-icons/dist/Ionicons'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 
-import Clipboard from '@react-native-clipboard/clipboard';
-
 import { WINDOW_WIDTH } from '../../../styles/screenDimensions'
 import Blockie from '../../../components/Blockie'
 import { COLORS } from '../../../utils/constants'
-import { FONT_SIZE } from '../../../utils/styles'
+import { FONT_SIZE, WINDOW_HEIGHT } from '../../../utils/styles'
 import { useToast } from 'react-native-toast-notifications'
 import { truncateAddress } from '../../../utils/helperFunctions'
 import CopyableText from '../../../components/CopyableText'
 import useAccount from '../../../hooks/scaffold-eth/useAccount'
-import { confluxESpace } from 'viem/chains'
-import { useProfile } from '../../../context/UniversalProfileContext'
+import useNetwork from '../../../hooks/scaffold-eth/useNetwork'
 
 let backHandler: NativeEventSubscription;
 
@@ -24,6 +21,78 @@ type WalletProps = {}
 type LinkProps = {
     title: string
     url: string
+}
+
+function Token() {
+    const network = useNetwork()
+
+    return (
+        <VStack
+            borderWidth={"1"}
+            borderRadius={"2xl"}
+            borderColor={"gray.200"}
+            pt={"8"}
+            pb={"4"}
+            pl={"6"}
+            pr={"4"}
+        >
+            <HStack
+                space={"6"}
+            >
+                <View
+                    borderWidth={1}
+                    borderRadius={"full"}
+                    borderColor={"gray.200"}
+                    w={WINDOW_WIDTH * 0.17}
+                    h={WINDOW_WIDTH * 0.17}
+                    p={3}
+                >
+                    <Image
+                        source={require("../../../../assets/images/lukso_logo.png")}
+                        alt="LYX token"
+                        w={"full"}
+                        h={"full"}
+                    />
+                </View>
+
+                <VStack space={0.2}>
+                    <Text
+                        fontSize={"sm"}
+                        bold
+                    >
+                        {network.name.toUpperCase()}
+                    </Text>
+
+                    <HStack alignItems={"center"} space={2}>
+                        <Text fontSize={"2xl"} bold>0</Text>
+                        <Text fontSize={"md"} bold color={"gray.400"}>{network.token}</Text>
+                    </HStack>
+                    <Text
+                        fontSize={"sm"}
+                        fontWeight={"medium"}
+                        color={"gray.600"}
+                    >
+                        $0.00
+                    </Text>
+                </VStack>
+            </HStack>
+
+            <Pressable>
+                <Text
+                    alignSelf={"flex-end"}
+                    mt={3}
+                    px={"4"}
+                    py={"1"}
+                    borderWidth={"1"}
+                    borderRadius={"2xl"}
+                    borderColor={"gray.300"}
+                    fontWeight={"medium"}
+                >
+                    Buy
+                </Text>
+            </Pressable>
+        </VStack>
+    )
 }
 
 function Link({ title, url }: LinkProps) {
@@ -64,11 +133,8 @@ function Link({ title, url }: LinkProps) {
 
 function Wallet({ }: WalletProps) {
     const isFocused = useIsFocused()
-    const toast = useToast()
 
     const account = useAccount()
-
-    // const { profile } = useProfile()
 
     useFocusEffect(() => {
         backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -84,25 +150,14 @@ function Wallet({ }: WalletProps) {
         };
     }, [])
 
-    // useEffect(() => {
-    //     console.log(profile)
-    // }, [profile])
-
     if (!isFocused) return
 
-    const copyProfileAddress = () => {
-        Clipboard.setString("profile_address")
-        toast.show("Copied to clipboard", {
-            type: "success"
-        })
-    }
-
     return (
-        <ScrollView flex={1} contentContainerStyle={{ flexGrow: 1 }} bgColor={"white"}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }} bgColor={"white"}>
             <StatusBar translucent barStyle={"light-content"} backgroundColor={"black"} />
 
             {/* Profile cover */}
-            <View h={"25%"} zIndex={1}>
+            <View h={WINDOW_HEIGHT * 0.25} zIndex={1}>
                 <Image
                     source={require("../../../../assets/images/default_profile_cover.jpg")}
                     alt="profile cover"
@@ -156,7 +211,7 @@ function Wallet({ }: WalletProps) {
                     py={"1"}
                     borderWidth={"1"}
                     borderRadius={"2xl"}
-                    borderColor={"gray.400"}
+                    borderColor={"gray.300"}
                     fontWeight={"medium"}
                 >
                     Edit profile
@@ -210,6 +265,17 @@ function Wallet({ }: WalletProps) {
             </VStack>
 
             {/* Tokens */}
+            <VStack px={2} mt={5}>
+                <Text
+                    fontSize={"xl"}
+                    bold
+                    mb={"4"}
+                >
+                    Tokens
+                </Text>
+
+                <Token />
+            </VStack>
         </ScrollView>
     )
 }

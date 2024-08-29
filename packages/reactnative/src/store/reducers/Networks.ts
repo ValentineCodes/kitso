@@ -18,7 +18,7 @@ export const networks: Network[] = [
         name: 'Localhost',
         id: 31337,
         provider: LOCAL_PROVIDER,
-        token: 'ETH',
+        token: 'LYX',
         ipfsGateway: "https://api.universalprofile.cloud/ipfs",
         blockExplorer: null,
         isConnected: true,
