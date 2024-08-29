@@ -8,6 +8,8 @@ import { FONT_SIZE } from '../../utils/styles'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { useProcedureContext } from '../../context/ProcedureContext'
 import { WINDOW_WIDTH } from '../../styles/screenDimensions'
+import { useDispatch, useSelector } from 'react-redux'
+import { loginUser } from '../../store/reducers/Auth'
 
 let backHandler: NativeEventSubscription;
 
@@ -15,22 +17,32 @@ type Props = {}
 
 export default function Onboarding({ }: Props) {
     const navigation = useNavigation()
+    const dispatch = useDispatch()
+
+    // @ts-ignore
+    const isProfileDeployed = useSelector(state => state.profiles.length > 0)
 
     const { setAuthContext } = useProcedureContext()
 
     const createProfile = () => {
+        // @ts-ignore
         navigation.navigate("CreatePassword")
         setAuthContext("profile_creation")
         backHandler?.remove()
     }
 
     const recoverProfile = () => {
+        // @ts-ignore
         navigation.navigate("SetupRecovery")
         setAuthContext("profile_recovery")
         backHandler?.remove()
     }
 
     useFocusEffect(() => {
+        if (isProfileDeployed) {
+            dispatch(loginUser())
+            return
+        }
         backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
             BackHandler.exitApp();
 

@@ -58,8 +58,6 @@ export default function DeployProfile() {
                 keyManager: profile.keyManagerAddress
             }))
 
-            dispatch(loginUser())
-
             setDeploymentStatus("success")
         } catch (error) {
             setDeploymentStatus("error")
@@ -78,11 +76,14 @@ export default function DeployProfile() {
             <Divider bgColor="muted.100" my="4" />
 
             {
-                deploymentStatus === "success" ? (
-                    <Text textAlign="center" color={COLORS.primary} fontSize={1.4 * FONT_SIZE["xl"]} bold>Profile deployed!</Text>
-                ) : (
+                deploymentStatus === "loading" ?
                     <Text textAlign="center" color={COLORS.primary} fontSize={1.4 * FONT_SIZE["xl"]} bold>Deploying your profile</Text>
-                )
+                    :
+                    deploymentStatus === "success" ? (
+                        <Text textAlign="center" color={COLORS.primary} fontSize={1.4 * FONT_SIZE["xl"]} bold>Profile deployed!</Text>
+                    ) : (
+                        <Text textAlign="center" color={"red.400"} fontSize={1.4 * FONT_SIZE["xl"]} bold>Deployment failed!</Text>
+                    )
             }
 
             <VStack flex={1} justifyContent={"center"} alignItems={"center"}>
@@ -93,7 +94,7 @@ export default function DeployProfile() {
                         deploymentStatus === "success" ? (
                             <Icon as={<Ionicons name="checkmark-circle" />} size={5 * FONT_SIZE['xl']} color={COLORS.primary} />
                         ) : (
-                            <Icon as={<Ionicons name="close-circle" />} size={5 * FONT_SIZE['xl']} color={"red.200"} />
+                            <Icon as={<Ionicons name="close-circle" />} size={5 * FONT_SIZE['xl']} color={"red.400"} />
                         )
                 }
             </VStack>
@@ -107,14 +108,14 @@ export default function DeployProfile() {
                         fontSize={FONT_SIZE['lg']}
                         color={"gray.600"}
                     >
-                        Please be patient during the creation process
+                        Please be patient during the deployment process
                     </Text>
                 ) :
                     deploymentStatus === "success" ? (
                         <>
                             <Button text="Setup recovery" onPress={setupRecovery} style={{ marginTop: 40 }} />
                             {/* @ts-ignore */}
-                            <Button text="No, I don't need recovery" type="outline" onPress={() => navigation.navigate("Dashboard")} style={{ marginVertical: 15 }} />
+                            <Button text="No, I don't need recovery" type="outline" onPress={() => dispatch(loginUser())} style={{ marginVertical: 15 }} />
 
                         </>
                     ) : (
