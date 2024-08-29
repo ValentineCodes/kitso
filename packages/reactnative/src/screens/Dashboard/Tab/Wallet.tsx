@@ -16,6 +16,7 @@ import { truncateAddress } from '../../../utils/helperFunctions'
 import CopyableText from '../../../components/CopyableText'
 import useAccount from '../../../hooks/scaffold-eth/useAccount'
 import { confluxESpace } from 'viem/chains'
+import { useProfile } from '../../../context/UniversalProfileContext'
 
 let backHandler: NativeEventSubscription;
 
@@ -67,6 +68,8 @@ function Wallet({ }: WalletProps) {
 
     const account = useAccount()
 
+    const { profile } = useProfile()
+
     useFocusEffect(() => {
         backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
             BackHandler.exitApp();
@@ -80,6 +83,10 @@ function Wallet({ }: WalletProps) {
             backHandler?.remove();
         };
     }, [])
+
+    useEffect(() => {
+        console.log(profile)
+    }, [profile])
 
     if (!isFocused) return
 

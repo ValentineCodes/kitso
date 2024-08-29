@@ -6,6 +6,8 @@ import { MenuProvider } from 'react-native-popup-menu';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ModalOptions, ModalProvider, createModalStack } from 'react-native-modalfy';
 import { ProcedureProvider } from '../context/ProcedureContext';
+import { UniversalProfileProvider } from '../context/UniversalProfileContext';
+
 
 type Props = {
   children: JSX.Element
@@ -23,9 +25,11 @@ export default function Providers({ children }: Props) {
         <MenuProvider>
           <SafeAreaProvider>
             <ModalProvider stack={modalStack}>
-              <ProcedureProvider>
-                {children}
-              </ProcedureProvider>
+              <UniversalProfileProvider>
+                <ProcedureProvider>
+                  {children}
+                </ProcedureProvider>
+              </UniversalProfileProvider>
             </ModalProvider>
           </SafeAreaProvider>
         </MenuProvider>
