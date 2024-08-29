@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { Account } from '../../store/reducers/Accounts'
+import { Profile } from '../../store/reducers/Profiles'
 
 /**
  * 
@@ -7,6 +7,6 @@ import { Account } from '../../store/reducers/Accounts'
  */
 export default function useAccount() {
     // @ts-ignore
-    const connectedAccount: Account = useSelector(state => state.accounts.find((account: Account) => account.isConnected))
+    const connectedAccount: Profile = useSelector(state => state.profiles.find((profile: Profile) => profile.isConnected))
     return connectedAccount
 }

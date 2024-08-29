@@ -14,6 +14,8 @@ import { FONT_SIZE } from '../../../utils/styles'
 import { useToast } from 'react-native-toast-notifications'
 import { truncateAddress } from '../../../utils/helperFunctions'
 import CopyableText from '../../../components/CopyableText'
+import useAccount from '../../../hooks/scaffold-eth/useAccount'
+import { confluxESpace } from 'viem/chains'
 
 let backHandler: NativeEventSubscription;
 
@@ -62,6 +64,8 @@ function Link({ title, url }: LinkProps) {
 function Wallet({ }: WalletProps) {
     const isFocused = useIsFocused()
     const toast = useToast()
+
+    const account = useAccount()
 
     useFocusEffect(() => {
         backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -161,8 +165,8 @@ function Wallet({ }: WalletProps) {
 
                 {/* Profile address */}
                 <CopyableText
-                    displayText={truncateAddress("0xb794f5ea0ba39494ce839613fffba74279579268")}
-                    value={"0xb794f5ea0ba39494ce839613fffba74279579268"}
+                    displayText={truncateAddress(account.address)}
+                    value={account.address}
                     textStyle={{ fontSize: FONT_SIZE["xl"], fontWeight: "400", color: "gray" }}
                     iconStyle={{ color: COLORS.primary }}
                 />
@@ -181,6 +185,7 @@ function Wallet({ }: WalletProps) {
                 <HStack flexWrap={"wrap"} space={"2"}>
                     {["profile"].map((tag: string) => (
                         <Text
+                            key={tag}
                             fontSize={"sm"}
                             fontWeight={"light"}
                             mt={2}
