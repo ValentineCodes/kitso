@@ -215,7 +215,8 @@ export default function CreateProfile({ }: Props) {
             >
                 <VStack alignItems={"center"}>
                     {/* Profile image */}
-                    <View
+                    <Pressable
+                        onPress={() => setIsCapturingProfileImage(true)}
                         w={WINDOW_WIDTH * 0.25}
                         style={{ aspectRatio: 1 }}
                         borderRadius={"full"}
@@ -236,8 +237,7 @@ export default function CreateProfile({ }: Props) {
                             resizeMode="cover"
                             borderRadius={"full"}
                         />
-                        <Pressable
-                            onPress={() => setIsCapturingProfileImage(true)}
+                        <View
                             position={"absolute"}
                             bottom={0}
                             right={0}
@@ -246,8 +246,8 @@ export default function CreateProfile({ }: Props) {
                             borderRadius={"full"}
                         >
                             <Blockie address={profile} size={20} />
-                        </Pressable>
-                    </View>
+                        </View>
+                    </Pressable>
                 </VStack>
 
                 <ScrollView flex={1}>
