@@ -1,16 +1,23 @@
 import { VStack, HStack, View, Image, Text, Pressable } from 'native-base'
-import React from 'react'
+import React, { useEffect } from 'react'
 import useNetwork from '../hooks/scaffold-eth/useNetwork'
 import { WINDOW_WIDTH } from '../utils/styles'
 import useBalance from '../hooks/scaffold-eth/useBalance'
 import useAccount from '../hooks/scaffold-eth/useAccount'
+import { useCryptoPrice } from '../hooks/scaffold-eth/useCryptoPrice'
 
 type Props = {}
 
 export default function Token({ }: Props) {
     const network = useNetwork()
     const account = useAccount()
-    const { balance, isRefetching, refetch } = useBalance({ address: account.address })
+    const { balance } = useBalance({ address: account.address })
+    const { price, fetchPrice } = useCryptoPrice({ enabled: false })
+
+    useEffect(() => {
+        if (balance.length > 0) return
+        fetchPrice()
+    }, [balance])
 
     return (
         <VStack
@@ -58,7 +65,7 @@ export default function Token({ }: Props) {
                         fontWeight={"medium"}
                         color={"gray.600"}
                     >
-                        $0.00
+                        ${price && balance.length > 0 && (price * Number(balance)).toFixed(2)}
                     </Text>
                 </VStack>
             </HStack>
