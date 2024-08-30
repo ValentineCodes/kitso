@@ -18,6 +18,7 @@ import useImageUploader from '../../../hooks/useImageUploader'
 import { useToast } from 'react-native-toast-notifications'
 import useJSONUploader from '../../../hooks/useJSONUploader'
 import { ethers } from 'ethers'
+import TagInput from '../../../components/forms/TagInput'
 
 type Props = {}
 
@@ -37,11 +38,20 @@ export default function CreateProfile({ }: Props) {
     const [coverImage, setCoverImage] = useState<ImageType>()
     const [profileImage, setProfileImage] = useState<ImageType>()
     const [bio, setBio] = useState("")
+    const [tags, setTags] = useState<string[]>([])
     const [links, setLinks] = useState<({ id: string } & LinkType)[]>([])
     const [isUploading, setIsUploading] = useState(false)
 
     const addUsername = (_username: string) => {
         setUsername(_username)
+    }
+
+    const addTag = (_tag: string) => {
+        setTags(tags => [...tags, _tag])
+    }
+
+    const removeTag = (_tag: string) => {
+        setTags(tags => tags.filter(tag => tag !== _tag))
     }
 
     const addLink = () => {
@@ -77,7 +87,7 @@ export default function CreateProfile({ }: Props) {
                     name: username,
                     description: bio,
                     links: links.map(link => ({ title: link.title, url: link.url })),
-                    tags: [],
+                    tags: tags,
                     profileImage: [] as any,
                     backgroundImage: [] as any
                 }
@@ -274,6 +284,19 @@ export default function CreateProfile({ }: Props) {
                         />
                     </VStack>
 
+                    {/* Tags */}
+                    <VStack mt={4}>
+                        <Text fontSize={"md"} fontWeight={"medium"}>
+                            Tags
+                        </Text>
+
+                        <TagInput
+                            onAdd={addTag}
+                            onDelete={removeTag}
+                        />
+                    </VStack>
+
+                    {/* Links */}
                     <VStack mt={4}>
                         <HStack alignItems={"center"} space={2}>
                             <Text fontSize={"md"} fontWeight={"medium"}>
@@ -301,6 +324,7 @@ export default function CreateProfile({ }: Props) {
                         ))}
 
                     </VStack>
+
                 </ScrollView>
             </VStack>
 
