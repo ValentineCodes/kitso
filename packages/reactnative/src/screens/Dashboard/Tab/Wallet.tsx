@@ -154,6 +154,8 @@ function Wallet({ }: WalletProps) {
 
     if (!isFocused) return
 
+    console.log(profile?.backgroundImage)
+
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }} bgColor={"white"}>
             <StatusBar translucent barStyle={"light-content"} backgroundColor={"black"} />
@@ -201,6 +203,7 @@ function Wallet({ }: WalletProps) {
                                     alt="profile image"
                                     w={"full"}
                                     h={"full"}
+                                    borderRadius={"full"}
                                     resizeMode="cover"
                                 />
                             ) : (
