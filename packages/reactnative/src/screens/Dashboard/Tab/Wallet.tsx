@@ -55,7 +55,7 @@ function Link({ title, url }: LinkProps) {
                     color="gray.600"
                     rotation={-45}
                 />
-                <Text fontSize={"md"} fontWeight={"light"}>{title}</Text>
+                <Text fontSize={"sm"} fontWeight={"light"}>{title}</Text>
             </HStack>
         </Pressable>
     )
