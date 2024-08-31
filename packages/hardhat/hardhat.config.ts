@@ -47,6 +47,11 @@ const config: HardhatUserConfig = {
         enabled: process.env.FORKING_ENABLED === "true"
       }
     },
+    ganache: {
+      url: `http://192.168.0.112:8545`,
+      accounts: [deployerPrivateKey],
+      chainId: 1337
+    },
     mainnet: {
       url: `https://eth-mainnet.alchemyapi.io/v2/${providerApiKey}`,
       accounts: [deployerPrivateKey],
