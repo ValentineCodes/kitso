@@ -7,6 +7,7 @@ import "@ethersproject/shims"
 import { Wallet, ethers } from "ethers";
 import useAccount from './useAccount'
 import SInfo from "react-native-sensitive-info"
+import { STORAGE_KEY } from '../../utils/constants'
 
 type Props = {
     contractName: string
@@ -41,15 +42,9 @@ export default function useScaffoldContractRead({contractName, functionName, arg
             setIsLoading(true)
             const provider = new ethers.providers.JsonRpcProvider(network.provider)
 
-            const accounts = await SInfo.getItem("accounts", {
-                sharedPreferencesName: "sern.android.storage",
-                keychainService: "sern.ios.storage",
-            })
+            const controller = JSON.parse(await SInfo.getItem("controller", STORAGE_KEY))
     
-            // @ts-ignore
-            const activeAccount: Wallet = Array.from(JSON.parse(accounts)).find(account => account.address.toLowerCase() == connectedAccount.address.toLowerCase())
-    
-            const wallet = new ethers.Wallet(activeAccount.privateKey).connect(provider)
+            const wallet = new ethers.Wallet(controller.privateKey).connect(provider)
             
             // @ts-ignore
             const contract = new ethers.Contract(deployedContractData.address, deployedContractData.abi, wallet)

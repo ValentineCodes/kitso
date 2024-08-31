@@ -14,6 +14,7 @@ import {
   import {getSdkError} from '@walletconnect/utils';
   import {Wallet, providers, ethers} from 'ethers';
   import SInfo from "react-native-sensitive-info";
+import { STORAGE_KEY } from './constants';
   
   export async function approveEIP155Request(
     requestEvent: SignClientTypes.EventArguments['session_request'],
@@ -31,14 +32,9 @@ import {
       connectedAccount = ""
     }
 
-    const accounts = await SInfo.getItem("accounts", {
-        sharedPreferencesName: "sern.android.storage",
-        keychainService: "sern.ios.storage",
-    })
-
-    const activeAccount: Wallet = Array.from(JSON.parse(accounts)).find(account => account.address.toLowerCase() == connectedAccount.toLowerCase())
-
-    const wallet = new ethers.Wallet(activeAccount.privateKey)
+    const controller = JSON.parse(await SInfo.getItem("controller", STORAGE_KEY))
+    
+    const wallet = new ethers.Wallet(controller.privateKey)
 
     switch (request.method) {
       case EIP155_SIGNING_METHODS.PERSONAL_SIGN:

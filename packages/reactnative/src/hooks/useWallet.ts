@@ -14,7 +14,7 @@ export interface Account {
  */
 export default function useWallet(){
     const [mnemonic, setMnemonic] = useState("");
-    const [accounts, setAccounts] = useState<Account[]>([])
+    const [controller, setAccounts] = useState<Account[]>([])
     
     const dispatch = useDispatch()
 
@@ -32,13 +32,13 @@ export default function useWallet(){
     }
 
     async function _getAccounts(): Promise<Account[]>{
-        // read accounts from secure storage
-        const _accounts = await SInfo.getItem("accounts", STORAGE_KEY);
-        const accounts = JSON.parse(_accounts!) || []
+        // read controller from secure storage
+        const _controller = await SInfo.getItem("controller", STORAGE_KEY);
+        const controller = JSON.parse(_controller!) || []
 
-        setAccounts(accounts)
+        setAccounts(controller)
 
-        return accounts
+        return controller
     }
 
     /**
@@ -54,22 +54,21 @@ export default function useWallet(){
 
     /**
      * encrypts and stores account data in secure and redux storage
-     * @param _account address and private key of account 
+     * @param _controller address and private key of account 
      * @param _isImported `true` if account was imported using private key
      */
-    async function _storeAccount(_account: Account, _isImported: boolean) {
-        // read accounts from secure storage
-        const _accounts = await SInfo.getItem("accounts", STORAGE_KEY);
-        const accounts = JSON.parse(_accounts!) || []
+    async function _storeAccount(_controller: Account, _isImported: boolean) {
+        // read controller from secure storage
+        const controller = JSON.parse(await SInfo.getItem("controller", STORAGE_KEY))
 
-        const newAccounts = [...JSON.parse(accounts), _account]
+        const newAccounts = [JSON.parse(controller), _controller]
 
-        // encrypt and store accounts 
-        await SInfo.setItem("accounts", JSON.stringify(newAccounts), STORAGE_KEY)
+        // encrypt and store controller 
+        await SInfo.setItem("controller", JSON.stringify(newAccounts), STORAGE_KEY)
 
         setAccounts(newAccounts)
 
-        dispatch(addAccount({address: _account.address, isImported: _isImported}))
+        dispatch(addAccount({address: _controller.address, isImported: _isImported}))
     }
 
     useEffect(() => {
@@ -79,7 +78,7 @@ export default function useWallet(){
 
     return {
         mnemonic,
-        accounts,
+        controller,
         getMnemonic: _getMnemonic,
         getAccounts: _getAccounts,
         storeMnemonic: _storeMnemonic,

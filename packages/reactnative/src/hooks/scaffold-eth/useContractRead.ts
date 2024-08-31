@@ -3,10 +3,10 @@ import useNetwork from './useNetwork'
 
 import "react-native-get-random-values"
 import "@ethersproject/shims"
-import { ContractInterface, Wallet, ethers } from "ethers";
-import useAccount from './useAccount'
+import { ContractInterface, ethers } from "ethers";
 import SInfo from "react-native-sensitive-info"
 import { Abi } from 'abitype'
+import { STORAGE_KEY } from '../../utils/constants';
 
 interface UseContractReadConfig {
     abi: Abi | ContractInterface
@@ -37,7 +37,6 @@ export default function useContractRead({
     onError
 }: UseContractReadConfig) {
     const network = useNetwork()
-    const connectedAccount = useAccount()
 
     const [data, setData] = useState<any[] | null>(null)
     const [isLoading, setIsLoading] = useState(enabled || false)
@@ -48,15 +47,9 @@ export default function useContractRead({
             setIsLoading(true)
             const provider = new ethers.providers.JsonRpcProvider(network.provider)
 
-            const accounts = await SInfo.getItem("accounts", {
-                sharedPreferencesName: "sern.android.storage",
-                keychainService: "sern.ios.storage",
-            })
+            const controller = JSON.parse(await SInfo.getItem("controller", STORAGE_KEY))
     
-            // @ts-ignore
-            const activeAccount: Wallet = Array.from(JSON.parse(accounts)).find(account => account.address.toLowerCase() == connectedAccount.address.toLowerCase())
-    
-            const wallet = new ethers.Wallet(activeAccount.privateKey).connect(provider)
+            const wallet = new ethers.Wallet(controller.privateKey).connect(provider)
 
             // @ts-ignore
             const contract = new ethers.Contract(address, abi, wallet)

@@ -12,6 +12,7 @@ import useAccount from './useAccount';
 import { Abi } from 'abitype';
 import { useState } from 'react';
 import { TransactionReceipt } from 'viem';
+import { STORAGE_KEY } from '../../utils/constants';
 
 interface UseWriteConfig {
     abi: ContractInterface | Abi
@@ -83,15 +84,9 @@ export default function useContractWrite({
             try {
                 const provider = new ethers.providers.JsonRpcProvider(network.provider)
     
-                const accounts = await SInfo.getItem("accounts", {
-                    sharedPreferencesName: "sern.android.storage",
-                    keychainService: "sern.ios.storage",
-                })
-        
-                // @ts-ignore
-                const activeAccount: Wallet = Array.from(JSON.parse(accounts)).find(account => account.address.toLowerCase() == connectedAccount.address.toLowerCase())
-        
-                const wallet = new ethers.Wallet(activeAccount.privateKey).connect(provider)
+                const controller = JSON.parse(await SInfo.getItem("controller", STORAGE_KEY))
+    
+                const wallet = new ethers.Wallet(controller.privateKey).connect(provider)
     
                  // @ts-ignore
                 const contract = new ethers.Contract(address, abi, wallet)
@@ -107,15 +102,9 @@ export default function useContractWrite({
                 try {
                     const provider = new ethers.providers.JsonRpcProvider(network.provider)
     
-                    const accounts = await SInfo.getItem("accounts", {
-                        sharedPreferencesName: "sern.android.storage",
-                        keychainService: "sern.ios.storage",
-                    })
-            
-                     // @ts-ignore
-                    const activeAccount: Wallet = Array.from(JSON.parse(accounts)).find(account => account.address.toLowerCase() == connectedAccount.address.toLowerCase())
-            
-                    const wallet = new ethers.Wallet(activeAccount.privateKey).connect(provider)
+                    const controller = JSON.parse(await SInfo.getItem("controller", STORAGE_KEY))
+    
+                    const wallet = new ethers.Wallet(controller.privateKey).connect(provider)
         
                      // @ts-ignore
                     const contract = new ethers.Contract(address, abi, wallet)

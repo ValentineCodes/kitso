@@ -1,7 +1,7 @@
 import { HStack, Pressable, Switch, Text, VStack } from 'native-base'
 import React, { useLayoutEffect, useState } from 'react'
 import { FONT_SIZE } from '../../../utils/styles'
-import { COLORS } from '../../../utils/constants'
+import { COLORS, STORAGE_KEY } from '../../../utils/constants'
 import SInfo from "react-native-sensitive-info"
 import ReactNativeBiometrics from 'react-native-biometrics'
 import { useToast } from 'react-native-toast-notifications'
@@ -33,15 +33,13 @@ export default function Settings({ }: Props) {
                     })
 
                     if (response.success) {
-                        const _security = await SInfo.getItem("security", {
-                            sharedPreferencesName: "sern.android.storage",
-                            keychainService: "sern.ios.storage",
-                        });
+                        const _security = await SInfo.getItem("security", STORAGE_KEY);
 
-                        await SInfo.setItem("security", JSON.stringify({ ...JSON.parse(_security), isBiometricsEnabled }), {
-                            sharedPreferencesName: "sern.android.storage",
-                            keychainService: "sern.ios.storage",
-                        })
+                        await SInfo.setItem(
+                            "security",
+                            JSON.stringify({ ...JSON.parse(_security), isBiometricsEnabled }),
+                            STORAGE_KEY
+                        )
 
                         setIsBiometricsEnabled(isBiometricsEnabled)
                     }
@@ -80,10 +78,7 @@ export default function Settings({ }: Props) {
             setIsBiometricsAvailable(available)
 
             if (available) {
-                const _security = await SInfo.getItem("security", {
-                    sharedPreferencesName: "sern.android.storage",
-                    keychainService: "sern.ios.storage",
-                });
+                const _security = await SInfo.getItem("security", STORAGE_KEY);
                 const security = JSON.parse(_security!)
 
                 setIsBiometricsEnabled(security.isBiometricsEnabled)

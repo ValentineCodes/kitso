@@ -78,7 +78,7 @@ export default function CreateController({ }: Props) {
 
     const generateNewWallet = () => {
         setTimeout(async () => {
-            const newWallet = await createWallet("")
+            const newWallet = await createWallet("", undefined, undefined, true)
             const wallet = {
                 mnemonic: newWallet.mnemonic.join(" "),
                 address: newWallet.address,

@@ -7,6 +7,7 @@ import { Wallet, ethers } from 'ethers'
 
 import SInfo from "react-native-sensitive-info"
 import useAccount from './useAccount'
+import { STORAGE_KEY } from '../../utils/constants'
 
 interface UseSignMessageConfig {
     message?: string
@@ -41,15 +42,9 @@ export default function useSignMessage({message}: UseSignMessageConfig) {
                 try {
                     const provider = new ethers.providers.JsonRpcProvider(network.provider)
     
-                    const accounts = await SInfo.getItem("accounts", {
-                        sharedPreferencesName: "sern.android.storage",
-                        keychainService: "sern.ios.storage",
-                    })
-            
-                    // @ts-ignore
-                    const activeAccount: Wallet = Array.from(JSON.parse(accounts)).find(account => account.address.toLowerCase() == connectedAccount.address.toLowerCase())
-            
-                    const wallet = new ethers.Wallet(activeAccount.privateKey).connect(provider)
+                    const controller = JSON.parse(await SInfo.getItem("controller", STORAGE_KEY))
+    
+                    const wallet = new ethers.Wallet(controller.privateKey).connect(provider)
 
                     // @ts-ignore
                     const signature = await wallet.signMessage(_message)

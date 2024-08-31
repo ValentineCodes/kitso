@@ -43,6 +43,7 @@ export default function ContractUI() {
                 <HStack space={1} alignItems={"center"}>
                     <Text fontSize={"sm"} fontWeight={"semibold"}>Balance:</Text>
                     <Balance address={deployedContractData.address} />
+                    <Text fontSize={"sm"} fontWeight={"semibold"} ml={-1}>{targetNetwork.token}</Text>
                 </HStack>
                 {targetNetwork && (
                     <HStack space={1} alignItems={"center"}>
