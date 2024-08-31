@@ -85,13 +85,15 @@ export default function useContractWrite({
                 const provider = new ethers.providers.JsonRpcProvider(network.provider)
     
                 const controller = JSON.parse(await SInfo.getItem("controller", STORAGE_KEY))
+
+                console.log(controller.address)
     
                 const wallet = new ethers.Wallet(controller.privateKey).connect(provider)
     
                  // @ts-ignore
                 const contract = new ethers.Contract(address, abi, wallet)
 
-                openModal("SignTransactionModal", {contract, contractAddress: address, functionName, args: _args, value: _value, gasLimit: _gasLimit, onConfirm})
+                openModal("SignTransactionModal", {contract, contractAddress: address, functionName, args: _args, value: _value, gasLimit: _gasLimit, onConfirm, onReject})
                 
             } catch(error) {
                 reject(error)
@@ -123,6 +125,10 @@ export default function useContractWrite({
                 } finally {
                     setIsLoading(false)
                 }
+            }
+
+            function onReject(){
+                reject("Transaction Rejected!")
             }
         })
     }
