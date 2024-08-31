@@ -39,7 +39,7 @@ export default function TagInput({ defaultTags, placeholder, onAdd, onDelete }: 
             {/* Tags */}
             <HStack flexWrap={"wrap"} space={"2"}>
                 {tags.map((tag: string) => (
-                    <Pressable onPress={() => removeTag(tag)}>
+                    <Pressable key={tag} onPress={() => removeTag(tag)}>
                         <HStack
                             alignItems={"center"}
                             alignSelf={"flex-start"}
