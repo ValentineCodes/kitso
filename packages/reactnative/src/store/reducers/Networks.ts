@@ -16,7 +16,7 @@ export interface Network {
 export const networks: Network[] = [
     {
         name: 'Localhost',
-        id: 31337,
+        id: 1337,
         provider: LOCAL_PROVIDER,
         token: 'LYX',
         ipfsGateway: "https://api.universalprofile.cloud/ipfs/",
