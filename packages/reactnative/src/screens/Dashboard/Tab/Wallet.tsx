@@ -85,10 +85,10 @@ function Wallet({ }: WalletProps) {
 
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }} bgColor={"white"}>
-            <StatusBar translucent barStyle={"light-content"} backgroundColor={"black"} />
+            <StatusBar translucent barStyle={"light-content"} backgroundColor={"transparent"} />
 
             {/* Profile cover */}
-            <View h={WINDOW_HEIGHT * 0.25} zIndex={1}>
+            <View h={WINDOW_HEIGHT * 0.25} zIndex={1} bgColor={"purple.100"}>
                 {
                     profile?.backgroundImage && profile.backgroundImage.length > 0 ? (
                         <Image
@@ -122,6 +122,7 @@ function Wallet({ }: WalletProps) {
                         borderRadius={"full"}
                         borderWidth={5}
                         borderColor={"white"}
+                        bgColor={"green.100"}
                     >
                         {
                             profile?.profileImage && profile.profileImage.length > 0 ? (
