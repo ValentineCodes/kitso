@@ -66,7 +66,7 @@ export function UniversalProfileProvider({ children }: Readonly<{ children: Reac
     // Fetch and update profile data from blockchain
     useEffect(() => {
         const fetchProfileData = async () => {
-            if (!account.isConnected) {
+            if (!account?.isConnected) {
                 setProfile(null);
                 return;
             }
