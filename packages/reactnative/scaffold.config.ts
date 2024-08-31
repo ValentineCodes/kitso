@@ -5,7 +5,7 @@ export interface Localhost {
     id: number;
     name: string;
     provider: string;
-    currencySymbol: string;
+    token: string;
   }
 
 export type ScaffoldConfig = {

@@ -7,6 +7,7 @@ import { WINDOW_WIDTH } from '../../../utils/styles'
 import { COLORS } from '../../../utils/constants'
 import { useNavigation } from '@react-navigation/native'
 
+
 type Props = {}
 
 function HighlightedText({ children }: { children: string }) {
@@ -17,7 +18,7 @@ function HighlightedText({ children }: { children: string }) {
     )
 }
 
-export default function Example({ }: Props) {
+export default function Home({ }: Props) {
     const navigation = useNavigation()
 
     return (

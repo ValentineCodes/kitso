@@ -4382,6 +4382,7 @@ __metadata:
     react-native-modal: ^13.0.1
     react-native-modalfy: ^3.5.3
     react-native-navigation-bar-color: ^2.0.2
+    react-native-network-info: ^5.2.1
     react-native-otp-textinput: ^1.1.6
     react-native-pager-view: ^6.3.0
     react-native-popup-menu: ^0.16.1
@@ -21623,6 +21624,15 @@ __metadata:
   version: 2.0.2
   resolution: "react-native-navigation-bar-color@npm:2.0.2"
   checksum: 47b74fc343c63b90819a67889b7af6e9b6524a663586dc8a7927d81e8517fbf8b395545d651ddf44e978167e4d8994a4b6d6e3dc086a35903c48087fa40155cd
+  languageName: node
+  linkType: hard
+
+"react-native-network-info@npm:^5.2.1":
+  version: 5.2.1
+  resolution: "react-native-network-info@npm:5.2.1"
+  peerDependencies:
+    react-native: ">=0.47"
+  checksum: eb5ff3f19777f278c95cbc80c22ae6b8703d145ce463e51fd7f09e51da3e2f20b27048432b24ad1671f8a1b01b2c939a4d9097e8c4b13ae182230e1bb848242d
   languageName: node
   linkType: hard
 
