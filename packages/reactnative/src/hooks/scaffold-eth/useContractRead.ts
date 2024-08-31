@@ -4,9 +4,8 @@ import useNetwork from './useNetwork'
 import "react-native-get-random-values"
 import "@ethersproject/shims"
 import { ContractInterface, ethers } from "ethers";
-import SInfo from "react-native-sensitive-info"
 import { Abi } from 'abitype'
-import { STORAGE_KEY } from '../../utils/constants';
+import useAccount from './useAccount';
 
 interface UseContractReadConfig {
     abi: Abi | ContractInterface
@@ -37,6 +36,7 @@ export default function useContractRead({
     onError
 }: UseContractReadConfig) {
     const network = useNetwork()
+    const account = useAccount()
 
     const [data, setData] = useState<any[] | null>(null)
     const [isLoading, setIsLoading] = useState(enabled || false)
@@ -47,15 +47,12 @@ export default function useContractRead({
             setIsLoading(true)
             const provider = new ethers.providers.JsonRpcProvider(network.provider)
 
-            const controller = JSON.parse(await SInfo.getItem("controller", STORAGE_KEY))
-    
-            const wallet = new ethers.Wallet(controller.privateKey).connect(provider)
-
             // @ts-ignore
-            const contract = new ethers.Contract(address, abi, wallet)
+            const contract = new ethers.Contract(address, abi, provider)
 
-
-            const result = await contract.functions[functionName](...(args || []))
+            const result = await contract.functions[functionName](...(args || []), {
+                from: account.address
+            })
             
             if(error) {
                 setError(null)

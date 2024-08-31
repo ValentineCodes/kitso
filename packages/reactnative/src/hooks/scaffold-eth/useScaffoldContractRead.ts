@@ -4,10 +4,8 @@ import useNetwork from './useNetwork'
 
 import "react-native-get-random-values"
 import "@ethersproject/shims"
-import { Wallet, ethers } from "ethers";
+import { ethers } from "ethers";
 import useAccount from './useAccount'
-import SInfo from "react-native-sensitive-info"
-import { STORAGE_KEY } from '../../utils/constants'
 
 type Props = {
     contractName: string
@@ -29,7 +27,7 @@ export default function useScaffoldContractRead({contractName, functionName, arg
 
     const { data: deployedContractData, isLoading: isLoadingDeployedContractData } = useDeployedContractInfo(contractName)
     const network = useNetwork()
-    const connectedAccount = useAccount()
+    const account = useAccount()
 
     const [data, setData] = useState<any[] | null>(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -41,20 +39,20 @@ export default function useScaffoldContractRead({contractName, functionName, arg
         try {
             setIsLoading(true)
             const provider = new ethers.providers.JsonRpcProvider(network.provider)
-
-            const controller = JSON.parse(await SInfo.getItem("controller", STORAGE_KEY))
-    
-            const wallet = new ethers.Wallet(controller.privateKey).connect(provider)
             
             // @ts-ignore
-            const contract = new ethers.Contract(deployedContractData.address, deployedContractData.abi, wallet)
+            const contract = new ethers.Contract(deployedContractData.address, deployedContractData.abi, provider)
 
-            const result = await contract.functions[functionName](...args)
+            const result = await contract.functions[functionName](...args, {
+                from: account.address
+            })
             
             if(error) {
                 setError(null)
             }
             setData(result)
+
+            return result
         } catch(error) {
             setError(error)
         } finally {
