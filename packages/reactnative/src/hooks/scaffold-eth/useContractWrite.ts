@@ -85,19 +85,30 @@ export default function useContractWrite({
         }
 
         return new Promise(async (resolve, reject) => {
-            let controllerWallet: Wallet, contract: ethers.Contract;
-            
+            let keyManager: ethers.Contract, executeData: string
             try {
                 const provider = new ethers.providers.JsonRpcProvider(network.provider)
     
                 const controller = JSON.parse(await SInfo.getItem("controller", STORAGE_KEY))
     
-                controllerWallet = new ethers.Wallet(controller.privateKey).connect(provider)
+                const controllerWallet = new ethers.Wallet(controller.privateKey).connect(provider)
     
                  // @ts-ignore
-                contract = new ethers.Contract(address, abi, controllerWallet)
+                const contract = new ethers.Contract(address, abi, controllerWallet)
 
-                openModal("SignTransactionModal", {contract, contractAddress: address, functionName, args: _args, value: _value, gasLimit: _gasLimit, onConfirm, onReject})
+                const universalProfile = new ethers.Contract(account.address, UniversalProfileContract.abi, controllerWallet);
+                keyManager = new ethers.Contract(account.keyManager, KeyManagerContract.abi, controllerWallet);
+
+                const functionData = contract.interface.encodeFunctionData(functionName, args);
+
+                executeData = universalProfile.interface.encodeFunctionData("execute", [
+                    0, // Operation type (0 for call)
+                    address, // Target contract address
+                    _value, // Value in LYX (0 for read/write without transferring value)
+                    functionData // Encoded function data
+                  ]);
+
+                openModal("SignTransactionModal", {contract: keyManager, contractAddress: address, functionName, calldata: executeData, value: _value, gasLimit: _gasLimit, onConfirm, onReject})
                 
             } catch(error) {
                 reject(error)
@@ -106,18 +117,6 @@ export default function useContractWrite({
             async function onConfirm(){
                 setIsLoading(true)
                 try {
-                    const universalProfile = new ethers.Contract(account.address, UniversalProfileContract.abi, controllerWallet);
-                    const keyManager = new ethers.Contract(account.keyManager, KeyManagerContract.abi, controllerWallet);
-
-                    const functionData = contract.interface.encodeFunctionData(functionName, args);
-
-                    const executeData = universalProfile.interface.encodeFunctionData("execute", [
-                        0, // Operation type (0 for call)
-                        address, // Target contract address
-                        _value, // Value in LYX (0 for read/write without transferring value)
-                        functionData // Encoded function data
-                      ]);
-
                     const tx = await keyManager.functions.execute(executeData, {
                         gasLimit: _gasLimit
                       });

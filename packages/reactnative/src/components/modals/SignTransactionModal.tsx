@@ -20,7 +20,7 @@ type Props = {
             contract: Contract
             contractAddress: string
             functionName: string
-            args: any[]
+            calldata: string
             value: BigNumber
             gasLimit: BigNumber | number
             onConfirm: () => void
@@ -49,8 +49,7 @@ export default function SignTransactionModal({ modal: { closeModal, params } }: 
     const estimateGasCost = async () => {
         const provider = new ethers.providers.JsonRpcProvider(network.provider)
 
-        const gasEstimate = await params.contract.estimateGas[params.functionName](...params.args, {
-            value: params.value,
+        const gasEstimate = await params.contract.estimateGas.execute(params.calldata, {
             gasLimit: params.gasLimit
         })
         const feeData = await provider.getFeeData()
