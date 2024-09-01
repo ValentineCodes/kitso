@@ -38,13 +38,12 @@ export default function WriteOnlyFunctionForm({
     const { isLoading, write } = useContractWrite({
         address: contractAddress,
         functionName: abiFunction.name,
-        abi: abi,
-        args: getParsedContractFunctionArgs(form)
+        abi: abi
     })
 
     const handleWrite = async () => {
         try {
-            const receipt = await write({ value: BigNumber.from(txValue || 0) });
+            const receipt = await write({ args: getParsedContractFunctionArgs(form), value: BigNumber.from(txValue || 0) });
             setTxReceipt(receipt)
             onChange();
         } catch (error) {

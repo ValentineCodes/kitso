@@ -4338,6 +4338,8 @@ __metadata:
     "@babel/runtime": ^7.20.0
     "@erc725/erc725.js": ^0.27.1
     "@ethersproject/shims": ^5.7.0
+    "@lukso/eip191-signer.js": ^0.2.2
+    "@lukso/lsp-smart-contracts": ^0.15.0
     "@react-native-async-storage/async-storage": ^1.23.1
     "@react-native-clipboard/clipboard": ^1.13.2
     "@react-native-community/blur": ^4.4.0
@@ -4427,6 +4429,18 @@ __metadata:
   dependencies:
     "@lit-labs/ssr-dom-shim": ^1.0.0
   checksum: 79b58631c38effeabad090070324431da8a22cf0ff665f5e4de35e4d791f984742b3d340c9c7fce996d1124a8da95febc582471b4c237236c770b1300b56ef6e
+  languageName: node
+  linkType: hard
+
+"@lukso/eip191-signer.js@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "@lukso/eip191-signer.js@npm:0.2.2"
+  dependencies:
+    eth-lib: ^0.1.29
+    ethereumjs-account: ^3.0.0
+    ethereumjs-util: ^7.1.5
+    web3-utils: ^1.7.5
+  checksum: d46c07525b50a0a292e41f10d9385f46837ae1e2e384ebf15c1f0e056af09cec884b96703fb0297dee6d5760d272c63978147f5de149757ee5bca993f46ce27a
   languageName: node
   linkType: hard
 
@@ -13791,7 +13805,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-lib@npm:^0.1.26":
+"eth-lib@npm:^0.1.26, eth-lib@npm:^0.1.29":
   version: 0.1.29
   resolution: "eth-lib@npm:0.1.29"
   dependencies:
@@ -13960,6 +13974,17 @@ __metadata:
     rlp: ^2.0.0
     safe-buffer: ^5.1.1
   checksum: 2e4546b8b0213168eebd3a5296da904b6f55470e39b4c742d252748927d2b268f8d6374b0178c1d5b7188646f97dae74a7ac1c7485fe96ea557c152b52223f18
+  languageName: node
+  linkType: hard
+
+"ethereumjs-account@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "ethereumjs-account@npm:3.0.0"
+  dependencies:
+    ethereumjs-util: ^6.0.0
+    rlp: ^2.2.1
+    safe-buffer: ^5.1.1
+  checksum: 64dbe026d29aca12c79596cf4085fb27e209988f11b7d5bf3a1f2aadaaa517d90d722680c8b525144c26a2d9cd8494aa26ac088fa80b358cc3e28024f7ddbe81
   languageName: node
   linkType: hard
 
@@ -22639,7 +22664,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rlp@npm:^2.0.0, rlp@npm:^2.2.3, rlp@npm:^2.2.4":
+"rlp@npm:^2.0.0, rlp@npm:^2.2.1, rlp@npm:^2.2.3, rlp@npm:^2.2.4":
   version: 2.2.7
   resolution: "rlp@npm:2.2.7"
   dependencies:
@@ -25897,6 +25922,22 @@ __metadata:
     randombytes: ^2.1.0
     utf8: 3.0.0
   checksum: a5f8db69603fdd5e984aa6407f47f7a4e0dab83af42e10de25a6d9eeaf2e7d4d18fe665b569e364b2e916233fb73b26cc70ff0d730e7909720118c4790dfb043
+  languageName: node
+  linkType: hard
+
+"web3-utils@npm:^1.7.5":
+  version: 1.10.4
+  resolution: "web3-utils@npm:1.10.4"
+  dependencies:
+    "@ethereumjs/util": ^8.1.0
+    bn.js: ^5.2.1
+    ethereum-bloom-filters: ^1.0.6
+    ethereum-cryptography: ^2.1.2
+    ethjs-unit: 0.1.6
+    number-to-bn: 1.7.0
+    randombytes: ^2.1.0
+    utf8: 3.0.0
+  checksum: a1535817a4653f1b5cc868aa19305158122379078a41e13642e1ba64803f6f8e5dd2fb8c45c033612b8f52dde42d8008afce85296c0608276fe1513dece66a49
   languageName: node
   linkType: hard
 
