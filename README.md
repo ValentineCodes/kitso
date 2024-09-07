@@ -1,4 +1,7 @@
-# ⛓ Kitso
+<div style="display: flex; align-items: center;">
+    <img src="./packages/reactnative/assets/images/app_logo.png" alt="contract debugger" style="display: inline-block; width: 50px; height: 50px;" />
+    <h1 style="display: inline-block;">Kitso</h1>
+</div>
 
 🧪 An open-source, comprehensive starter kit for building decentralized applications (dApps) on the LUKSO blockchain using React Native and Foundry/Hardhat. This kit streamlines the process for developers, offering an efficient way to create, deploy, and interact with smart contracts while building intuitive user interfaces.
 
