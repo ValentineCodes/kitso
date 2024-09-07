@@ -1,6 +1,6 @@
 # ⛓ Kitso
 
-🧪 An open-source, up-to-date starter-Kit for building decentralized applications on the Lukso blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+🧪 An open-source, comprehensive starter kit for building decentralized applications (dApps) on the LUKSO blockchain using React Native and Foundry/Hardhat. This kit streamlines the process for developers, offering an efficient way to create, deploy, and interact with smart contracts while building intuitive user interfaces.
 
 ⚙️ Built using React Native, Hardhat, Wagmi, Viem, and Typescript.
 
