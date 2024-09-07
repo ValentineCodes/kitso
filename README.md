@@ -4,20 +4,20 @@
 
 ⚙️ Built using React Native, Hardhat, Wagmi, Viem, and Typescript.
 
-- 💳 **In-Built Wallet**: A safe and secure crypto wallet to manage funds, sign transactions and messages on multiple EVM compatible chains.
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **Custom hooks**: Collection of React hooks to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 **Components**: Collection of common web3 components to quickly build your frontend.
+- 💳 **In-Built Wallet:** A secure crypto wallet to manage funds, and sign transactions on LUKSO, providing a seamless and intuitive mobile experience for LUKSO users.
+- ✅ **Contract Hot Reload:** Automatically updates the frontend to reflect real-time changes in smart contracts deployed on LUKSO, reducing downtime and speeding up the development process.
+- 🛠️ **Contract Debugger:** A powerful tool to debug smart contracts on LUKSO, ensuring they function as expected before deployment.
+- 🪝 **Custom Hooks:** A collection of TypeScript-enabled React hooks to simplify interactions with LUKSO smart contracts, enabling developers to write cleaner, more efficient code.
 
-<p align="center">
-<img src="packages/reactnative/sern.jpg" alt="Debug Contracts" width="300">
-</p>
+- 🧱 **Components:** Pre-built web3 components tailored for LUKSO, allowing developers to quickly assemble user interfaces and focus more on functionality rather than building from scratch.
+
+![Contract Debugger](./kitso_debugger.png)
 
 ## Requirements
 
 Before you begin, you need to install the following tools:
 
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
+- [Yarn](https://classic.yarnpkg.com/lang/en/docs/install)
 - [Git](https://git-scm.com/downloads)
 - [React Native](https://reactnative.dev/docs/environment-setup?guide=native&platform=android)
 
@@ -34,9 +34,7 @@ cd kitso
 
 yarn install && yarn patch-ethers
 
-cd packages/reactnative
-
-npx pod-install
+yarn pod-install
 ```
 
 Remember to run `yarn patch-ethers` to patch ethers after installing any package
@@ -44,6 +42,7 @@ Remember to run `yarn patch-ethers` to patch ethers after installing any package
 2. Connect your device to your computer via WIFI-HOTSPOT
 
 3. Run a local network in the first terminal
+
 ```
 yarn chain
 ```
@@ -63,26 +62,29 @@ This command deploys a test smart contract to the local network. The contract is
 #### To determine your local IP address:
 
 #### Mac:
+
 ```
 ipconfig getifaddr en0
 ```
 
-#### Windows: 
+#### Windows:
+
 ```
 ipconfig
 ```
-
 
 6. Connect your device via USB or Run an emulator
 
 7. Run on device:
 
 #### Android
+
 ```
 yarn android
 ```
 
 #### IOS
+
 ```
 yarn ios
 ```

@@ -29,6 +29,7 @@
     "precommit": "lint-staged",
     "android": "yarn workspace @kitso/reactnative android",
     "ios": "yarn workspace @kitso/reactnative ios",
+    "pod-install": "yarn workspace @kitso/reactnative pod-install",
     "start": "yarn workspace @kitso/reactnative start",
     "patch-ethers": "yarn workspace @kitso/reactnative patch-ethers",
     "server": "yarn workspace @kitso/backend dev",

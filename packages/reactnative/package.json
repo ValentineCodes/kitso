@@ -5,6 +5,7 @@
   "scripts": {
     "android": "npx react-native run-android",
     "ios": "npx react-native run-ios",
+    "pod-install": "npx pod-install",
     "lint": "eslint .",
     "start": "npx react-native start",
     "test": "jest",
