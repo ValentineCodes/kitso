@@ -52,16 +52,6 @@ export default function Home({ }: Props) {
                         <Text underline fontWeight={"medium"} onPress={() => navigation.navigate("DebugContracts")}> DebugContracts </Text>
                         tab</Text>
                 </VStack>
-
-                <VStack mt={"4"} px={"4"} py={"8"} w={"80%"} borderWidth={"1"} borderColor={"muted.200"} rounded={"3xl"} alignItems={"center"} space={"6"}>
-                    <Text fontSize={"3xl"}>☃️</Text>
-
-                    <Text textAlign={"center"} fontSize={"lg"}>
-                        See example implementation in
-                        {/* @ts-ignore */}
-                        <Text underline fontWeight={"medium"} onPress={() => navigation.navigate("Example")}> Example </Text>
-                    </Text>
-                </VStack>
             </View>
         </ScrollView>
     )
