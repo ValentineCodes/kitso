@@ -1,19 +1,19 @@
-import { useEffect, useState } from 'react'
-import useNetwork from './useNetwork'
+import {useEffect, useState} from 'react';
+import useNetwork from './useNetwork';
 
-import "react-native-get-random-values"
-import "@ethersproject/shims"
-import { ContractInterface, ethers } from "ethers";
-import { Abi } from 'abitype'
+import 'react-native-get-random-values';
+import '@ethersproject/shims';
+import {ContractInterface, ethers} from 'ethers';
+import {Abi} from 'abitype';
 import useAccount from './useAccount';
 
 interface UseContractReadConfig {
-    abi: Abi | ContractInterface
-    address: string
-    functionName: string
-    args?: any[]
-    enabled?: boolean
-    onError?: (error: any) => void
+  abi: Abi | ContractInterface;
+  address: string;
+  functionName: string;
+  args?: any[];
+  enabled?: boolean;
+  onError?: (error: any) => void;
 }
 
 /**
@@ -28,60 +28,59 @@ interface UseContractReadConfig {
  */
 
 export default function useContractRead({
-    abi, 
-    address, 
-    functionName, 
-    args, 
-    enabled, 
-    onError
+  abi,
+  address,
+  functionName,
+  args,
+  enabled,
+  onError,
 }: UseContractReadConfig) {
-    const network = useNetwork()
-    const account = useAccount()
+  const network = useNetwork();
+  const account = useAccount();
 
-    const [data, setData] = useState<any[] | null>(null)
-    const [isLoading, setIsLoading] = useState(enabled || false)
-    const [error, setError] = useState<any>(null)
+  const [data, setData] = useState<any[] | null>(null);
+  const [isLoading, setIsLoading] = useState(enabled || false);
+  const [error, setError] = useState<any>(null);
 
-    async function fetchData(){
-        try {
-            setIsLoading(true)
-            const provider = new ethers.providers.JsonRpcProvider(network.provider)
+  async function fetchData() {
+    try {
+      setIsLoading(true);
+      const provider = new ethers.providers.JsonRpcProvider(network.provider);
 
-            // @ts-ignore
-            const contract = new ethers.Contract(address, abi, provider)
+      // @ts-ignore
+      const contract = new ethers.Contract(address, abi, provider);
 
-            const result = await contract.functions[functionName](...(args || []), {
-                from: account.address
-            })
-            
-            if(error) {
-                setError(null)
-            }
-            setData(result)
+      const result = await contract.functions[functionName](...(args || []), {
+        from: account.address,
+      });
 
-            return result
-        } catch(error) {
-            setError(error)
-            
-            if(onError) {
-                onError(error)
-            }
-        } finally {
-            setIsLoading(false)
-        }
+      if (error) {
+        setError(null);
+      }
+      setData(result);
+
+      return result;
+    } catch (error) {
+      setError(error);
+
+      if (onError) {
+        onError(error);
+      }
+    } finally {
+      setIsLoading(false);
     }
+  }
 
-    useEffect(() => {
-        if(enabled !== false) {
-            fetchData()
-        }
-    }, [enabled])
-    
-
-    return {
-        data,
-        isLoading,
-        error,
-        refetch: fetchData
+  useEffect(() => {
+    if (enabled !== false) {
+      fetchData();
     }
+  }, [enabled]);
+
+  return {
+    data,
+    isLoading,
+    error,
+    refetch: fetchData,
+  };
 }
