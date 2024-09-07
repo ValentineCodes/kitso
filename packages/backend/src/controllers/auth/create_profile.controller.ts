@@ -7,13 +7,13 @@ import dotenv from "dotenv"
 dotenv.config();
 
 // LSPs artifacts
-import LSP23FactoryArtifact from '@lukso/lsp-smart-contracts/artifacts/LSP23LinkedContractsFactory.json' assert { type: 'json' };
-import UniversalProfileInitArtifact from '@lukso/lsp-smart-contracts/artifacts/UniversalProfileInit.json' assert { type: 'json' };
+import LSP23FactoryArtifact from '@lukso/lsp-smart-contracts/artifacts/LSP23LinkedContractsFactory.json' with { type: 'json' };
+import UniversalProfileInitArtifact from '@lukso/lsp-smart-contracts/artifacts/UniversalProfileInit.json' with { type: 'json' };
 
 // ERC725.js schemas
-import LSP1UniversalReceiverDelegateSchemas from '@erc725/erc725.js/schemas/LSP1UniversalReceiverDelegate.json' assert { type: 'json' };
-import LSP3ProfileMetadataSchemas from '@erc725/erc725.js/schemas/LSP3ProfileMetadata.json' assert { type: 'json' };
-import LSP6KeyManagerSchemas from '@erc725/erc725.js/schemas/LSP6KeyManager.json' assert { type: 'json' };
+import LSP1UniversalReceiverDelegateSchemas from '@erc725/erc725.js/schemas/LSP1UniversalReceiverDelegate.json' with { type: 'json' };
+import LSP3ProfileMetadataSchemas from '@erc725/erc725.js/schemas/LSP3ProfileMetadata.json' with { type: 'json' };
+import LSP6KeyManagerSchemas from '@erc725/erc725.js/schemas/LSP6KeyManager.json' with { type: 'json' };
 import { SERVER_ERROR, SUCCESS } from '../../utils/status_code.ts';
 import { generateSalt } from '../../utils/helpers.ts';
 
