@@ -65,7 +65,7 @@ const universalProfileInitStruct = {
     universalProfileImplementationContract.interface.encodeFunctionData(
       'initialize',
       [LSP23_POST_DEPLOYMENT_MODULE],
-    ), // this will call the `initialize(...)` function of the Universal Profile and the the LSP23_POST_DEPLOYMENT_MODULE as owner
+    ), // this will call the `initialize(...)` function of the Universal Profile and the LSP23_POST_DEPLOYMENT_MODULE as owner
 };
 
 const keyManagerInitStruct = {
