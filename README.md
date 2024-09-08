@@ -1,5 +1,5 @@
 <div style="display: flex; align-items: center;">
-    <img src="./packages/reactnative/assets/images/app_logo.png" alt="contract debugger" style="display: inline-block; width: 50px; height: 50px;" />
+    <img src="./assets/logo.png" alt="contract debugger" style="display: inline-block; width: 50px; height: 50px;" />
     <h1 style="display: inline-block;">Kitso</h1>
 </div>
 
@@ -14,7 +14,7 @@
 
 - 🧱 **Components:** Pre-built web3 components tailored for LUKSO, allowing developers to quickly assemble user interfaces and focus more on functionality rather than building from scratch.
 
-![Contract Debugger](./kitso_debugger.png)
+![Contract Debugger](./assets/debugger.png)
 
 ## Requirements
 
