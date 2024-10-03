@@ -13,6 +13,7 @@ import ConfirmEmail from './Auth/common/ConfirmEmail';
 import RecoverProfile from './Auth/recovery/RecoverProfile';
 
 import Dashboard from './Dashboard';
+import EditProfile from './EditProfile';
 
 type Props = {}
 
@@ -34,6 +35,7 @@ type AppStackParamsList = {
     ConfirmEmail: undefined;
     RecoverProfile: undefined;
     Dashboard: undefined;
+    EditProfile: undefined
 }
 
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
@@ -63,6 +65,7 @@ export default function Navigation({ }: Props) {
                 }
 
                 <AppStack.Screen name="Dashboard" component={Dashboard} />
+                <AppStack.Screen name="EditProfile" component={EditProfile} />
             </AppStack.Navigator>
         </NavigationContainer>
     )

@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { BackHandler, Linking, NativeEventSubscription, StatusBar } from 'react-native'
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons'
-import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native'
 
 import { WINDOW_WIDTH } from '../../../styles/screenDimensions'
 import Blockie from '../../../components/Blockie'
@@ -66,6 +66,7 @@ function Wallet({ }: WalletProps) {
     const { profile } = useProfile()
     const account = useAccount()
     const network = useNetwork()
+    const navigation = useNavigation()
 
     useFocusEffect(() => {
         backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -159,7 +160,8 @@ function Wallet({ }: WalletProps) {
                 </VStack>
             </View>
 
-            <Pressable>
+                        {/* @ts-ignore */}
+            <Pressable onPress={() => navigation.navigate("EditProfile")}>
                 <Text
                     alignSelf={"flex-end"}
                     mt={3}
