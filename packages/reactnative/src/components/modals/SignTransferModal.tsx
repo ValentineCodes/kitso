@@ -8,12 +8,11 @@ import Blockie from '../../components/Blockie'
 
 import "react-native-get-random-values"
 import "@ethersproject/shims"
-import { BigNumber, Wallet, ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 import Button from '../../components/Button';
 
 import SInfo from "react-native-sensitive-info"
-import { getProviderWithName, Providers } from '../../utils/providers';
 
 import Success from './modules/Success'
 import Fail from './modules/Fail'
@@ -25,7 +24,7 @@ import { Address } from 'viem';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
 import { STORAGE_KEY } from '../../utils/constants';
-import { useProfile } from '../../context/UniversalProfileContext';
+import { useProfile } from '../../hooks/useProfile';
 
 type Props = {
     modal: {

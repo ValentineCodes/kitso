@@ -7,7 +7,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ModalOptions, ModalProvider, createModalStack } from 'react-native-modalfy';
 
 import { ProcedureProvider } from '../context/ProcedureContext';
-import { UniversalProfileProvider } from '../context/UniversalProfileContext';
 import SignTransactionModal from '../components/modals/SignTransactionModal';
 import SignMessageModal from '../components/modals/SignMessageModal';
 import TxReceiptModal from '../components/modals/TxReceiptModal';
@@ -29,11 +28,9 @@ export default function Providers({ children }: Props) {
         <MenuProvider>
           <SafeAreaProvider>
             <ModalProvider stack={modalStack}>
-              <UniversalProfileProvider>
                 <ProcedureProvider>
                   {children}
                 </ProcedureProvider>
-              </UniversalProfileProvider>
             </ModalProvider>
           </SafeAreaProvider>
         </MenuProvider>

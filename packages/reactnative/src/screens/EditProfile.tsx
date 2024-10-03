@@ -19,9 +19,9 @@ import { useToast } from 'react-native-toast-notifications'
 import useJSONUploader from '../hooks/useJSONUploader'
 import { ethers } from 'ethers'
 import TagInput from '../components/forms/TagInput'
-import { useProfile } from '../context/UniversalProfileContext'
 import useNetwork from '../hooks/scaffold-eth/useNetwork'
 import useAccount from '../hooks/scaffold-eth/useAccount'
+import { useProfile } from '../hooks/useProfile'
 
 type Props = {}
 

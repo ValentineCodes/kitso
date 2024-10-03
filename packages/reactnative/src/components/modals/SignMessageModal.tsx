@@ -6,7 +6,7 @@ import useAccount from '../../hooks/scaffold-eth/useAccount'
 import Blockie from '../Blockie'
 import Button from '../Button'
 import useBalance from '../../hooks/scaffold-eth/useBalance'
-import { useProfile } from '../../context/UniversalProfileContext'
+import { useProfile } from '../../hooks/useProfile'
 
 type Props = {
     modal: {
@@ -24,7 +24,7 @@ export default function SignMessageModal({ modal: { closeModal, params } }: Prop
     const network = useNetwork()
     const { profile } = useProfile()
 
-    const { balance, isLoading: isLoadingBalance } = useBalance({ address: account.address })
+    const { balance } = useBalance({ address: account.address })
 
     const sign = () => {
         closeModal("SignMessageModal", params.onConfirm)
