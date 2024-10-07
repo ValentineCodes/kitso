@@ -1,6 +1,7 @@
 import { HStack, Icon, View, Pressable } from 'native-base'
 import React from 'react'
 import { Dimensions } from 'react-native'
+// @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons'
 import ProgressStepIndicator from '../ProgressStepIndicator'
 import { useNavigation } from '@react-navigation/native'
