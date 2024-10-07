@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/dist/Ionicons'
 import { useNavigation } from '@react-navigation/native'
 
 import styles from '../styles/global'
-import { COLORS } from '../utils/constants'
+import { COLORS, STORAGE_KEY } from '../utils/constants'
 import { FONT_SIZE } from '../utils/styles'
 import Button from '../components/Button'
 import Blockie from '../components/Blockie'
@@ -17,11 +17,20 @@ import LinkInput, { LinkType } from '../components/forms/LinkInput'
 import useImageUploader from '../hooks/useImageUploader'
 import { useToast } from 'react-native-toast-notifications'
 import useJSONUploader from '../hooks/useJSONUploader'
-import { ethers } from 'ethers'
+import { ethers } from 'ethers';
+import { ERC725 } from '@erc725/erc725.js';
 import TagInput from '../components/forms/TagInput'
 import useNetwork from '../hooks/scaffold-eth/useNetwork'
 import useAccount from '../hooks/scaffold-eth/useAccount'
 import { useProfile } from '../hooks/useProfile'
+
+import SInfo from 'react-native-sensitive-info';
+
+import LSP3ProfileMetadataSchemas from '@erc725/erc725.js/schemas/LSP3ProfileMetadata.json';
+
+import UniversalProfileContract from '@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json';
+import KeyManagerContract from '@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json';
+import { Account } from '../hooks/useWallet'
 
 type Props = {}
 
@@ -84,95 +93,119 @@ export default function EditProfile({ }: Props) {
 
     const editProfile = async () => {
         try {
-            setIsUploading(true)
-
-            let profileMetadata = {
+            setIsUploading(true);
+    
+            // Prepare profile metadata
+            const profileMetadata: any = {
                 LSP3Profile: {
                     name: username,
                     description: bio,
                     links: links.map(link => ({ title: link.title, url: link.url })),
-                    tags: tags,
-                    profileImage: [] as any,
-                    backgroundImage: [] as any
+                    tags,
+                    profileImage: [],
+                    backgroundImage: []
                 }
-            }
-
-            if (profileImage) {
-                // upload profile image 
-                const _profileImage = await uploadImage({
-                    name: profileImage.name,
-                    type: profileImage.type,
-                    uri: profileImage.uri
-                })
-
-                if (!_profileImage) {
-                    toast.show("Failed to upload profile image", { type: "danger" })
-                    return
+            };
+    
+            // Helper function for uploading images and adding to metadata
+            const handleImageUpload = async (image: any, field: string) => {
+                const uploadedImage = await uploadImage({
+                    name: image.name,
+                    type: image.type,
+                    uri: image.uri
+                });
+    
+                if (!uploadedImage) {
+                    toast.show(`Failed to upload ${field} image`, { type: "danger" });
+                    return false;
                 }
-
-                profileMetadata.LSP3Profile.profileImage.push({
+    
+                profileMetadata.LSP3Profile[field].push({
                     width: 1024,
                     height: 1024,
                     verification: {
                         method: "keccak256(bytes)",
-                        data: _profileImage.bufferHash
+                        data: uploadedImage.bufferHash
                     },
-                    url: `ipfs://${_profileImage.ipfsHash}`
-                })
-
-            }
-
-            if (coverImage) {
-                // upload cover image 
-                const _coverImage = await uploadImage({
-                    name: coverImage.name,
-                    type: coverImage.type,
-                    uri: coverImage.uri
-                })
-
-                if (!_coverImage) {
-                    toast.show("Failed to upload cover image", { type: "danger" })
-                    return
-                }
-
-                profileMetadata.LSP3Profile.backgroundImage.push({
-                    width: 1024,
-                    height: 1024,
-                    verification: {
-                        method: "keccak256(bytes)",
-                        data: _coverImage.bufferHash
-                    },
-                    url: `ipfs://${_coverImage.ipfsHash}`
-                })
-
-            }
-
-            const profile = await uploadProfile(profileMetadata)
-
+                    url: `ipfs://${uploadedImage.ipfsHash}`
+                });
+    
+                return true;
+            };
+    
+            // Upload profile and cover images
+            if (profileImage && !(await handleImageUpload(profileImage, "profileImage"))) return;
+            if (coverImage && !(await handleImageUpload(coverImage, "backgroundImage"))) return;
+    
+            // Upload profile metadata
+            const profile = await uploadProfile(profileMetadata);
             if (!profile) {
-                toast.show("Failed to upload profile metadata", { type: "danger" })
-                return
+                toast.show("Failed to upload profile metadata", { type: "danger" });
+                return;
             }
-
-            const profileMetadataHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(JSON.stringify(profileMetadata)))
-
+    
+            const profileMetadataHash = ethers.utils.keccak256(
+                ethers.utils.toUtf8Bytes(JSON.stringify(profileMetadata))
+            );
+    
             const lsp3DataValue = {
                 verification: {
                     method: 'keccak256(utf8)',
                     data: profileMetadataHash
                 },
-                // this is an IPFS CID of a LSP3 Profile Metadata example, you can use your own
-                url: `ipfs://${profile.ipfsHash}`,
-            }
-
-            // TO-DO: Upload profile data
+                url: `ipfs://${profile.ipfsHash}`
+            };
+    
+            const provider = new ethers.providers.JsonRpcProvider(network.provider);
+            const controller: Account = JSON.parse(await SInfo.getItem('controller', STORAGE_KEY));
+            const controllerWallet = new ethers.Wallet(controller.privateKey).connect(provider);
+    
+            const erc725 = new ERC725(LSP3ProfileMetadataSchemas as any, account.address, provider);
+    
+            const universalProfile = new ethers.Contract(
+                account.address,
+                UniversalProfileContract.abi,
+                controllerWallet
+            );
+    
+            const keyManager = new ethers.Contract(
+                account.keyManager,
+                KeyManagerContract.abi,
+                controllerWallet
+            );
+    
+            // Encode LSP3 metadata
+            const encodedData = erc725.encodeData([{ keyName: 'LSP3Profile', value: lsp3DataValue }]);
+    
+            // Encode setData and execute calls
+            const setDataCallData = universalProfile.interface.encodeFunctionData('setData', [
+                encodedData.keys[0],
+                encodedData.values[0]
+            ]);
+    
+            const executeData = universalProfile.interface.encodeFunctionData('execute', [
+                0, // Operation type (0 for call)
+                account.address, // Target contract address
+                0, // Value in LYX
+                setDataCallData // Encoded setData call
+            ]);
+    
+            // Call execute on Key Manager
+            const tx = await keyManager.execute(executeData, { gasLimit: 1000000 });
+            console.log('Transaction sent:', tx.hash);
+    
+            // Wait for confirmation
+            await tx.wait();
+            toast.show("Profile Updated Successfully!", { type: 'success' });
+            
         } catch (error) {
-            toast.show("Failed to edit profile!", { type: 'danger' })
-            console.error(error)
+            toast.show("Failed to edit profile!", { type: 'danger' });
+            console.error(error);
         } finally {
-            setIsUploading(false)
+            setIsUploading(false);
         }
-    }
+    };
+    
 
     const selectCoverImage = () => {
         if(coverImage){
