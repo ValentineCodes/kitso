@@ -30,7 +30,7 @@ import LSP3ProfileMetadataSchemas from '@erc725/erc725.js/schemas/LSP3ProfileMet
 
 import UniversalProfileContract from '@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json';
 import KeyManagerContract from '@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json';
-import { Account } from '../hooks/useWallet'
+import { Controller } from '../hooks/useWallet'
 
 type Props = {}
 
@@ -157,7 +157,7 @@ export default function EditProfile({ }: Props) {
             };
     
             const provider = new ethers.providers.JsonRpcProvider(network.provider);
-            const controller: Account = JSON.parse(await SInfo.getItem('controller', STORAGE_KEY));
+            const controller: Controller = JSON.parse(await SInfo.getItem('controller', STORAGE_KEY));
             const controllerWallet = new ethers.Wallet(controller.privateKey).connect(provider);
     
             const erc725 = new ERC725(LSP3ProfileMetadataSchemas as any, account.address, provider);

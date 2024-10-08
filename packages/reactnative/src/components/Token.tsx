@@ -5,10 +5,12 @@ import { WINDOW_WIDTH } from '../utils/styles'
 import useBalance from '../hooks/scaffold-eth/useBalance'
 import useAccount from '../hooks/scaffold-eth/useAccount'
 import { useCryptoPrice } from '../hooks/scaffold-eth/useCryptoPrice'
+import { useNavigation } from '@react-navigation/native'
 
 type Props = {}
 
 export default function Token({ }: Props) {
+    const navigation = useNavigation()
     const network = useNetwork()
     const account = useAccount()
     const { balance } = useBalance({ address: account.address })
@@ -70,7 +72,8 @@ export default function Token({ }: Props) {
                 </VStack>
             </HStack>
 
-            <Pressable>
+            {/* @ts-ignore */}
+            <Pressable onPress={() => navigation.navigate("Transfer")}>
                 <Text
                     alignSelf={"flex-end"}
                     mt={3}
@@ -81,7 +84,7 @@ export default function Token({ }: Props) {
                     borderColor={"gray.300"}
                     fontWeight={"medium"}
                 >
-                    Buy
+                    Send
                 </Text>
             </Pressable>
         </VStack>

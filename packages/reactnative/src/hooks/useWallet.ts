@@ -1,87 +1,91 @@
-import { useEffect, useState } from "react";
-import SInfo from "react-native-sensitive-info";
-import { useDispatch } from "react-redux";
-import { addAccount } from "../store/reducers/Accounts";
-import { STORAGE_KEY } from "../utils/constants";
+import {useEffect, useState} from 'react';
+import SInfo from 'react-native-sensitive-info';
+import {useDispatch} from 'react-redux';
+import {addAccount} from '../store/reducers/Accounts';
+import {STORAGE_KEY} from '../utils/constants';
 
-export interface Account {
-    address: string;
-    privateKey: string;
+export interface Controller {
+  address: string;
+  privateKey: string;
 }
 
 /**
  * @notice hook to read and write mnemonic
  */
-export default function useWallet(){
-    const [mnemonic, setMnemonic] = useState("");
-    const [controller, setAccounts] = useState<Account[]>([])
-    
-    const dispatch = useDispatch()
+export default function useWallet() {
+  const [mnemonic, setMnemonic] = useState('');
+  const [controller, setAccounts] = useState<Controller[]>([]);
 
-    /**
-     * @notice reads mnemonic from secure storage
-     * @returns mnemonic string
-     */
-    async function _getMnemonic(): Promise<string>{
-        // read mnemonic from secure storage
-        const _mnemonic = await SInfo.getItem("mnemonic", STORAGE_KEY);
+  const dispatch = useDispatch();
 
-        setMnemonic(_mnemonic)
+  /**
+   * @notice reads mnemonic from secure storage
+   * @returns mnemonic string
+   */
+  async function _getMnemonic(): Promise<string> {
+    // read mnemonic from secure storage
+    const _mnemonic = await SInfo.getItem('mnemonic', STORAGE_KEY);
 
-        return _mnemonic
-    }
+    setMnemonic(_mnemonic);
 
-    async function _getAccounts(): Promise<Account[]>{
-        // read controller from secure storage
-        const _controller = await SInfo.getItem("controller", STORAGE_KEY);
-        const controller = JSON.parse(_controller!) || []
+    return _mnemonic;
+  }
 
-        setAccounts(controller)
+  async function _getAccounts(): Promise<Controller[]> {
+    // read controller from secure storage
+    const _controller = await SInfo.getItem('controller', STORAGE_KEY);
+    const controller = JSON.parse(_controller!) || [];
 
-        return controller
-    }
+    setAccounts(controller);
 
-    /**
-     * @notice encrypts and stores mnemonic in secure storage
-     * @param _mnemonic mnemonic string
-     */
-    async function _storeMnemonic(_mnemonic: string){
-        setMnemonic(_mnemonic)
+    return controller;
+  }
 
-        // encrypt and store mnemonic
-        await SInfo.setItem("mnemonic", _mnemonic, STORAGE_KEY);
-    }
+  /**
+   * @notice encrypts and stores mnemonic in secure storage
+   * @param _mnemonic mnemonic string
+   */
+  async function _storeMnemonic(_mnemonic: string) {
+    setMnemonic(_mnemonic);
 
-    /**
-     * encrypts and stores account data in secure and redux storage
-     * @param _controller address and private key of account 
-     * @param _isImported `true` if account was imported using private key
-     */
-    async function _storeAccount(_controller: Account, _isImported: boolean) {
-        // read controller from secure storage
-        const controller = JSON.parse(await SInfo.getItem("controller", STORAGE_KEY))
+    // encrypt and store mnemonic
+    await SInfo.setItem('mnemonic', _mnemonic, STORAGE_KEY);
+  }
 
-        const newAccounts = [JSON.parse(controller), _controller]
+  /**
+   * encrypts and stores account data in secure and redux storage
+   * @param _controller address and private key of account
+   * @param _isImported `true` if account was imported using private key
+   */
+  async function _storeAccount(_controller: Controller, _isImported: boolean) {
+    // read controller from secure storage
+    const controller = JSON.parse(
+      await SInfo.getItem('controller', STORAGE_KEY),
+    );
 
-        // encrypt and store controller 
-        await SInfo.setItem("controller", JSON.stringify(newAccounts), STORAGE_KEY)
+    const newAccounts = [JSON.parse(controller), _controller];
 
-        setAccounts(newAccounts)
+    // encrypt and store controller
+    await SInfo.setItem('controller', JSON.stringify(newAccounts), STORAGE_KEY);
 
-        dispatch(addAccount({address: _controller.address, isImported: _isImported}))
-    }
+    setAccounts(newAccounts);
 
-    useEffect(() => {
-        _getMnemonic()
-        _getAccounts()
-    }, [])
+    dispatch(
+      addAccount({address: _controller.address, isImported: _isImported}),
+    );
+  }
 
-    return {
-        mnemonic,
-        controller,
-        getMnemonic: _getMnemonic,
-        getAccounts: _getAccounts,
-        storeMnemonic: _storeMnemonic,
-        storeAccount: _storeAccount
-    }
+  useEffect(() => {
+    _getMnemonic();
+    _getAccounts();
+  }, []);
+
+  return {
+    mnemonic,
+    controller,
+    getMnemonic: _getMnemonic,
+    getAccounts: _getAccounts,
+    storeMnemonic: _storeMnemonic,
+    storeAccount: _storeAccount,
+  };
 }
