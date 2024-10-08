@@ -18,6 +18,9 @@ import Button from '../../../components/Button';
 
 import SInfo from "react-native-sensitive-info"
 
+import UniversalProfileContract from '@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json';
+import KeyManagerContract from '@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json';
+
 import Success from '../../../components/modals/modules/Success'
 import Fail from '../../../components/modals/modules/Fail'
 import { Linking } from 'react-native';
@@ -26,6 +29,8 @@ import { addRecipient } from '../../../store/reducers/Recipients';
 import { STORAGE_KEY } from '../../../utils/constants';
 import { Controller } from '../../../hooks/useWallet';
 import { Profile } from '../../../store/reducers/Profiles';
+import useNetwork from '../../../hooks/scaffold-eth/useNetwork';
+import useAccount from '../../../hooks/scaffold-eth/useAccount';
 
 interface TxData {
     from: Profile;
@@ -45,6 +50,9 @@ export default function ConfirmationModal({ isVisible, onClose, txData, estimate
 
     const toast = useToast()
 
+    const account = useAccount()
+    const network = useNetwork()
+    
     const connectedNetwork: Network = useSelector((state: any) => state.networks.find((network: Network) => network.isConnected))
 
     const [isTransferring, setIsTransferring] = useState(false)
@@ -61,23 +69,34 @@ export default function ConfirmationModal({ isVisible, onClose, txData, estimate
     }
 
     const transfer = async () => {
-        // read controller from secure storage
-        const _controller = await SInfo.getItem("controller", STORAGE_KEY);
-        const controllers: Controller[] = JSON.parse(_controller!) || []
+        const provider = new ethers.providers.JsonRpcProvider(network.provider);
+        const controller: Controller = JSON.parse(await SInfo.getItem('controller', STORAGE_KEY));
+        const controllerWallet = new ethers.Wallet(controller.privateKey).connect(provider);
 
-        const activeController: Controller | undefined = controllers.find(controller => controller.address.toLowerCase() == txData.from.address.toLowerCase())
+        const universalProfile = new ethers.Contract(
+            txData.from.address,
+            UniversalProfileContract.abi,
+            controllerWallet
+        );
 
-        const provider = new ethers.providers.JsonRpcProvider(connectedNetwork.provider)
-        const wallet = new ethers.Wallet(activeController!.privateKey).connect(provider)
+        const keyManager = new ethers.Contract(
+            account.keyManager,
+            KeyManagerContract.abi,
+            controllerWallet
+        );
 
         try {
             setIsTransferring(true)
 
-            const tx = await wallet.sendTransaction({
-                from: txData.from.address,
-                to: txData.to,
-                value: ethers.utils.parseEther(txData.amount.toString())
-            })
+            const executeData = universalProfile.interface.encodeFunctionData('execute', [
+                0, // Operation type (0 for call)
+                txData.to, // Target contract address
+                ethers.utils.parseEther(txData.amount.toString()), // Value in LYX
+                "0x" // Encoded setData call
+            ]);
+    
+            // Call execute on Key Manager
+            const tx = await keyManager.execute(executeData, { gasLimit: 1000000 });
 
             const txReceipt = await tx.wait(1)
 
