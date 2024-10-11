@@ -14,8 +14,8 @@ import { truncateAddress } from '../../../utils/helperFunctions'
 import CopyableText from '../../../components/CopyableText'
 import useAccount from '../../../hooks/scaffold-eth/useAccount'
 import useNetwork from '../../../hooks/scaffold-eth/useNetwork'
-import Token from '../../../components/Token'
 import { useProfile } from '../../../hooks/useProfile'
+import NetworkToken from '../../../components/NetworkToken'
 
 let backHandler: NativeEventSubscription;
 
@@ -239,7 +239,7 @@ function Wallet({ }: WalletProps) {
                     Tokens
                 </Text>
 
-                <Token />
+                <NetworkToken />
             </VStack>
         </ScrollView>
     )

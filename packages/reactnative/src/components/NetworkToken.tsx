@@ -9,8 +9,7 @@ import { useNavigation } from '@react-navigation/native'
 
 type Props = {}
 
-export default function Token({ }: Props) {
-    const navigation = useNavigation()
+export default function NetworkToken({ }: Props) {
     const network = useNetwork()
     const account = useAccount()
     const { balance } = useBalance({ address: account.address })
