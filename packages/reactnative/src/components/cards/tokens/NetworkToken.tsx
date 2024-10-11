@@ -10,10 +10,7 @@ import { useNavigation } from '@react-navigation/native'
 type Props = {}
 
 export default function NetworkToken({ }: Props) {
-<<<<<<<< HEAD:packages/reactnative/src/components/cards/tokens/NetworkToken.tsx
     const navigation = useNavigation()
-========
->>>>>>>> 4e24343 (refactor: change network token component name):packages/reactnative/src/components/NetworkToken.tsx
     const network = useNetwork()
     const account = useAccount()
     const { balance } = useBalance({ address: account.address })
