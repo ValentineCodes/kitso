@@ -24,7 +24,7 @@ import { Address } from 'viem';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
 import { STORAGE_KEY } from '../../utils/constants';
-import { useProfile } from '../../hooks/useProfile';
+import { useProfile } from '../../context/ProfileContext';
 
 type Props = {
     modal: {

@@ -22,7 +22,7 @@ import { ERC725 } from '@erc725/erc725.js';
 import TagInput from '../components/forms/TagInput'
 import useNetwork from '../hooks/scaffold-eth/useNetwork'
 import useAccount from '../hooks/scaffold-eth/useAccount'
-import { useProfile } from '../hooks/useProfile'
+import { useProfile } from '../context/ProfileContext'
 
 import SInfo from 'react-native-sensitive-info';
 

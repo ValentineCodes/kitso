@@ -11,7 +11,7 @@ import "react-native-get-random-values"
 import "@ethersproject/shims"
 import { BigNumber, Contract, ethers } from "ethers";
 import useBalance from '../../hooks/scaffold-eth/useBalance'
-import { useProfile } from '../../hooks/useProfile'
+import { useProfile } from '../../context/ProfileContext'
 
 type Props = {
     modal: {

@@ -15,6 +15,8 @@ import TxReceiptModal from '../components/modals/TxReceiptModal';
 import SignTransferModal from '../components/modals/SignTransferModal';
 import ConsentModal from '../components/modals/ConsentModal';
 
+import { ProfileProvider } from '../context/ProfileContext';
+
 type Props = {
   children: JSX.Element
 }
@@ -30,11 +32,13 @@ export default function Providers({ children }: Props) {
       <ToastProvider>
         <MenuProvider>
           <SafeAreaProvider>
-            <ModalProvider stack={modalStack}>
-                <ProcedureProvider>
-                  {children}
-                </ProcedureProvider>
-            </ModalProvider>
+            <ProfileProvider>
+              <ModalProvider stack={modalStack}>
+                  <ProcedureProvider>
+                    {children}
+                  </ProcedureProvider>
+              </ModalProvider>
+            </ProfileProvider>
           </SafeAreaProvider>
         </MenuProvider>
       </ToastProvider>

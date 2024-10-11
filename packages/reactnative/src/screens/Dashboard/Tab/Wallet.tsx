@@ -14,7 +14,7 @@ import { truncateAddress } from '../../../utils/helperFunctions'
 import CopyableText from '../../../components/CopyableText'
 import useAccount from '../../../hooks/scaffold-eth/useAccount'
 import useNetwork from '../../../hooks/scaffold-eth/useNetwork'
-import { useProfile } from '../../../hooks/useProfile'
+import { useProfile } from '../../../context/ProfileContext'
 import NetworkToken from '../../../components/NetworkToken'
 
 let backHandler: NativeEventSubscription;
