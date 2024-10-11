@@ -2,7 +2,10 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import React from 'react'
 import { COLORS } from '../../../../../utils/constants';
 import { FONT_SIZE } from '../../../../../utils/styles';
+
+// screens
 import Tokens from './Tokens';
+import Collectibles from './Collectibles';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -13,16 +16,17 @@ export default function Assets({}: Props) {
     <Tab.Navigator screenOptions={{
         tabBarScrollEnabled: true,
         tabBarIndicatorStyle: {
-            backgroundColor: COLORS.primary,
+            backgroundColor: '#243542',
         },
         tabBarLabelStyle: {
             textTransform: 'none',
             fontSize: FONT_SIZE["lg"]
         },
-        tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: '#C7C6C7',
+        tabBarActiveTintColor: '#243542',
+        tabBarInactiveTintColor: 'gray',
     }}>
         <Tab.Screen name="Tokens" component={Tokens} />
+        <Tab.Screen name="Collectibles" component={Collectibles} />
     </Tab.Navigator>
   )
 }
