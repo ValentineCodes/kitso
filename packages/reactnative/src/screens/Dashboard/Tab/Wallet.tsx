@@ -63,7 +63,7 @@ function Link({ title, url }: LinkProps) {
 
 function Wallet({ }: WalletProps) {
     const isFocused = useIsFocused()
-    const { profile } = useProfile()
+    const { profile} = useProfile()
     const account = useAccount()
     const network = useNetwork()
     const navigation = useNavigation()
