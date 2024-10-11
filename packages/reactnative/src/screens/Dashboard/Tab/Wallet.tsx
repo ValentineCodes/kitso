@@ -14,10 +14,15 @@ import { truncateAddress } from '../../../utils/helperFunctions'
 import CopyableText from '../../../components/CopyableText'
 import useAccount from '../../../hooks/scaffold-eth/useAccount'
 import useNetwork from '../../../hooks/scaffold-eth/useNetwork'
+<<<<<<< HEAD
 import { useProfile } from '../../../context/ProfileContext'
 import NetworkToken from '../../../components/cards/tokens/NetworkToken'
 import LSP7Token from '../../../components/cards/tokens/LSP7Token'
 import Assets from './DebugContracts/modules/Assets'
+=======
+import { useProfile } from '../../../hooks/useProfile'
+import NetworkToken from '../../../components/NetworkToken'
+>>>>>>> 4e24343 (refactor: change network token component name)
 
 let backHandler: NativeEventSubscription;
 
