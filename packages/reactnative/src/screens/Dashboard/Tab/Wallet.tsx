@@ -15,7 +15,7 @@ import CopyableText from '../../../components/CopyableText'
 import useAccount from '../../../hooks/scaffold-eth/useAccount'
 import useNetwork from '../../../hooks/scaffold-eth/useNetwork'
 import { useProfile } from '../../../context/ProfileContext'
-import NetworkToken from '../../../components/NetworkToken'
+import NetworkToken from '../../../components/cards/NetworkToken'
 
 let backHandler: NativeEventSubscription;
 

@@ -1,11 +1,10 @@
 import { VStack, HStack, View, Image, Text, Pressable } from 'native-base'
 import React, { useEffect } from 'react'
-import useNetwork from '../hooks/scaffold-eth/useNetwork'
-import { WINDOW_WIDTH } from '../utils/styles'
-import useBalance from '../hooks/scaffold-eth/useBalance'
-import useAccount from '../hooks/scaffold-eth/useAccount'
-import { useCryptoPrice } from '../hooks/scaffold-eth/useCryptoPrice'
-import { useNavigation } from '@react-navigation/native'
+import useNetwork from '../../hooks/scaffold-eth/useNetwork'
+import { WINDOW_WIDTH } from '../../utils/styles'
+import useBalance from '../../hooks/scaffold-eth/useBalance'
+import useAccount from '../../hooks/scaffold-eth/useAccount'
+import { useCryptoPrice } from '../../hooks/scaffold-eth/useCryptoPrice'
 
 type Props = {}
 
