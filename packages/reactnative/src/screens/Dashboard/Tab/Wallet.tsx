@@ -17,6 +17,7 @@ import useNetwork from '../../../hooks/scaffold-eth/useNetwork'
 import { useProfile } from '../../../context/ProfileContext'
 import NetworkToken from '../../../components/cards/tokens/NetworkToken'
 import LSP7Token from '../../../components/cards/tokens/LSP7Token'
+import Assets from './DebugContracts/modules/Assets'
 
 let backHandler: NativeEventSubscription;
 
@@ -230,19 +231,7 @@ function Wallet({ }: WalletProps) {
                 )}
             </VStack>
 
-            {/* Tokens */}
-            <VStack px={2} mt={5}>
-                <Text
-                    fontSize={"xl"}
-                    bold
-                    mb={"4"}
-                >
-                    Tokens
-                </Text>
-
-                <NetworkToken />
-                <LSP7Token />
-            </VStack>
+            <Assets />
         </ScrollView>
     )
 }

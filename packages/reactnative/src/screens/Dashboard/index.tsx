@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from "react-native-vector-icons/dist/Ionicons"
 
 import Home from './Tab/Home';
-import DebugContracts from './Tab/DebugContracts';
+import DebugContracts from './Tab/DebugContracts/DebugContracts';
 import Wallet from './Tab/Wallet';
 import Settings from './Tab/Settings';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../utils/styles';

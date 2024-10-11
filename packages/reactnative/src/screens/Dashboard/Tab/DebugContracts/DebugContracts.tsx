@@ -1,12 +1,12 @@
 import { Text, View } from 'native-base'
 import React from 'react'
 
-import ContractUI from "./modules/debugContracts/contract/ContractUI"
-import { getAllContracts } from '../../../../utils/scaffold-eth/contractsData'
+import ContractUI from "../modules/debugContracts/contract/ContractUI"
+import { getAllContracts } from '../../../../../utils/scaffold-eth/contractsData'
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { COLORS } from '../../../utils/constants';
-import { FONT_SIZE } from '../../../utils/styles';
+import { COLORS } from '../../../../utils/constants';
+import { FONT_SIZE } from '../../../../utils/styles';
 import { useIsFocused } from '@react-navigation/native';
 
 const Tab = createMaterialTopTabNavigator();
