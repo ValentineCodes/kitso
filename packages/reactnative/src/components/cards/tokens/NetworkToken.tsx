@@ -1,14 +1,16 @@
 import { VStack, HStack, View, Image, Text, Pressable } from 'native-base'
 import React, { useEffect } from 'react'
-import useNetwork from '../../hooks/scaffold-eth/useNetwork'
-import { WINDOW_WIDTH } from '../../utils/styles'
-import useBalance from '../../hooks/scaffold-eth/useBalance'
-import useAccount from '../../hooks/scaffold-eth/useAccount'
-import { useCryptoPrice } from '../../hooks/scaffold-eth/useCryptoPrice'
+import useNetwork from '../../../hooks/scaffold-eth/useNetwork'
+import { WINDOW_WIDTH } from '../../../utils/styles'
+import useBalance from '../../../hooks/scaffold-eth/useBalance'
+import useAccount from '../../../hooks/scaffold-eth/useAccount'
+import { useCryptoPrice } from '../../../hooks/scaffold-eth/useCryptoPrice'
+import { useNavigation } from '@react-navigation/native'
 
 type Props = {}
 
 export default function NetworkToken({ }: Props) {
+    const navigation = useNavigation()
     const network = useNetwork()
     const account = useAccount()
     const { balance } = useBalance({ address: account.address })
@@ -41,7 +43,7 @@ export default function NetworkToken({ }: Props) {
                     p={3}
                 >
                     <Image
-                        source={require("../../assets/images/lukso_logo.png")}
+                        source={require("../../../../assets/images/lukso_logo.png")}
                         alt="LYX token"
                         w={"full"}
                         h={"full"}

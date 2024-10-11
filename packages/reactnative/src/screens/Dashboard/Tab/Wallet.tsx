@@ -15,7 +15,8 @@ import CopyableText from '../../../components/CopyableText'
 import useAccount from '../../../hooks/scaffold-eth/useAccount'
 import useNetwork from '../../../hooks/scaffold-eth/useNetwork'
 import { useProfile } from '../../../context/ProfileContext'
-import NetworkToken from '../../../components/cards/NetworkToken'
+import NetworkToken from '../../../components/cards/tokens/NetworkToken'
+import LSP7Token from '../../../components/cards/tokens/LSP7Token'
 
 let backHandler: NativeEventSubscription;
 
@@ -240,6 +241,7 @@ function Wallet({ }: WalletProps) {
                 </Text>
 
                 <NetworkToken />
+                <LSP7Token />
             </VStack>
         </ScrollView>
     )
