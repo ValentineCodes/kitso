@@ -4,6 +4,8 @@ import { WINDOW_WIDTH } from '../../../utils/styles'
 import Blockie from '../../Blockie'
 import { useNavigation } from '@react-navigation/native'
 import { getFirstSixHex } from '../../../utils/helperFunctions'
+import useLsp7TokenBalance from '../../../hooks/useLSP7TokenBalance'
+import { ethers } from 'ethers'
 
 type Props = {
     address: string
@@ -14,6 +16,8 @@ type Props = {
 
 export default function LSP7Token({ address, icon, name, symbol }: Props) {
 const navigation = useNavigation()
+
+const {balance} = useLsp7TokenBalance({tokenAddress: address})
 
     return (
         <VStack
@@ -63,7 +67,7 @@ const navigation = useNavigation()
                     </Text>
 
                     <HStack alignItems={"center"} space={2}>
-                        <Text fontSize={"2xl"} bold>1</Text>
+                        <Text fontSize={"2xl"} bold>{balance && ethers.utils.formatUnits(balance, 0)}</Text>
                         <Text fontSize={"md"} bold color={"gray.400"}>{symbol}</Text>
                     </HStack>
                 </VStack>
