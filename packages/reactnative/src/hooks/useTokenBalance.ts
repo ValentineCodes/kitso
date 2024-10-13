@@ -2,18 +2,21 @@ import {useEffect} from 'react';
 import useContractRead from './scaffold-eth/useContractRead'; // Import your existing hook
 import useAccount from './scaffold-eth/useAccount';
 import LSP7 from '@lukso/lsp-smart-contracts/artifacts/LSP7DigitalAsset.json';
+import LSP8 from '@lukso/lsp-smart-contracts/artifacts/LSP8IdentifiableDigitalAsset.json'; // Adjust the path as necessary
 
-interface UseLsp7TokenBalanceOptions {
+interface UseTokenBalanceOptions {
   tokenAddress: string; // The LSP7 token contract address
+  type: 'LSP7' | 'LSP8';
 }
 
-export default function useLsp7TokenBalance({
+export default function useTokenBalance({
   tokenAddress,
-}: UseLsp7TokenBalanceOptions) {
+  type,
+}: UseTokenBalanceOptions) {
   const account = useAccount();
 
   const {data, isLoading, error, refetch} = useContractRead({
-    abi: LSP7.abi,
+    abi: type === 'LSP7' ? LSP7.abi : LSP8.abi,
     address: tokenAddress,
     functionName: 'balanceOf',
     args: [account.address],

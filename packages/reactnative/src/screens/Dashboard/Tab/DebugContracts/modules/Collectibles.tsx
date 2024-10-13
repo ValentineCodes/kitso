@@ -1,13 +1,29 @@
-import { ScrollView } from 'native-base'
-import React from 'react'
-import LSP8Token from '../../../../../components/cards/tokens/LSP8Token'
+import {ScrollView} from 'native-base';
+import React from 'react';
+import LSP8Token from '../../../../../components/cards/tokens/LSP8Token';
+import {useProfile} from '../../../../../context/ProfileContext';
 
-type Props = {}
+type Props = {};
 
 export default function Collectibles({}: Props) {
+  const {lsp5ReceivedAssets} = useProfile();
+
   return (
-    <ScrollView flex={"1"} bgColor={"white"} p={2}>
-        <LSP8Token />
+    <ScrollView
+      contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}
+      bgColor={'white'}
+      p={2}>
+      {lsp5ReceivedAssets
+        .filter(token => ['LSP8', 'LSP8 COLLECTION'].includes(token.type))
+        .map(token => (
+          <LSP8Token
+            key={token.name}
+            address={token.address}
+            name={token.name}
+            symbol={token.symbol}
+            type={token.type}
+          />
+        ))}
     </ScrollView>
-  )
+  );
 }

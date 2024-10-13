@@ -6,8 +6,16 @@ import { WINDOW_WIDTH } from '../../../utils/styles'
 import Blockie from '../../Blockie'
 import { COLORS } from '../../../utils/constants'
 import { truncateAddress } from '../../../utils/helperFunctions'
+import useTokenBalance from '../../../hooks/useTokenBalance'
+import { ethers } from 'ethers'
 
-type Props = {}
+type Props = {
+    address: string
+    icon?: string
+    name: string
+    symbol: string
+    type: string
+}
 
 const Creators = () => {
     return (
@@ -50,7 +58,9 @@ const Creators = () => {
     )
 }
 
-export default function LSP8Token({}: Props) {
+export default function LSP8Token({ address, icon, name, symbol, type }: Props) {
+    const {balance} = useTokenBalance({tokenAddress: address, type: "LSP8"})
+    
   return (
     <VStack
         borderWidth={"1"}
@@ -59,7 +69,7 @@ export default function LSP8Token({}: Props) {
     >
          <Image
             source={require("../../../../assets/images/default_profile_cover.jpg")}
-            alt="LSP7 token"
+            alt="LSP8 token"
             w={WINDOW_WIDTH}
             h={WINDOW_WIDTH}
             resizeMode='cover'
@@ -70,13 +80,13 @@ export default function LSP8Token({}: Props) {
             p={4}
         >
             <HStack space={1.5} alignItems={"center"}>
-                <Text bold fontSize={"md"}>Burnt Pix</Text>
-                <Text bold color={"gray.400"}>BPix</Text>
+                <Text bold fontSize={"md"}>{name}</Text>
+                <Text bold color={"gray.400"}>{symbol}</Text>
             </HStack>
 
             <HStack space={1.5} alignItems={"center"}>
                 <Text bold fontSize={"xs"}>Owns</Text>
-                <Text bold fontSize={"xs"}>42</Text>
+                <Text bold fontSize={"xs"}>{balance && ethers.utils.formatUnits(balance, "0")}</Text>
             </HStack>
 
             <Creators />
@@ -100,12 +110,12 @@ export default function LSP8Token({}: Props) {
 
             <HStack alignItems={"center"} justifyContent={"space-between"}>
                 <Text bg={"purple.100"} borderRadius={"md"} fontSize={"xs"} px={2} py={1}>
-                    LSP8 COLLECTION
+                    {type}
                 </Text>
 
                 <HStack alignItems={"center"} space={"2"}>
-                    <Blockie address={"0x80d898c5a3a0b118a0c8c8adcdbb260fc687f1ce"} size={15} />    
-                    <Text bold color={"gray.400"}>{truncateAddress("0x80d898c5a3a0b118a0c8c8adcdbb260fc687f1ce")}</Text>
+                    <Blockie address={address} size={15} />    
+                    <Text bold color={"gray.400"}>{truncateAddress(address)}</Text>
                 </HStack>
             </HStack>
         </VStack>
