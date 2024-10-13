@@ -19,6 +19,7 @@ export default function Tokens({}: Props) {
         .filter(token => token.type === 'LSP7')
         .map(token => (
           <LSP7Token
+            key={token.name}
             address={token.address}
             icon=""
             name={token.name}
