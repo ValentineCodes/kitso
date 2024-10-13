@@ -1,11 +1,9 @@
 import React, { createContext, useState, useEffect, useCallback, useContext, ReactNode } from 'react';
 import { ERC725, ERC725JSONSchema } from '@erc725/erc725.js';
 import lsp3ProfileSchema from '@erc725/erc725.js/schemas/LSP3ProfileMetadata.json';
+import lsp4MetadataSchema from '@erc725/erc725.js/schemas/LSP4DigitalAsset.json';
 import useAccount from '../hooks/scaffold-eth/useAccount';
 import useNetwork from '../hooks/scaffold-eth/useNetwork';
-import { ethers } from 'ethers';
-import LSP7ABI from '../abis/LSP7ABI.json';
-import LSP8ABI from '../abis/LSP8ABI.json';
 
 // Profile Types
 interface Profile {
@@ -34,55 +32,41 @@ interface AssetMetadata {
   address: string;
   name: string;
   symbol: string;
-  type: 'LSP7' | 'LSP8';
+  icon?: string | null;
+  type: 'LSP7' | 'LSP8' | 'LSP8 COLLECTION';
 }
 
 interface UseProfileResult {
   profile: Profile | null;
-  lsp7Assets: AssetMetadata[];
-  lsp8Assets: AssetMetadata[];
+  lsp12IssuedAssets: AssetMetadata[];  // Combined storage for LSP7 and LSP8 assets
+  lsp5ReceivedAssets: AssetMetadata[];
   isFetchingAssets: boolean;
-  isFetchingProfile: boolean; // Added loading state for profile fetching
+  isFetchingProfile: boolean;
   fetchProfile: () => Promise<Profile | null>;
-  fetchAssets: () => Promise<{ lsp7Assets: AssetMetadata[]; lsp8Assets: AssetMetadata[] }>; // Fetch function signature
+  fetchAssets: () => Promise<{
+    lsp12IssuedAssets: AssetMetadata[];
+    lsp5ReceivedAssets: AssetMetadata[];
+  }>;
 }
 
-// Define props for the ProfileProvider component
 interface ProfileProviderProps {
-  children: ReactNode; // Type definition for children
+  children: ReactNode;
 }
 
 // Create Profile Context
 const ProfileContext = createContext<UseProfileResult | undefined>(undefined);
 
-// Helper to check if the asset is LSP7 or LSP8
-const getAssetType = async (assetAddress: string, provider: ethers.providers.Provider) => {
-  const contract = new ethers.Contract(assetAddress, LSP7ABI, provider);
-  try {
-    // Try calling a function specific to LSP7 to check if the contract implements it
-    await contract.totalSupply();
-    return 'LSP7';
-  } catch {
-    // If it fails, it's probably LSP8, so try that ABI
-    const lsp8Contract = new ethers.Contract(assetAddress, LSP8ABI, provider);
-    try {
-      await lsp8Contract.tokenId(); // Call a unique LSP8 function
-      return 'LSP8';
-    } catch {
-      return null; // Unknown type or unsupported asset
-    }
-  }
-};
+const TOKEN_TYPES = ['LSP7', 'LSP8', 'LSP8 COLLECTION'];
 
 // Profile Provider Component
 export const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) => {
   const account = useAccount();
   const network = useNetwork();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [lsp7Assets, setLSP7Assets] = useState<AssetMetadata[]>([]);
-  const [lsp8Assets, setLSP8Assets] = useState<AssetMetadata[]>([]);
-  const [isFetchingAssets, setIsFetchingAssets] = useState<boolean>(false); // Track asset fetching status
-  const [isFetchingProfile, setIsFetchingProfile] = useState<boolean>(false); // Track profile fetching status
+  const [lsp12IssuedAssets, setLsp12IssuedAssets] = useState<AssetMetadata[]>([]); // Combined assets
+  const [lsp5ReceivedAssets, setLsp5ReceivedAssets] = useState<AssetMetadata[]>([]);
+  const [isFetchingAssets, setIsFetchingAssets] = useState(false);
+  const [isFetchingProfile, setIsFetchingProfile] = useState(false);
 
   // Fetch profile data
   const fetchProfile = useCallback(async (): Promise<Profile | null> => {
@@ -95,13 +79,11 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) =>
       lsp3ProfileSchema as ERC725JSONSchema[],
       account.address,
       network.provider,
-      {
-        ipfsGateway: network.ipfsGateway,
-      },
+      { ipfsGateway: network.ipfsGateway }
     );
 
     try {
-      setIsFetchingProfile(true); // Set fetching state to true
+      setIsFetchingProfile(true);
       const profileMetaData = await erc725js.fetchData('LSP3Profile');
       if (profileMetaData.value && typeof profileMetaData.value === 'object' && 'LSP3Profile' in profileMetaData.value) {
         const fetchedProfile = profileMetaData.value.LSP3Profile;
@@ -109,92 +91,118 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) =>
         return fetchedProfile;
       }
     } catch (error) {
-      console.log('Cannot fetch universal profile data: ', error);
+      console.error('Cannot fetch universal profile data:', error);
     } finally {
-      setIsFetchingProfile(false); // Set fetching state to false after profile is loaded
+      setIsFetchingProfile(false);
     }
 
     return null;
   }, [account, network]);
 
-  // Fetch issued assets after the profile is loaded
+  // Fetch Assets (LSP7, LSP8, LSP5)
   const fetchAssets = useCallback(async () => {
-    if (!account?.isConnected) return { lsp7Assets, lsp8Assets }; // Return existing assets if not connected
+    if (!account?.isConnected) return { lsp12IssuedAssets, lsp5ReceivedAssets };
 
-    const erc725js = new ERC725(
-      lsp3ProfileSchema as ERC725JSONSchema[],
-      account.address,
-      network.provider,
-      {
-        ipfsGateway: network.ipfsGateway,
-      },
-    );
+    const erc725js = new ERC725(lsp3ProfileSchema as ERC725JSONSchema[], account.address, network.provider, {
+      ipfsGateway: network.ipfsGateway,
+    });
 
     try {
-      setIsFetchingAssets(true); // Set fetching state to true
-      const lsp12IssuedAssets = await erc725js.fetchData('LSP12IssuedAssets[]');
-      const lsp7List: AssetMetadata[] = [];
-      const lsp8List: AssetMetadata[] = [];
+      setIsFetchingAssets(true);
 
-      if (lsp12IssuedAssets.value && Array.isArray(lsp12IssuedAssets.value)) {
-        const assets = lsp12IssuedAssets.value;
+      const lsp12IssuedAssetsData = await erc725js.fetchData('LSP12IssuedAssets[]');
+      const lsp5ReceivedAssetsData = await erc725js.fetchData('LSP5ReceivedAssets[]');
 
-        const provider = new ethers.providers.JsonRpcProvider(network.provider);
+      const fetchLSP4Metadata = async (assetAddress: string) => {
+        try {
+          const erc725 = new ERC725(lsp4MetadataSchema, assetAddress, network.provider, {
+            ipfsGateway: network.ipfsGateway,
+          });
 
-        for (const asset of assets) {
-          const assetType = await getAssetType(asset, provider);
-          if (assetType) {
-            const contract = new ethers.Contract(asset, assetType === 'LSP7' ? LSP7ABI : LSP8ABI, provider);
-            const name = await contract.name();
-            const symbol = await contract.symbol();
+          const name = await erc725.fetchData('LSP4TokenName');
+          const symbol = await erc725.fetchData('LSP4TokenSymbol');
+          const type = await erc725.fetchData('LSP4TokenType');
 
-            const assetMetadata: AssetMetadata = {
-              address: asset,
-              name,
-              symbol,
-              type: assetType,
-            };
-
-            if (assetType === 'LSP7') {
-              lsp7List.push(assetMetadata);
-            } else {
-              lsp8List.push(assetMetadata);
-            }
-          }
+          return { name: name.value, symbol: symbol.value, type: TOKEN_TYPES[type.value as unknown as number] };
+        } catch (error) {
+          console.error('Error fetching LSP4 metadata:', error);
+          return { name: 'Unknown', symbol: 'Unknown', icon: null };
         }
+      };
 
-        setLSP7Assets(lsp7List);
-        setLSP8Assets(lsp8List);
+      const lsp12List: AssetMetadata[] = []; // Unified storage for LSP7 and LSP8
+
+      // Process LSP12 issued assets
+      if (Array.isArray(lsp12IssuedAssetsData.value)) {
+        for (const asset of lsp12IssuedAssetsData.value) {
+          const metadata = await fetchLSP4Metadata(asset);
+          const assetMetadata: AssetMetadata = {
+            address: asset,
+            name: metadata.name as string,
+            symbol: metadata.symbol as string,
+            icon: 'metadata.icon',
+            type: metadata.type as any,
+          };
+          lsp12List.push(assetMetadata);
+        }
       }
+
+      // Process LSP5 received assets
+      const lsp5List: AssetMetadata[] = [];
+      if (Array.isArray(lsp5ReceivedAssetsData.value)) {
+        for (const asset of lsp5ReceivedAssetsData.value) {
+          const metadata = await fetchLSP4Metadata(asset);
+          const assetMetadata: AssetMetadata = {
+            address: asset,
+            name: metadata.name as string,
+            symbol: metadata.symbol as string,
+            icon: metadata.icon,
+            type: metadata.type as any,
+          };
+          lsp5List.push(assetMetadata);
+        }
+      }
+
+      setLsp12IssuedAssets(lsp12List);
+      setLsp5ReceivedAssets(lsp5List);
     } catch (error) {
-      console.log('Cannot fetch issued assets: ', error);
+      console.error('Error fetching assets:', error);
     } finally {
-      setIsFetchingAssets(false); // Set fetching state to false after assets are loaded
+      setIsFetchingAssets(false);
     }
 
-    return { lsp7Assets, lsp8Assets }; // Return the assets as requested
+    return { lsp12IssuedAssets, lsp5ReceivedAssets };
   }, [account, network]);
 
-  // Fetch profile automatically on mount and trigger fetching assets
   useEffect(() => {
     const fetchData = async () => {
       await fetchProfile();
-      await fetchAssets(); // Fetch assets after profile is loaded
+      await fetchAssets();
     };
     fetchData();
   }, [account, network, fetchProfile]);
 
   return (
-    <ProfileContext.Provider value={{ profile, lsp7Assets, lsp8Assets, isFetchingAssets, isFetchingProfile, fetchProfile, fetchAssets }}>
+    <ProfileContext.Provider
+      value={{
+        profile,
+        lsp12IssuedAssets, // Unified assets
+        lsp5ReceivedAssets,
+        isFetchingAssets,
+        isFetchingProfile,
+        fetchProfile,
+        fetchAssets,
+      }}
+    >
       {children}
     </ProfileContext.Provider>
   );
 };
 
-// Custom Hook to use Profile Context
+// Custom hook to use profile context
 export const useProfile = (): UseProfileResult => {
   const context = useContext(ProfileContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useProfile must be used within a ProfileProvider');
   }
   return context;

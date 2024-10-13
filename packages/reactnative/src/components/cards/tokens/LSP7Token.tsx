@@ -4,17 +4,27 @@ import { WINDOW_WIDTH } from '../../../utils/styles'
 import Blockie from '../../Blockie'
 import { useNavigation } from '@react-navigation/native'
 import { getFirstSixHex } from '../../../utils/helperFunctions'
+import useLsp7TokenBalance from '../../../hooks/useLSP7TokenBalance'
+import { ethers } from 'ethers'
 
-type Props = {}
+type Props = {
+    address: string
+    icon: string
+    name: string
+    symbol: string
+}
 
-export default function LSP7Token({ }: Props) {
+export default function LSP7Token({ address, icon, name, symbol }: Props) {
 const navigation = useNavigation()
+
+const {balance} = useLsp7TokenBalance({tokenAddress: address})
 
     return (
         <VStack
             borderWidth={"1"}
             borderRadius={"2xl"}
             borderColor={"gray.200"}
+            mt={2}
             pt={"8"}
             pb={"4"}
             pl={"6"}
@@ -41,11 +51,11 @@ const navigation = useNavigation()
                             borderColor={"white"}
                             borderRadius={"full"}
                         >
-                            <Blockie address={"0x80d898c5a3a0b118a0c8c8adcdbb260fc687f1ce"} size={20} />
+                            <Blockie address={address} size={20} />
                         </View>
                     </Pressable>
 
-                    <Text fontWeight={"semibold"} color={"gray.400"}>#{getFirstSixHex("0x80d898c5a3a0b118a0c8c8adcdbb260fc687f1ce")}</Text>
+                    <Text fontWeight={"semibold"} color={"gray.400"}>#{getFirstSixHex(address)}</Text>
                 </VStack>
 
                 <VStack space={0.2}>
@@ -53,12 +63,12 @@ const navigation = useNavigation()
                         fontSize={"sm"}
                         bold
                     >
-                        Just a Potato 🥔
+                        {name}
                     </Text>
 
                     <HStack alignItems={"center"} space={2}>
-                        <Text fontSize={"2xl"} bold>1</Text>
-                        <Text fontSize={"md"} bold color={"gray.400"}>POTATO</Text>
+                        <Text fontSize={"2xl"} bold>{balance && ethers.utils.formatUnits(balance, 0)}</Text>
+                        <Text fontSize={"md"} bold color={"gray.400"}>{symbol}</Text>
                     </HStack>
                 </VStack>
             </HStack>

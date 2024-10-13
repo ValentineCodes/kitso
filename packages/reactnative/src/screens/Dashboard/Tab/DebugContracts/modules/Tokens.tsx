@@ -1,15 +1,31 @@
-import React from 'react'
-import NetworkToken from '../../../../../components/cards/tokens/NetworkToken'
-import { View } from 'native-base'
-import LSP7Token from '../../../../../components/cards/tokens/LSP7Token'
+import React from 'react';
+import NetworkToken from '../../../../../components/cards/tokens/NetworkToken';
+import {ScrollView} from 'native-base';
+import LSP7Token from '../../../../../components/cards/tokens/LSP7Token';
+import {useProfile} from '../../../../../context/ProfileContext';
 
-type Props = {}
+type Props = {};
 
 export default function Tokens({}: Props) {
+  const {lsp5ReceivedAssets} = useProfile();
   return (
-    <View flex={"1"} bgColor={"white"} p={2}>
-        <NetworkToken />
-        <LSP7Token />
-    </View>
-  )
+    <ScrollView
+      contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}
+      bgColor={'white'}
+      p={2}>
+      <NetworkToken />
+
+      {lsp5ReceivedAssets
+        .filter(token => token.type === 'LSP7')
+        .map(token => (
+          <LSP7Token
+            key={token.name}
+            address={token.address}
+            icon=""
+            name={token.name}
+            symbol={token.symbol}
+          />
+        ))}
+    </ScrollView>
+  );
 }
