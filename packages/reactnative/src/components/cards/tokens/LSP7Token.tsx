@@ -4,7 +4,7 @@ import { WINDOW_WIDTH } from '../../../utils/styles'
 import Blockie from '../../Blockie'
 import { useNavigation } from '@react-navigation/native'
 import { getFirstSixHex } from '../../../utils/helperFunctions'
-import useLsp7TokenBalance from '../../../hooks/useLSP7TokenBalance'
+import useTokenBalance from '../../../hooks/useTokenBalance'
 import { ethers } from 'ethers'
 
 type Props = {
@@ -17,7 +17,7 @@ type Props = {
 export default function LSP7Token({ address, icon, name, symbol }: Props) {
 const navigation = useNavigation()
 
-const {balance} = useLsp7TokenBalance({tokenAddress: address})
+const {balance} = useTokenBalance({tokenAddress: address, type: "LSP7"})
 
     return (
         <VStack
