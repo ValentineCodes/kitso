@@ -119,6 +119,8 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) =>
             ipfsGateway: network.ipfsGateway,
           });
 
+          const metadata = await erc725.fetchData('LSP4Metadata');
+          console.log("metadata: ", metadata)
           const name = await erc725.fetchData('LSP4TokenName');
           const symbol = await erc725.fetchData('LSP4TokenSymbol');
           const type = await erc725.fetchData('LSP4TokenType');
