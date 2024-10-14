@@ -11,7 +11,7 @@ import { ethers } from 'ethers'
 
 type Props = {
     address: string
-    icon?: string
+    image: string | null
     name: string
     symbol: string
     type: string
@@ -58,7 +58,7 @@ const Creators = () => {
     )
 }
 
-export default function LSP8Token({ address, icon, name, symbol, type }: Props) {
+export default function LSP8Token({ address, image, name, symbol, type }: Props) {
     const {balance} = useTokenBalance({tokenAddress: address, type: "LSP8"})
     
   return (
@@ -67,7 +67,17 @@ export default function LSP8Token({ address, icon, name, symbol, type }: Props) 
         rounded={"xl"}
         borderColor={"gray.200"}
     >
+        {image? (
          <Image
+         source={{uri: image}}
+         alt="LSP8 token"
+         w={WINDOW_WIDTH}
+         h={WINDOW_WIDTH}
+         resizeMode='cover'
+         roundedTop={"xl"}
+     />
+        ): (
+            <Image
             source={require("../../../../assets/images/default_profile_cover.jpg")}
             alt="LSP8 token"
             w={WINDOW_WIDTH}
@@ -75,6 +85,7 @@ export default function LSP8Token({ address, icon, name, symbol, type }: Props) 
             resizeMode='cover'
             roundedTop={"xl"}
         />
+        )}
 
         <VStack
             p={4}
