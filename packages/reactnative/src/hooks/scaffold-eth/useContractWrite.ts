@@ -16,7 +16,7 @@ import {Abi} from 'abitype';
 import {useState} from 'react';
 import {TransactionReceipt} from 'viem';
 import {STORAGE_KEY} from '../../utils/constants';
-import {Account} from '../useWallet';
+import {Controller} from '../useWallet';
 
 interface UseWriteConfig {
   abi: ContractInterface | Abi;
@@ -91,7 +91,7 @@ export default function useContractWrite({
       try {
         const provider = new ethers.providers.JsonRpcProvider(network.provider);
 
-        const controller: Account = JSON.parse(
+        const controller: Controller = JSON.parse(
           await SInfo.getItem('controller', STORAGE_KEY),
         );
 
