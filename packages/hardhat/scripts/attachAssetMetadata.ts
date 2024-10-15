@@ -77,6 +77,7 @@ export async function attachAssetMetadata(assetAddress: string, imagePath: strin
   const [signer] = await ethers.getSigners();
   console.log("Updating metadata with signer:", signer.address);
 
+  console.log("Attaching metadata to ", assetAddress);
   const token = await ethers.getContractAt("MockLSP8", assetAddress);
 
   const { url: networkUrl } = network.config as CustomNetworkConfig;
@@ -165,7 +166,7 @@ export async function attachAssetMetadata(assetAddress: string, imagePath: strin
   const tx = await token.setDataBatch(encodedMetadata.keys, encodedMetadata.values);
   const receipt = await tx.wait();
 
-  console.log("Metadata updated successfully. Transaction receipt:", receipt);
+  console.log("Metadata updated successfully✅");
 }
 
 // Replace with the correct asset address and image path
