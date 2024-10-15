@@ -9,12 +9,12 @@ import { ethers } from 'ethers'
 
 type Props = {
     address: string
-    icon: string
+    image: string | null
     name: string
     symbol: string
 }
 
-export default function LSP7Token({ address, icon, name, symbol }: Props) {
+export default function LSP7Token({ address, image, name, symbol }: Props) {
 const navigation = useNavigation()
 
 const {balance} = useTokenBalance({tokenAddress: address, type: "LSP7"})
@@ -36,13 +36,25 @@ const {balance} = useTokenBalance({tokenAddress: address, type: "LSP7"})
                 <VStack alignItems={"center"} space={2}>
                     {/* Profile image */}
                     <Pressable>
-                        <Image
-                            source={require("../../../../assets/images/lukso_logo.png")}
-                            alt="LSP7 token"
-                            w={WINDOW_WIDTH * 0.17}
-                            h={WINDOW_WIDTH * 0.17}
-                            rounded={"full"}
-                        />
+                        {
+                            image? (
+                                <Image
+                                source={{uri: image}}
+                                alt="LSP7 token"
+                                w={WINDOW_WIDTH * 0.17}
+                                h={WINDOW_WIDTH * 0.17}
+                                rounded={"full"}
+                            />
+                            ): (
+                                <Image
+                                source={require("../../../../assets/images/lukso_logo.png")}
+                                alt="LSP7 token"
+                                w={WINDOW_WIDTH * 0.17}
+                                h={WINDOW_WIDTH * 0.17}
+                                rounded={"full"}
+                            />
+                            )
+                        }
                         <View
                             position={"absolute"}
                             bottom={0}

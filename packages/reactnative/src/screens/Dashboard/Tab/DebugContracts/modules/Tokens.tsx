@@ -8,6 +8,7 @@ type Props = {};
 
 export default function Tokens({}: Props) {
   const {lsp5ReceivedAssets} = useProfile();
+
   return (
     <ScrollView
       contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}
@@ -21,7 +22,7 @@ export default function Tokens({}: Props) {
           <LSP7Token
             key={token.name}
             address={token.address}
-            icon=""
+            image={token.image}
             name={token.name}
             symbol={token.symbol}
           />

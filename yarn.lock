@@ -4292,6 +4292,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@kitso/hardhat@workspace:packages/hardhat"
   dependencies:
+    "@erc725/erc725.js": ^0.27.1
     "@ethersproject/abi": ^5.7.0
     "@ethersproject/providers": ^5.7.1
     "@lukso/lsp-smart-contracts": ^0.15.0

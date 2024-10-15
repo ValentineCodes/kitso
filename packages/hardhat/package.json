@@ -48,6 +48,7 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
+    "@erc725/erc725.js": "^0.27.1",
     "@openzeppelin/contracts": "^4.8.1",
     "@typechain/ethers-v6": "^0.5.1",
     "dotenv": "^16.0.3",
