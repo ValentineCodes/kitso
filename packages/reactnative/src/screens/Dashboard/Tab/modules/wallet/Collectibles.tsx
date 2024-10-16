@@ -1,30 +1,28 @@
-import React from 'react';
-import NetworkToken from '../../../../../components/cards/tokens/NetworkToken';
 import {ScrollView} from 'native-base';
-import LSP7Token from '../../../../../components/cards/tokens/LSP7Token';
+import React from 'react';
+import LSP8Token from '../../../../../components/cards/tokens/LSP8Token';
 import {useProfile} from '../../../../../context/ProfileContext';
 
 type Props = {};
 
-export default function Tokens({}: Props) {
+export default function Collectibles({}: Props) {
   const {lsp5ReceivedAssets} = useProfile();
 
   return (
     <ScrollView
-      contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}
-      bgColor={'white'}
+      contentContainerStyle={{flexGrow: 1, paddingBottom: 100}}
+      pt={75}
       p={2}>
-      <NetworkToken />
-
       {lsp5ReceivedAssets
-        .filter(token => token.type === 'LSP7')
+        .filter(token => ['LSP8', 'LSP8 COLLECTION'].includes(token.type))
         .map(token => (
-          <LSP7Token
+          <LSP8Token
             key={token.name}
             address={token.address}
-            image={token.image}
             name={token.name}
             symbol={token.symbol}
+            image={token.image}
+            type={token.type}
           />
         ))}
     </ScrollView>

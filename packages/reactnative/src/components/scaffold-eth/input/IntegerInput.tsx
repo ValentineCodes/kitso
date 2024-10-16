@@ -53,7 +53,7 @@ export default function IntegerInput({
                         px={"4"}
                         mt={"1"}
                     >
-                        <Text fontSize={"xl"} fontWeight={"semibold"}>*</Text>
+                        <Text fontSize="2xl" fontWeight={"semibold"}>*</Text>
                     </Pressable>
                 )
             }

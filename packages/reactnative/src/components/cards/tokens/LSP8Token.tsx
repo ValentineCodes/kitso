@@ -63,6 +63,7 @@ export default function LSP8Token({ address, image, name, symbol, type }: Props)
     
   return (
     <VStack
+        bgColor="white"
         borderWidth={"1"}
         rounded={"xl"}
         borderColor={"gray.200"}

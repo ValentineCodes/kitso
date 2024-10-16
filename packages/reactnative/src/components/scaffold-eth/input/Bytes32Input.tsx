@@ -21,7 +21,7 @@ export default function Bytes32Input({ value, onChange, name, placeholder, disab
             disabled={disabled}
             suffix={
                 <Pressable onPress={convertStringToBytes32} px={"4"}>
-                    <Text fontSize={"md"} fontWeight={"semibold"}>#</Text>
+                    <Text fontSize={"lg"} fontWeight={"semibold"}>#</Text>
                 </Pressable>
             }
         />
