@@ -4,7 +4,7 @@ import { COLORS } from '../../../../../utils/constants';
 import { FONT_SIZE } from '../../../../../utils/styles';
 
 // screens
-import Tokens from './Tokens';
+import Tokens from '../../DebugContracts/modules/Tokens';
 import Collectibles from './Collectibles';
 
 const Tab = createMaterialTopTabNavigator();

@@ -15,7 +15,7 @@ import CopyableText from '../../../components/CopyableText'
 import useAccount from '../../../hooks/scaffold-eth/useAccount'
 import useNetwork from '../../../hooks/scaffold-eth/useNetwork'
 import { useProfile } from '../../../context/ProfileContext'
-import Assets from './DebugContracts/modules/Assets'
+import Assets from './modules/wallet/Assets'
 
 let backHandler: NativeEventSubscription;
 
