@@ -196,7 +196,7 @@ export default function CreateProfile({ }: Props) {
                     onPress={() => navigation.goBack()}
                     _pressed={{ opacity: 0.4 }}
                     position={"absolute"}
-                    top={12}
+                    top={4}
                     left={4}
                     bgColor={"gray.300"}
                     borderRadius={"full"}
