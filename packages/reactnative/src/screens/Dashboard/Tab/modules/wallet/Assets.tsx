@@ -1,10 +1,9 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import React from 'react'
-import { COLORS } from '../../../../../utils/constants';
 import { FONT_SIZE } from '../../../../../utils/styles';
 
 // screens
-import Tokens from '../../DebugContracts/modules/Tokens';
+import Tokens from './Tokens';
 import Collectibles from './Collectibles';
 
 const Tab = createMaterialTopTabNavigator();

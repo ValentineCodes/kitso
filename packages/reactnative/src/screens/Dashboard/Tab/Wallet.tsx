@@ -31,6 +31,7 @@ import {useProfile} from '../../../context/ProfileContext';
 import Assets from './modules/wallet/Assets';
 import Link, {LinkProps} from './modules/wallet/Link';
 import {useIPFSGateway} from '../../../hooks/useIPFSGateway';
+import ProfileImages from './modules/wallet/ProfileImages';
 
 let backHandler: NativeEventSubscription;
 
@@ -41,7 +42,6 @@ function Wallet({}: WalletProps) {
   const {profile} = useProfile();
   const account = useAccount();
   const navigation = useNavigation();
-  const {parseIPFSUrl} = useIPFSGateway();
 
   useFocusEffect(() => {
     backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -69,70 +69,10 @@ function Wallet({}: WalletProps) {
         backgroundColor={'transparent'}
       />
 
-      {/* Profile cover */}
-      <View h="25%" zIndex={1} bgColor={'purple.100'}>
-        {profile?.backgroundImage && profile.backgroundImage.length > 0 ? (
-          <Image
-            source={{uri: parseIPFSUrl(profile.backgroundImage[0].url)}}
-            alt="profile cover"
-            w={'full'}
-            h={'full'}
-            resizeMode="cover"
-          />
-        ) : (
-          <Image
-            source={require('../../../../assets/images/default_profile_cover.jpg')}
-            alt="profile cover"
-            w={'full'}
-            h={'full'}
-            resizeMode="cover"
-          />
-        )}
-
-        {/* Profile image */}
-        <VStack
-          position={'absolute'}
-          left={'4'}
-          bottom={-((WINDOW_WIDTH * 0.2) / 2)}
-          alignItems={'flex-start'}>
-          <View
-            w={WINDOW_WIDTH * 0.2}
-            style={{aspectRatio: 1}}
-            borderRadius={'full'}
-            borderWidth={5}
-            borderColor={'white'}
-            bgColor={'green.100'}>
-            {profile?.profileImage && profile.profileImage.length > 0 ? (
-              <Image
-                source={{uri: parseIPFSUrl(profile.profileImage[0].url)}}
-                alt="profile image"
-                w={'full'}
-                h={'full'}
-                borderRadius={'full'}
-                resizeMode="cover"
-              />
-            ) : (
-              <Image
-                source={require('../../../../assets/images/default_profile_image.jpeg')}
-                alt="profile image"
-                w={'full'}
-                h={'full'}
-                resizeMode="cover"
-                borderRadius={'full'}
-              />
-            )}
-            <View
-              position={'absolute'}
-              bottom={0}
-              right={0}
-              borderWidth={3}
-              borderColor={'white'}
-              borderRadius={'full'}>
-              <Blockie address={account.address} size={20} />
-            </View>
-          </View>
-        </VStack>
-      </View>
+      <ProfileImages 
+        coverImageURL={profile?.backgroundImage && profile.backgroundImage.length > 0 ? profile.backgroundImage[0].url : null}
+        profileImageURL={profile?.profileImage && profile.profileImage.length > 0 ? profile.profileImage[0].url : null}
+      />
 
       {/* @ts-ignore */}
       <Pressable onPress={() => navigation.navigate('EditProfile')}>
