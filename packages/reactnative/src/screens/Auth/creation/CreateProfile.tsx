@@ -147,8 +147,8 @@ export default function CreateProfile({}: Props) {
         }
 
         profileMetadata.LSP3Profile.backgroundImage.push({
-          width: 1024,
-          height: 1024,
+          width: 1500,
+          height: 500,
           verification: {
             method: 'keccak256(bytes)',
             data: _coverImage.bufferHash,
@@ -192,12 +192,20 @@ export default function CreateProfile({}: Props) {
   const captureCoverImage = () => {
     openModal('ImageCaptureModal', {
       onCapture: setCoverImage,
+      imageDim: {
+        width: 1500,
+        height: 500
+      }
     });
   };
 
   const captureProfileImage = () => {
     openModal('ImageCaptureModal', {
       onCapture: setProfileImage,
+      imageDim: {
+        width: 1024,
+        height: 1024
+      }
     });
   };
 

@@ -127,7 +127,7 @@ export default function EditProfile({}: Props) {
       };
 
       // Helper function for uploading images and adding to metadata
-      const handleImageUpload = async (image: any, field: string) => {
+      const handleImageUpload = async (image: any, field: string, dimensions: {width: number; height: number}) => {
         const uploadedImage = await uploadImage({
           name: image.name,
           type: image.type,
@@ -140,8 +140,7 @@ export default function EditProfile({}: Props) {
         }
 
         profileMetadata.LSP3Profile[field].push({
-          width: 1024,
-          height: 1024,
+          ...dimensions,
           verification: {
             method: 'keccak256(bytes)',
             data: uploadedImage.bufferHash,
@@ -155,12 +154,12 @@ export default function EditProfile({}: Props) {
       // Upload profile and cover images
       if (
         profileImage &&
-        !(await handleImageUpload(profileImage, 'profileImage'))
+        !(await handleImageUpload(profileImage, 'profileImage', {width: 1024, height: 1024}))
       )
         return;
       if (
         coverImage &&
-        !(await handleImageUpload(coverImage, 'backgroundImage'))
+        !(await handleImageUpload(coverImage, 'backgroundImage', {width: 1500, height: 500}))
       )
         return;
 
@@ -278,6 +277,10 @@ export default function EditProfile({}: Props) {
   const captureCoverImage = () => {
     openModal('ImageCaptureModal', {
       onCapture: setCoverImage,
+      imageDim: {
+        width: 1500,
+        height: 500
+      }
     });
   };
 

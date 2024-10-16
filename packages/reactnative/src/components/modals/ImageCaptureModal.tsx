@@ -11,16 +11,24 @@ export type ImageType = {
     uri: string;
     type: string;
 }
+export type ImageDimension = {
+    width: number
+    height: number
+}
 type ImageCaptureModalProps = {
     modal: {
         closeModal: () => void
         params: {
             onCapture: (image: ImageType) => void;
+            imageDim: {
+                width: number
+                height: number
+            }
         }
     }
 }
 
-function ImageCaptureModal({ modal: { closeModal, params }  }: ImageCaptureModalProps) {
+function ImageCaptureModal({ modal: { closeModal, params }}: ImageCaptureModalProps) {
     const toast = useToast()
 
     async function takePhoto() {
@@ -38,12 +46,10 @@ function ImageCaptureModal({ modal: { closeModal, params }  }: ImageCaptureModal
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                 // capture photo from camera
                 const image = await ImagePicker.openCamera({
-                    width: 1024,
-                    height: 1024,
+                    ...params.imageDim,
                     cropping: true,
                     mediaType: 'photo',
                 })
-                // TO-DO: create helper function to validate images
 
                 // validate capture
                 if (
@@ -75,8 +81,7 @@ function ImageCaptureModal({ modal: { closeModal, params }  }: ImageCaptureModal
     async function choosePhoto() {
         try {
             const image = await ImagePicker.openPicker({
-                width: 1024,
-                height: 1024,
+                ...params.imageDim,
                 cropping: true,
                 mediaType: 'photo',
             })
