@@ -11,13 +11,16 @@ export type ImageType = {
     uri: string;
     type: string;
 }
-type Props = {
-    isOpen: boolean;
-    onClose: () => void;
-    onCapture: (image: ImageType) => void;
+type ImageCaptureModalProps = {
+    modal: {
+        closeModal: () => void
+        params: {
+            onCapture: (image: ImageType) => void;
+        }
+    }
 }
 
-function ImageCaptureModal({ isOpen, onClose, onCapture }: Props) {
+function ImageCaptureModal({ modal: { closeModal, params }  }: ImageCaptureModalProps) {
     const toast = useToast()
 
     async function takePhoto() {
@@ -52,9 +55,9 @@ function ImageCaptureModal({ isOpen, onClose, onCapture }: Props) {
                         uri: image.path,
                         type: image.mime,
                     }
-                    onCapture(_image)
+                    params.onCapture(_image)
 
-                    onClose()
+                    closeModal()
                 } else {
                     toast.show('This is not a valid image. Please select a valid image!', {
                         type: "warning"
@@ -85,9 +88,9 @@ function ImageCaptureModal({ isOpen, onClose, onCapture }: Props) {
                     uri: image.path,
                     type: image.mime,
                 }
-                onCapture(_image)
+                params.onCapture(_image)
 
-                onClose()
+                closeModal()
             } else {
                 toast.show('This is not a valid image. Please select a valid image!', {
                     type: "warning"
@@ -99,7 +102,7 @@ function ImageCaptureModal({ isOpen, onClose, onCapture }: Props) {
     }
 
     return (
-        <Actionsheet isOpen={isOpen} onClose={onClose}>
+        <Actionsheet isOpen={true} onClose={closeModal}>
             <Actionsheet.Content>
                 <Pressable w="100%" h={60} px={4} justifyContent="center" onPress={takePhoto}>
                     <Text fontSize="16" color="gray.500" _dark={{
