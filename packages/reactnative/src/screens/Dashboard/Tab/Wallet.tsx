@@ -1,10 +1,8 @@
 import {
   HStack,
-  Image,
   Pressable,
   ScrollView,
   Text,
-  View,
   VStack,
 } from 'native-base';
 import React, {useEffect} from 'react';
@@ -15,14 +13,9 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 
-import {WINDOW_WIDTH} from '../../../styles/screenDimensions';
-
 import {COLORS} from '../../../utils/constants';
 import {FONT_SIZE} from '../../../utils/styles';
-import {truncateAddress} from '../../../utils/helperFunctions';
-
-import Blockie from '../../../components/Blockie';
-import CopyableText from '../../../components/CopyableText';
+import {getFirst4Hex} from '../../../utils/helperFunctions';
 
 import useAccount from '../../../hooks/scaffold-eth/useAccount';
 
@@ -30,8 +23,9 @@ import {useProfile} from '../../../context/ProfileContext';
 
 import Assets from './modules/wallet/Assets';
 import Link, {LinkProps} from './modules/wallet/Link';
-import {useIPFSGateway} from '../../../hooks/useIPFSGateway';
 import ProfileImages from './modules/wallet/ProfileImages';
+import Clipboard from '@react-native-clipboard/clipboard';
+import { useToast } from 'react-native-toast-notifications';
 
 let backHandler: NativeEventSubscription;
 
@@ -42,6 +36,7 @@ function Wallet({}: WalletProps) {
   const {profile} = useProfile();
   const account = useAccount();
   const navigation = useNavigation();
+  const toast = useToast()
 
   useFocusEffect(() => {
     backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -58,6 +53,13 @@ function Wallet({}: WalletProps) {
   }, []);
 
   if (!isFocused) return;
+
+  const copyAddress = () => {
+    Clipboard.setString(account.address)
+    toast.show("Copied to clipboard", {
+        type: "success"
+    })
+}
 
   return (
     <ScrollView
@@ -92,21 +94,14 @@ function Wallet({}: WalletProps) {
 
       <VStack px={'2'}>
         {/* Username */}
-        <Text color={COLORS.primary} fontSize={FONT_SIZE['xl'] * 1.2} bold>
-          @{profile?.name || 'anonymous'}
-        </Text>
-
-        {/* Profile address */}
-        <CopyableText
-          displayText={truncateAddress(account.address)}
-          value={account.address}
-          textStyle={{
-            fontSize: FONT_SIZE['xl'],
-            fontWeight: '400',
-            color: 'gray',
-          }}
-          iconStyle={{color: COLORS.primary}}
-        />
+        <Pressable onPress={copyAddress} flexDir="row" alignItems="center" _pressed={{ opacity: 0.7 }}>
+          <Text color={COLORS.primary} fontSize={FONT_SIZE['xl'] * 1.2} bold>
+            @{profile?.name || 'anonymous'}
+          </Text>
+          <Text color="gray.400" fontSize={FONT_SIZE['xl']} bold>
+            #{getFirst4Hex(account.address)}
+          </Text>
+        </Pressable>
 
         {/* Bio */}
         {!!profile?.description && (
@@ -136,7 +131,7 @@ function Wallet({}: WalletProps) {
                 px={2}
                 py={0.5}
                 borderWidth={'1'}
-                borderRadius={'md'}
+                borderRadius={'2xl'}
                 borderColor={'gray.300'}
                 alignSelf={'flex-start'}>
                 {tag}

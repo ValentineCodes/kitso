@@ -28,17 +28,17 @@ export default function Link({ title, url }: LinkProps) {
             <HStack
                 alignItems={"center"}
                 alignSelf={"flex-start"}
-                space={"2"}
+                space={2}
                 mt={2}
                 px={2}
                 py={0.5}
                 borderWidth={"1"}
-                borderRadius={"md"}
+                borderRadius={"2xl"}
                 borderColor={"gray.300"}
             >
                 <Icon
                     as={<Ionicons name="link-outline" />}
-                    size={FONT_SIZE['xl']}
+                    size={FONT_SIZE['lg']}
                     color="gray.600"
                     rotation={-45}
                 />
