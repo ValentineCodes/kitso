@@ -1,127 +1,126 @@
-import React, { useEffect, useState } from 'react'
-import { Divider, HStack, Icon, Text, View, VStack } from 'native-base'
-import { useNavigation, useRoute } from '@react-navigation/native'
+import React, { useEffect, useState } from 'react';
+import { Divider, Icon, Text, View, VStack } from 'native-base';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useToast } from 'react-native-toast-notifications';
-// @ts-ignore
-import Ionicons from 'react-native-vector-icons/dist/Ionicons'
-import SInfo from "react-native-sensitive-info";
-
-import styles from "../../../styles/global"
-import { COLORS, STORAGE_KEY } from '../../../utils/constants'
-import { FONT_SIZE } from '../../../utils/styles'
-import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader'
-import Button from '../../../components/Button'
+import SInfo from 'react-native-sensitive-info';
 import { ActivityIndicator } from 'react-native';
-import ProfileAPI from '../../../apis/ProfileAPI';
 import { useDispatch } from 'react-redux';
+
+import styles from '../../../styles/global';
+import { COLORS, STORAGE_KEY } from '../../../utils/constants';
+import { FONT_SIZE } from '../../../utils/styles';
+import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader';
+import Button from '../../../components/Button';
+import ProfileAPI from '../../../apis/ProfileAPI';
 import { initProfiles } from '../../../store/reducers/Profiles';
 import { loginUser } from '../../../store/reducers/Auth';
 
-type DeploymentStatusProps = 'loading' | 'success' | 'error';
+// @ts-ignore
+import Ionicons from 'react-native-vector-icons/dist/Ionicons';
+
+type DeploymentStatus = 'loading' | 'success' | 'error';
 
 export default function DeployProfile() {
-    const navigation = useNavigation()
-    const route = useRoute()
+  const navigation = useNavigation();
+  const route = useRoute();
+  // @ts-ignore
+  const { lsp3DataValue } = route.params;
+  const toast = useToast();
+  const dispatch = useDispatch();
+
+  const [deploymentStatus, setDeploymentStatus] = useState<DeploymentStatus>('loading');
+
+  const setupRecovery = () => {
     // @ts-ignore
-    const { lsp3DataValue } = route.params
-    const toast = useToast()
+    navigation.navigate('SetupRecovery');
+  };
 
-    const dispatch = useDispatch()
+  const deployProfile = async () => {
+    setDeploymentStatus('loading');
 
-    const [deploymentStatus, setDeploymentStatus] = useState<DeploymentStatusProps>("loading")
+    try {
+      const _controller = await SInfo.getItem('controller', STORAGE_KEY);
+      const controller = JSON.parse(_controller!);
 
-    const setupRecovery = () => {
-        // @ts-ignore
-        navigation.navigate("SetupRecovery")
+      const data = {
+        lsp3DataValue,
+        mainController: controller.address,
+        universalReceiverAddress: '0x7870C5B8BC9572A8001C3f96f7ff59961B23500D',
+      };
+
+      const profile = await ProfileAPI.createProfile(data);
+      dispatch(initProfiles({
+        address: profile.universalProfileAddress,
+        keyManager: profile.keyManagerAddress,
+      }));
+
+      setDeploymentStatus('success');
+    } catch (error) {
+      setDeploymentStatus('error');
+      toast.show('Deployment failed', { type: 'danger' });
+      console.error(error);
     }
+  };
 
-    const deployProfile = async () => {
-        if (deploymentStatus !== "loading") {
-            setDeploymentStatus("loading")
-        }
+  useEffect(() => {
+    deployProfile();
+  }, []);
 
-        try {
-            // read accounts from secure storage
-            const _controller = await SInfo.getItem("controller", STORAGE_KEY);
-            const controller = JSON.parse(_controller!)
-
-            const data = {
-                lsp3DataValue,
-                mainController: controller.address,
-                universalReceiverAddress: "0x7870C5B8BC9572A8001C3f96f7ff59961B23500D"
-            }
-
-            const profile = await ProfileAPI.createProfile(data)
-
-            dispatch(initProfiles({
-                address: profile.universalProfileAddress,
-                keyManager: profile.keyManagerAddress
-            }))
-
-            setDeploymentStatus("success")
-        } catch (error) {
-            setDeploymentStatus("error")
-            toast.show("Deployment failed", { type: "danger" })
-            console.error(error)
-        }
+  const renderStatusMessage = () => {
+    switch (deploymentStatus) {
+      case 'loading':
+        return { message: 'Deploying your profile', color: COLORS.primary };
+      case 'success':
+        return { message: 'Profile deployed!', color: COLORS.primary };
+      case 'error':
+        return { message: 'Deployment failed!', color: 'red.400' };
+      default:
+        return { message: '', color: COLORS.primary };
     }
+  };
 
-    useEffect(() => {
-        deployProfile()
-    }, [])
+  const renderStatusIcon = () => {
+    if (deploymentStatus === 'loading') {
+      return <ActivityIndicator size="large" color={COLORS.primary} />;
+    }
     return (
-        <View style={styles.screenContainer} pt={"10"}>
-            <ProgressIndicatorHeader progress={4} steps={4} />
+      <Icon
+        as={<Ionicons name={deploymentStatus === 'success' ? 'checkmark-circle' : 'close-circle'} />}
+        size={5 * FONT_SIZE.xl}
+        color={deploymentStatus === 'success' ? COLORS.primary : 'red.400'}
+      />
+    );
+  };
 
-            <Divider bgColor="muted.100" my="4" />
+  const { message, color } = renderStatusMessage();
 
-            {
-                deploymentStatus === "loading" ?
-                    <Text textAlign="center" color={COLORS.primary} fontSize={1.4 * FONT_SIZE["xl"]} bold>Deploying your profile</Text>
-                    :
-                    deploymentStatus === "success" ? (
-                        <Text textAlign="center" color={COLORS.primary} fontSize={1.4 * FONT_SIZE["xl"]} bold>Profile deployed!</Text>
-                    ) : (
-                        <Text textAlign="center" color={"red.400"} fontSize={1.4 * FONT_SIZE["xl"]} bold>Deployment failed!</Text>
-                    )
-            }
+  return (
+    <View style={styles.screenContainer} pt="10">
+      <ProgressIndicatorHeader progress={4} steps={4} />
 
-            <VStack flex={1} justifyContent={"center"} alignItems={"center"}>
-                {
-                    deploymentStatus === "loading" ?
-                        <ActivityIndicator size={"large"} color={COLORS.primary} />
-                        :
-                        deploymentStatus === "success" ? (
-                            <Icon as={<Ionicons name="checkmark-circle" />} size={5 * FONT_SIZE['xl']} color={COLORS.primary} />
-                        ) : (
-                            <Icon as={<Ionicons name="close-circle" />} size={5 * FONT_SIZE['xl']} color={"red.400"} />
-                        )
-                }
-            </VStack>
+      <Divider bgColor="muted.100" my="4" />
 
+      <Text textAlign="center" color={color} fontSize={1.4 * FONT_SIZE.xl} bold>
+        {message}
+      </Text>
 
-            {
-                deploymentStatus === "loading" ? (
-                    <Text
-                        textAlign="center"
-                        alignSelf={"center"}
-                        fontSize={FONT_SIZE['lg']}
-                        color={"gray.600"}
-                    >
-                        Please be patient during the deployment process
-                    </Text>
-                ) :
-                    deploymentStatus === "success" ? (
-                        <>
-                            <Button text="Setup recovery" onPress={setupRecovery} style={{ marginTop: 40 }} />
-                            {/* @ts-ignore */}
-                            <Button text="No, I don't need recovery" type="outline" onPress={() => dispatch(loginUser())} style={{ marginVertical: 15 }} />
+      <VStack flex={1} justifyContent="center" alignItems="center">
+        {renderStatusIcon()}
+      </VStack>
 
-                        </>
-                    ) : (
-                        <Button text="Try again" onPress={deployProfile} style={{ marginTop: 40 }} />
-                    )
-            }
-        </View>
-    )
+      {deploymentStatus === 'loading' ? (
+        <Text textAlign="center" alignSelf="center" fontSize={FONT_SIZE.lg} color="gray.600">
+          Please be patient during the deployment process
+        </Text>
+      ) : deploymentStatus === 'success' ? (
+        <>
+          <Button text="Setup recovery" onPress={setupRecovery} style={{ marginTop: 40 }} />
+          {/* @ts-ignore */}
+          <Button text="No, I don't need recovery" type="outline" onPress={() => dispatch(loginUser())} style={{ marginVertical: 15 }} />
+        </>
+      ) : (
+        <Button text="Try again" onPress={deployProfile} style={{ marginTop: 40 }} />
+      )}
+    </View>
+  );
 }
