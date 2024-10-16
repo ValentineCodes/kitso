@@ -43,6 +43,7 @@ import UniversalProfileContract from '@lukso/lsp-smart-contracts/artifacts/Unive
 import KeyManagerContract from '@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json';
 import {Controller} from '../hooks/useWallet';
 import {useModal} from 'react-native-modalfy';
+import { useIPFSGateway } from '../hooks/useIPFSGateway';
 
 type Props = {};
 
@@ -53,6 +54,7 @@ export default function EditProfile({}: Props) {
   const {profile} = useProfile();
   const account = useAccount();
   const network = useNetwork();
+  const {parseIPFSUrl} = useIPFSGateway()
 
   const {upload: uploadImage} = useImageUploader({enabled: false});
   const {upload: uploadProfile} = useJSONUploader({enabled: false});
@@ -249,10 +251,7 @@ export default function EditProfile({}: Props) {
       return {uri: coverImage.uri};
     } else if (profile?.backgroundImage && profile.backgroundImage.length > 0) {
       return {
-        uri: profile.backgroundImage[0].url.replace(
-          'ipfs://',
-          network.ipfsGateway,
-        ),
+        uri: parseIPFSUrl(profile.backgroundImage[0].url),
       };
     } else {
       return require('../../assets/images/default_profile_cover.jpg');
@@ -264,10 +263,7 @@ export default function EditProfile({}: Props) {
       return {uri: profileImage.uri};
     } else if (profile?.profileImage && profile.profileImage.length > 0) {
       return {
-        uri: profile.profileImage[0].url.replace(
-          'ipfs://',
-          network.ipfsGateway,
-        ),
+        uri: parseIPFSUrl(profile.profileImage[0].url),
       };
     } else {
       return require('../../assets/images/default_profile_image.jpeg');
