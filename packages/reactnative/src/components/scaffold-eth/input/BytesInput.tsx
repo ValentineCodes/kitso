@@ -20,7 +20,7 @@ export default function BytesInput({ value, onChange, name, placeholder, disable
             disabled={disabled}
             suffix={
                 <Pressable onPress={convertStringToBytes} px={"4"}>
-                    <Text fontSize={"md"} fontWeight={"semibold"}>#</Text>
+                    <Text fontSize={"lg"} fontWeight={"semibold"}>#</Text>
                 </Pressable>
             }
         />
