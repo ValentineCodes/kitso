@@ -22,7 +22,7 @@ import Button from '../components/Button';
 import Blockie from '../components/Blockie';
 import {WINDOW_WIDTH} from '../styles/screenDimensions';
 import {truncateAddress} from '../utils/helperFunctions';
-import UsernameEdit from '../components/forms/UsernameEdit';
+import UsernameInput from '../components/forms/UsernameInput';
 import {ImageType} from '../components/modals/ImageCaptureModal';
 import LinkInput, {LinkType} from '../components/forms/LinkInput';
 import useImageUploader from '../hooks/useImageUploader';
@@ -348,9 +348,9 @@ export default function EditProfile({}: Props) {
         </VStack>
 
         <ScrollView flex={1}>
-          <UsernameEdit
+          <UsernameInput
             value={username}
-            placeholder="spongebob3000"
+            placeholder="spongebob911"
             onSubmit={addUsername}
           />
 
