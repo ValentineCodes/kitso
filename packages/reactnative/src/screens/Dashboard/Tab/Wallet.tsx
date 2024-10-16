@@ -63,7 +63,7 @@ function Wallet({}: WalletProps) {
 
   return (
     <ScrollView
-      contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}
+      contentContainerStyle={{flexGrow: 1}}
       bgColor={'white'}>
       <StatusBar
         translucent
@@ -92,7 +92,7 @@ function Wallet({}: WalletProps) {
         </Text>
       </Pressable>
 
-      <VStack px={'2'}>
+      <VStack px={'2'} pb={2}>
         {/* Username */}
         <Pressable onPress={copyAddress} flexDir="row" alignItems="center" _pressed={{ opacity: 0.7 }}>
           <Text color={COLORS.primary} fontSize={FONT_SIZE['xl'] * 1.2} bold>

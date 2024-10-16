@@ -10,8 +10,8 @@ export default function Collectibles({}: Props) {
 
   return (
     <ScrollView
-      contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}
-      bgColor={'white'}
+      contentContainerStyle={{flexGrow: 1, paddingBottom: 100}}
+      pt={75}
       p={2}>
       {lsp5ReceivedAssets
         .filter(token => ['LSP8', 'LSP8 COLLECTION'].includes(token.type))

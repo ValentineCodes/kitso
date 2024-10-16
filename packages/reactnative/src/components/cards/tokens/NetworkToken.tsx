@@ -23,6 +23,7 @@ export default function NetworkToken({ }: Props) {
 
     return (
         <VStack
+            bgColor="white"
             borderWidth={"1"}
             borderRadius={"2xl"}
             borderColor={"gray.200"}

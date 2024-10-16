@@ -11,8 +11,8 @@ export default function Tokens({}: Props) {
 
   return (
     <ScrollView
-      contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}
-      bgColor={'white'}
+      contentContainerStyle={{flexGrow: 1, paddingBottom: 100}}
+      pt={75}
       p={2}>
       <NetworkToken />
 

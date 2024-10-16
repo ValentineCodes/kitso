@@ -21,6 +21,7 @@ const {balance} = useTokenBalance({tokenAddress: address, type: "LSP7"})
 
     return (
         <VStack
+            bgColor="white"
             borderWidth={"1"}
             borderRadius={"2xl"}
             borderColor={"gray.200"}
