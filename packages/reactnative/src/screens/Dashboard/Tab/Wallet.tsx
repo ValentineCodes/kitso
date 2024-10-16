@@ -1,65 +1,23 @@
-import { HStack, Icon, Image, Pressable, ScrollView, Text, View, VStack } from 'native-base'
+import { HStack, Image, Pressable, ScrollView, Text, View, VStack } from 'native-base'
 import React, { useEffect } from 'react'
-import { BackHandler, Linking, NativeEventSubscription, StatusBar } from 'react-native'
-// @ts-ignore
-import Ionicons from 'react-native-vector-icons/dist/Ionicons'
+import { BackHandler, NativeEventSubscription, StatusBar } from 'react-native'
 import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native'
 
 import { WINDOW_WIDTH } from '../../../styles/screenDimensions'
 import Blockie from '../../../components/Blockie'
 import { COLORS } from '../../../utils/constants'
 import { FONT_SIZE, WINDOW_HEIGHT } from '../../../utils/styles'
-import { useToast } from 'react-native-toast-notifications'
 import { truncateAddress } from '../../../utils/helperFunctions'
 import CopyableText from '../../../components/CopyableText'
 import useAccount from '../../../hooks/scaffold-eth/useAccount'
 import useNetwork from '../../../hooks/scaffold-eth/useNetwork'
 import { useProfile } from '../../../context/ProfileContext'
 import Assets from './modules/wallet/Assets'
+import Link, { LinkProps } from './modules/wallet/Link'
 
 let backHandler: NativeEventSubscription;
 
 type WalletProps = {}
-type LinkProps = {
-    title: string
-    url: string
-}
-
-function Link({ title, url }: LinkProps) {
-    const toast = useToast()
-
-    const openURL = async () => {
-        try {
-            await Linking.openURL(url)
-        } catch (error) {
-            console.error(error)
-            toast.show("Failed to open URL", { type: 'danger' })
-        }
-    }
-    return (
-        <Pressable onPress={openURL}>
-            <HStack
-                alignItems={"center"}
-                alignSelf={"flex-start"}
-                space={"2"}
-                mt={2}
-                px={2}
-                py={0.5}
-                borderWidth={"1"}
-                borderRadius={"md"}
-                borderColor={"gray.300"}
-            >
-                <Icon
-                    as={<Ionicons name="link-outline" />}
-                    size={FONT_SIZE['xl']}
-                    color="gray.600"
-                    rotation={-45}
-                />
-                <Text fontSize={"sm"} fontWeight={"light"}>{title}</Text>
-            </HStack>
-        </Pressable>
-    )
-}
 
 function Wallet({ }: WalletProps) {
     const isFocused = useIsFocused()
