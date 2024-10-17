@@ -212,7 +212,7 @@ export default function CreateProfile({}: Props) {
     <View style={[styles.screenContainer, { padding: 0 }]}>
       <StatusBar translucent backgroundColor={'rgba(0,0,0,0)'} />
       {/* Profile cover */}
-      <Pressable onPress={captureCoverImage} h={'25%'}>
+      <Pressable onPress={captureCoverImage} h={'20%'}>
         <Image
           source={
             coverImage

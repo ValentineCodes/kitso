@@ -18,7 +18,8 @@ export default function ProfileImages({
   const { parseIPFSUrl } = useIPFSGateway();
 
   return (
-    <View h="25%" zIndex={1} bgColor={'purple.100'}>
+    <View h="20%" zIndex={1} bgColor={'purple.100'}>
+      {/* Profile cover */}
       {coverImageURL ? (
         <Image
           source={{ uri: parseIPFSUrl(coverImageURL) }}

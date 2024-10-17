@@ -296,7 +296,7 @@ export default function EditProfile({}: Props) {
     <View style={[styles.screenContainer, { padding: 0 }]}>
       <StatusBar translucent backgroundColor={'rgba(0,0,0,0)'} />
       {/* Profile cover */}
-      <Pressable onPress={captureCoverImage} h={'25%'}>
+      <Pressable onPress={captureCoverImage} h={'20%'}>
         <Image
           source={selectCoverImage()}
           alt="profile cover"
@@ -308,7 +308,7 @@ export default function EditProfile({}: Props) {
           onPress={() => navigation.goBack()}
           _pressed={{ opacity: 0.4 }}
           position={'absolute'}
-          top={4}
+          top={8}
           left={4}
           bgColor={'gray.300'}
           borderRadius={'full'}
