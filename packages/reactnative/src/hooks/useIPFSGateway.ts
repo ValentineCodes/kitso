@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import { useEffect } from 'react';
 import useNetwork from './scaffold-eth/useNetwork';
 
 /**
@@ -18,7 +18,7 @@ interface UseIPFSGatewayOptions {
  * @param {UseIPFSGatewayOptions} [options={}] - An object that can optionally include a URL to be parsed.
  * @returns {Object} - An object with the `parseIPFSUrl` function, which can be used to transform IPFS URLs.
  */
-export function useIPFSGateway({url}: UseIPFSGatewayOptions = {}) {
+export function useIPFSGateway({ url }: UseIPFSGatewayOptions = {}) {
   const network = useNetwork();
 
   /**
@@ -37,5 +37,5 @@ export function useIPFSGateway({url}: UseIPFSGatewayOptions = {}) {
     }
   }, [url]);
 
-  return {parseIPFSUrl};
+  return { parseIPFSUrl };
 }

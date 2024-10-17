@@ -1,8 +1,8 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import SInfo from 'react-native-sensitive-info';
-import {useDispatch} from 'react-redux';
-import {addAccount} from '../store/reducers/Accounts';
-import {STORAGE_KEY} from '../utils/constants';
+import { useDispatch } from 'react-redux';
+import { addAccount } from '../store/reducers/Accounts';
+import { STORAGE_KEY } from '../utils/constants';
 
 export interface Controller {
   address: string;
@@ -60,7 +60,7 @@ export default function useWallet() {
   async function _storeAccount(_controller: Controller, _isImported: boolean) {
     // read controller from secure storage
     const controller = JSON.parse(
-      await SInfo.getItem('controller', STORAGE_KEY),
+      await SInfo.getItem('controller', STORAGE_KEY)
     );
 
     const newAccounts = [JSON.parse(controller), _controller];
@@ -71,7 +71,7 @@ export default function useWallet() {
     setAccounts(newAccounts);
 
     dispatch(
-      addAccount({address: _controller.address, isImported: _isImported}),
+      addAccount({ address: _controller.address, isImported: _isImported })
     );
   }
 
@@ -86,6 +86,6 @@ export default function useWallet() {
     getMnemonic: _getMnemonic,
     getAccounts: _getAccounts,
     storeMnemonic: _storeMnemonic,
-    storeAccount: _storeAccount,
+    storeAccount: _storeAccount
   };
 }

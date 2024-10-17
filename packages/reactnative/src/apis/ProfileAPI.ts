@@ -1,34 +1,35 @@
-import axios from "axios";
-
-import { domain } from ".";
+import axios from 'axios';
+import { domain } from '.';
 
 interface ProfileCreationDataType {
-    lsp3DataValue: {
-        verification: {
-            method: string;
-            data: string;
-        },
-        url: string;
+  lsp3DataValue: {
+    verification: {
+      method: string;
+      data: string;
     };
-    mainController: string;
-    universalReceiverAddress: string;
+    url: string;
+  };
+  mainController: string;
+  universalReceiverAddress: string;
 }
 
 interface ProfileCreationResponse {
-    universalProfileAddress: string;
-    keyManagerAddress: string;
+  universalProfileAddress: string;
+  keyManagerAddress: string;
 }
 
 class ProfileAPI {
-    async createProfile(body: ProfileCreationDataType): Promise<ProfileCreationResponse>{
-        const {data} = await axios.post(`${domain}/auth/create_profile`, body, {
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
+  async createProfile(
+    body: ProfileCreationDataType
+  ): Promise<ProfileCreationResponse> {
+    const { data } = await axios.post(`${domain}/auth/create_profile`, body, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
 
-        return data
-    }
+    return data;
+  }
 }
 
-export default new ProfileAPI()
+export default new ProfileAPI();

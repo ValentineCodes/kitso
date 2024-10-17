@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { ethers } from 'ethers';
 import {
   HStack,
   Icon,
@@ -9,28 +10,26 @@ import {
   StatusBar,
   Text,
   View,
-  VStack,
+  VStack
 } from 'native-base';
+import React, { useState } from 'react';
+import { useModal } from 'react-native-modalfy';
+import { useToast } from 'react-native-toast-notifications';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
-import {useNavigation} from '@react-navigation/native';
-
-import styles from '../../../styles/global';
-import {COLORS} from '../../../utils/constants';
-import {FONT_SIZE} from '../../../utils/styles';
-import Button from '../../../components/Button';
 import Blockie from '../../../components/Blockie';
-import {WINDOW_WIDTH} from '../../../styles/screenDimensions';
-import {truncateAddress} from '../../../utils/helperFunctions';
-import UsernameInput from '../../../components/forms/UsernameInput';
-import {ImageType} from '../../../components/modals/ImageCaptureModal';
-import LinkInput, {LinkType} from '../../../components/forms/LinkInput';
-import useImageUploader from '../../../hooks/useImageUploader';
-import {useToast} from 'react-native-toast-notifications';
-import useJSONUploader from '../../../hooks/useJSONUploader';
-import {ethers} from 'ethers';
+import Button from '../../../components/Button';
+import LinkInput, { LinkType } from '../../../components/forms/LinkInput';
 import TagInput from '../../../components/forms/TagInput';
-import {useModal} from 'react-native-modalfy';
+import UsernameInput from '../../../components/forms/UsernameInput';
+import { ImageType } from '../../../components/modals/ImageCaptureModal';
+import useImageUploader from '../../../hooks/useImageUploader';
+import useJSONUploader from '../../../hooks/useJSONUploader';
+import styles from '../../../styles/global';
+import { WINDOW_WIDTH } from '../../../styles/screenDimensions';
+import { COLORS } from '../../../utils/constants';
+import { truncateAddress } from '../../../utils/helperFunctions';
+import { FONT_SIZE } from '../../../utils/styles';
 
 type Props = {};
 
@@ -39,10 +38,10 @@ const profile = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
 export default function CreateProfile({}: Props) {
   const navigation = useNavigation();
   const toast = useToast();
-  const {openModal} = useModal();
+  const { openModal } = useModal();
 
-  const {upload: uploadImage} = useImageUploader({enabled: false});
-  const {upload: uploadProfile} = useJSONUploader({enabled: false});
+  const { upload: uploadImage } = useImageUploader({ enabled: false });
+  const { upload: uploadProfile } = useJSONUploader({ enabled: false });
 
   const [username, setUsername] = useState('');
 
@@ -50,7 +49,7 @@ export default function CreateProfile({}: Props) {
   const [profileImage, setProfileImage] = useState<ImageType>();
   const [bio, setBio] = useState('');
   const [tags, setTags] = useState<string[]>([]);
-  const [links, setLinks] = useState<({id: string} & LinkType)[]>([]);
+  const [links, setLinks] = useState<({ id: string } & LinkType)[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
   const addUsername = (_username: string) => {
@@ -68,7 +67,7 @@ export default function CreateProfile({}: Props) {
   const addLink = () => {
     setLinks(links => [
       ...links,
-      {id: links.length.toString(), title: '', url: ''},
+      { id: links.length.toString(), title: '', url: '' }
     ]);
   };
 
@@ -80,8 +79,8 @@ export default function CreateProfile({}: Props) {
     setLinks(links =>
       links.map(link => {
         if (link.id != id) return link;
-        return {...link, title};
-      }),
+        return { ...link, title };
+      })
     );
   };
 
@@ -89,8 +88,8 @@ export default function CreateProfile({}: Props) {
     setLinks(links =>
       links.map(link => {
         if (link.id != id) return link;
-        return {...link, url};
-      }),
+        return { ...link, url };
+      })
     );
   };
 
@@ -102,11 +101,11 @@ export default function CreateProfile({}: Props) {
         LSP3Profile: {
           name: username,
           description: bio,
-          links: links.map(link => ({title: link.title, url: link.url})),
+          links: links.map(link => ({ title: link.title, url: link.url })),
           tags: tags,
           profileImage: [] as any,
-          backgroundImage: [] as any,
-        },
+          backgroundImage: [] as any
+        }
       };
 
       if (profileImage) {
@@ -114,11 +113,11 @@ export default function CreateProfile({}: Props) {
         const _profileImage = await uploadImage({
           name: profileImage.name,
           type: profileImage.type,
-          uri: profileImage.uri,
+          uri: profileImage.uri
         });
 
         if (!_profileImage) {
-          toast.show('Failed to upload profile image', {type: 'danger'});
+          toast.show('Failed to upload profile image', { type: 'danger' });
           return;
         }
 
@@ -127,9 +126,9 @@ export default function CreateProfile({}: Props) {
           height: 1024,
           verification: {
             method: 'keccak256(bytes)',
-            data: _profileImage.bufferHash,
+            data: _profileImage.bufferHash
           },
-          url: `ipfs://${_profileImage.ipfsHash}`,
+          url: `ipfs://${_profileImage.ipfsHash}`
         });
       }
 
@@ -138,11 +137,11 @@ export default function CreateProfile({}: Props) {
         const _coverImage = await uploadImage({
           name: coverImage.name,
           type: coverImage.type,
-          uri: coverImage.uri,
+          uri: coverImage.uri
         });
 
         if (!_coverImage) {
-          toast.show('Failed to upload cover image', {type: 'danger'});
+          toast.show('Failed to upload cover image', { type: 'danger' });
           return;
         }
 
@@ -151,38 +150,38 @@ export default function CreateProfile({}: Props) {
           height: 500,
           verification: {
             method: 'keccak256(bytes)',
-            data: _coverImage.bufferHash,
+            data: _coverImage.bufferHash
           },
-          url: `ipfs://${_coverImage.ipfsHash}`,
+          url: `ipfs://${_coverImage.ipfsHash}`
         });
       }
 
       const profile = await uploadProfile(profileMetadata);
 
       if (!profile) {
-        toast.show('Failed to upload profile metadata', {type: 'danger'});
+        toast.show('Failed to upload profile metadata', { type: 'danger' });
         return;
       }
 
       const profileMetadataHash = ethers.utils.keccak256(
-        ethers.utils.toUtf8Bytes(JSON.stringify(profileMetadata)),
+        ethers.utils.toUtf8Bytes(JSON.stringify(profileMetadata))
       );
 
       const lsp3DataValue = {
         verification: {
           method: 'keccak256(utf8)',
-          data: profileMetadataHash,
+          data: profileMetadataHash
         },
         // this is an IPFS CID of a LSP3 Profile Metadata example, you can use your own
-        url: `ipfs://${profile.ipfsHash}`,
+        url: `ipfs://${profile.ipfsHash}`
       };
 
       // @ts-ignore
       navigation.navigate('DeployProfile', {
-        lsp3DataValue,
+        lsp3DataValue
       });
     } catch (error) {
-      toast.show('Failed to create profile!', {type: 'danger'});
+      toast.show('Failed to create profile!', { type: 'danger' });
       console.error(error);
     } finally {
       setIsUploading(false);
@@ -210,14 +209,14 @@ export default function CreateProfile({}: Props) {
   };
 
   return (
-    <View style={[styles.screenContainer, {padding: 0}]}>
+    <View style={[styles.screenContainer, { padding: 0 }]}>
       <StatusBar translucent backgroundColor={'rgba(0,0,0,0)'} />
       {/* Profile cover */}
       <Pressable onPress={captureCoverImage} h={'25%'}>
         <Image
           source={
             coverImage
-              ? {uri: coverImage.uri}
+              ? { uri: coverImage.uri }
               : require('../../../../assets/images/default_profile_cover.jpg')
           }
           alt="profile cover"
@@ -227,13 +226,14 @@ export default function CreateProfile({}: Props) {
         />
         <Pressable
           onPress={() => navigation.goBack()}
-          _pressed={{opacity: 0.4}}
+          _pressed={{ opacity: 0.4 }}
           position={'absolute'}
           top={8}
           left={4}
           bgColor={'gray.300'}
           borderRadius={'full'}
-          p={'1'}>
+          p={'1'}
+        >
           <Icon
             as={<Ionicons name="arrow-back-outline" />}
             size={1.3 * FONT_SIZE['xl']}
@@ -248,15 +248,16 @@ export default function CreateProfile({}: Props) {
           <Pressable
             onPress={captureProfileImage}
             w={WINDOW_WIDTH * 0.25}
-            style={{aspectRatio: 1}}
+            style={{ aspectRatio: 1 }}
             borderRadius={'full'}
             borderWidth={5}
             borderColor={'white'}
-            mt={-((WINDOW_WIDTH * 0.25) / 2)}>
+            mt={-((WINDOW_WIDTH * 0.25) / 2)}
+          >
             <Image
               source={
                 profileImage
-                  ? {uri: profileImage.uri}
+                  ? { uri: profileImage.uri }
                   : require('../../../../assets/images/default_profile_image.jpeg')
               }
               alt="profile image"
@@ -271,13 +272,14 @@ export default function CreateProfile({}: Props) {
               right={0}
               borderWidth={3}
               borderColor={'white'}
-              borderRadius={'full'}>
+              borderRadius={'full'}
+            >
               <Blockie address={profile} size={20} />
             </View>
           </Pressable>
         </VStack>
 
-        <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}>
           <UsernameInput
             value={username}
             placeholder="spongebob911"
@@ -291,7 +293,8 @@ export default function CreateProfile({}: Props) {
             fontWeight={'medium'}
             mt={1}
             my="2"
-            w={'75%'}>
+            w={'75%'}
+          >
             {truncateAddress(profile)}
           </Text>
 
@@ -315,7 +318,7 @@ export default function CreateProfile({}: Props) {
               selectTextOnFocus
               _input={{
                 selectionColor: COLORS.highlight,
-                cursorColor: COLORS.primary,
+                cursorColor: COLORS.primary
               }}
             />
           </VStack>
@@ -363,7 +366,7 @@ export default function CreateProfile({}: Props) {
         text="Got it, create my profile!"
         loading={isUploading}
         onPress={createProfile}
-        style={{marginBottom: 15, width: '95%', alignSelf: 'center'}}
+        style={{ marginBottom: 15, width: '95%', alignSelf: 'center' }}
       />
     </View>
   );

@@ -1,7 +1,14 @@
-import React, { createContext, useState, useEffect, useCallback, useContext, ReactNode } from 'react';
 import { ERC725, ERC725JSONSchema } from '@erc725/erc725.js';
 import lsp3ProfileSchema from '@erc725/erc725.js/schemas/LSP3ProfileMetadata.json';
 import lsp4MetadataSchema from '@erc725/erc725.js/schemas/LSP4DigitalAsset.json';
+import React, {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState
+} from 'react';
 import useAccount from '../hooks/scaffold-eth/useAccount';
 import useNetwork from '../hooks/scaffold-eth/useNetwork';
 
@@ -49,7 +56,6 @@ interface LSP4Response {
   };
 }
 
-
 // Profile Types
 interface Profile {
   name: string;
@@ -70,7 +76,7 @@ interface AssetMetadata {
 
 interface UseProfileResult {
   profile: Profile | null;
-  lsp12IssuedAssets: AssetMetadata[];  // Combined storage for LSP7 and LSP8 assets
+  lsp12IssuedAssets: AssetMetadata[]; // Combined storage for LSP7 and LSP8 assets
   lsp5ReceivedAssets: AssetMetadata[];
   isFetchingAssets: boolean;
   isFetchingProfile: boolean;
@@ -91,12 +97,18 @@ const ProfileContext = createContext<UseProfileResult | undefined>(undefined);
 const TOKEN_TYPES = ['LSP7', 'LSP8', 'LSP8 COLLECTION'];
 
 // Profile Provider Component
-export const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) => {
+export const ProfileProvider: React.FC<ProfileProviderProps> = ({
+  children
+}) => {
   const account = useAccount();
   const network = useNetwork();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [lsp12IssuedAssets, setLsp12IssuedAssets] = useState<AssetMetadata[]>([]);
-  const [lsp5ReceivedAssets, setLsp5ReceivedAssets] = useState<AssetMetadata[]>([]);
+  const [lsp12IssuedAssets, setLsp12IssuedAssets] = useState<AssetMetadata[]>(
+    []
+  );
+  const [lsp5ReceivedAssets, setLsp5ReceivedAssets] = useState<AssetMetadata[]>(
+    []
+  );
   const [isFetchingAssets, setIsFetchingAssets] = useState<boolean>(false);
   const [isFetchingProfile, setIsFetchingProfile] = useState<boolean>(false);
 
@@ -117,7 +129,11 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) =>
     try {
       setIsFetchingProfile(true);
       const profileMetaData = await erc725js.fetchData('LSP3Profile');
-      if (profileMetaData.value && typeof profileMetaData.value === 'object' && 'LSP3Profile' in profileMetaData.value) {
+      if (
+        profileMetaData.value &&
+        typeof profileMetaData.value === 'object' &&
+        'LSP3Profile' in profileMetaData.value
+      ) {
         const fetchedProfile = profileMetaData.value.LSP3Profile;
         setProfile(fetchedProfile);
         return fetchedProfile;
@@ -135,37 +151,63 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) =>
   const fetchAssets = useCallback(async () => {
     if (!account?.isConnected) return { lsp12IssuedAssets, lsp5ReceivedAssets };
 
-    const erc725js = new ERC725(lsp3ProfileSchema as ERC725JSONSchema[], account.address, network.provider, {
-      ipfsGateway: network.ipfsGateway,
-    });
+    const erc725js = new ERC725(
+      lsp3ProfileSchema as ERC725JSONSchema[],
+      account.address,
+      network.provider,
+      {
+        ipfsGateway: network.ipfsGateway
+      }
+    );
 
     try {
       setIsFetchingAssets(true);
 
-      const lsp12IssuedAssetsData = await erc725js.fetchData('LSP12IssuedAssets[]');
-      const lsp5ReceivedAssetsData = await erc725js.fetchData('LSP5ReceivedAssets[]');
+      const lsp12IssuedAssetsData = await erc725js.fetchData(
+        'LSP12IssuedAssets[]'
+      );
+      const lsp5ReceivedAssetsData = await erc725js.fetchData(
+        'LSP5ReceivedAssets[]'
+      );
 
       // Fetch LSP4 Metadata for a given asset address
-      const fetchLSP4Metadata = async (assetAddress: string): Promise<AssetMetadata> => {
+      const fetchLSP4Metadata = async (
+        assetAddress: string
+      ): Promise<AssetMetadata> => {
         try {
-          const erc725 = new ERC725(lsp4MetadataSchema, assetAddress, network.provider, {
-            ipfsGateway: network.ipfsGateway,
-          });
+          const erc725 = new ERC725(
+            lsp4MetadataSchema,
+            assetAddress,
+            network.provider,
+            {
+              ipfsGateway: network.ipfsGateway
+            }
+          );
 
           const metadata = await erc725.fetchData('LSP4Metadata');
           const symbol = await erc725.fetchData('LSP4TokenSymbol');
           const type = await erc725.fetchData('LSP4TokenType');
 
-          return { 
+          return {
             address: assetAddress,
-            name: metadata.value.LSP4Metadata.name, 
-            symbol: symbol.value, 
-            image: metadata.value.LSP4Metadata.icon[0]?.url.replace("ipfs://", network.ipfsGateway) || null,
-            type: TOKEN_TYPES[type.value as unknown as number] 
+            name: metadata.value.LSP4Metadata.name,
+            symbol: symbol.value,
+            image:
+              metadata.value.LSP4Metadata.icon[0]?.url.replace(
+                'ipfs://',
+                network.ipfsGateway
+              ) || null,
+            type: TOKEN_TYPES[type.value as unknown as number]
           };
         } catch (error) {
           console.error('Error fetching LSP4 metadata:', error);
-          return { address: assetAddress, name: 'Unknown', symbol: 'Unknown', image: null, type: 'LSP7' }; // Default fallback
+          return {
+            address: assetAddress,
+            name: 'Unknown',
+            symbol: 'Unknown',
+            image: null,
+            type: 'LSP7'
+          }; // Default fallback
         }
       };
 
@@ -215,7 +257,7 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) =>
         isFetchingAssets,
         isFetchingProfile,
         fetchProfile,
-        fetchAssets,
+        fetchAssets
       }}
     >
       {children}

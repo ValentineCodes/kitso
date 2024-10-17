@@ -1,10 +1,9 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import useNetwork from './useNetwork';
-
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
-import {ContractInterface, ethers} from 'ethers';
-import {Abi} from 'abitype';
+import { Abi } from 'abitype';
+import { ContractInterface, ethers } from 'ethers';
 import useAccount from './useAccount';
 
 interface UseContractReadConfig {
@@ -33,7 +32,7 @@ export default function useContractRead({
   functionName,
   args,
   enabled,
-  onError,
+  onError
 }: UseContractReadConfig) {
   const network = useNetwork();
   const account = useAccount();
@@ -51,7 +50,7 @@ export default function useContractRead({
       const contract = new ethers.Contract(address, abi, provider);
 
       const result = await contract.functions[functionName](...(args || []), {
-        from: account.address,
+        from: account.address
       });
 
       if (error) {
@@ -81,6 +80,6 @@ export default function useContractRead({
     data,
     isLoading,
     error,
-    refetch: fetchData,
+    refetch: fetchData
   };
 }

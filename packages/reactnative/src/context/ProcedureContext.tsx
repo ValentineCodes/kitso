@@ -1,30 +1,40 @@
-import React, { useState, useContext, createContext, ReactNode, SetStateAction } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useState
+} from 'react';
 
-type AuthContextType = 'profile_creation' | 'profile_recovery'
+type AuthContextType = 'profile_creation' | 'profile_recovery';
 
 type ProcedureContextType = {
-    authContext: AuthContextType;
-    setAuthContext: (context: SetStateAction<AuthContextType>) => void;
-}
+  authContext: AuthContextType;
+  setAuthContext: (context: SetStateAction<AuthContextType>) => void;
+};
 
+const ProcedureContext = createContext<ProcedureContextType | undefined>(
+  undefined
+);
 
-const ProcedureContext = createContext<ProcedureContextType | undefined>(undefined);
+export const ProcedureProvider: React.FC<{ children: ReactNode }> = ({
+  children
+}) => {
+  const [authContext, setAuthContext] =
+    useState<AuthContextType>('profile_creation');
 
-export const ProcedureProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [authContext, setAuthContext] = useState<AuthContextType>('profile_creation')
-
-    return (
-        <ProcedureContext.Provider value={{ authContext, setAuthContext }}>
-            {children}
-        </ProcedureContext.Provider>
-    )
-}
+  return (
+    <ProcedureContext.Provider value={{ authContext, setAuthContext }}>
+      {children}
+    </ProcedureContext.Provider>
+  );
+};
 
 export const useProcedureContext = () => {
-    const context = useContext(ProcedureContext)
+  const context = useContext(ProcedureContext);
 
-    if (!context) {
-        throw new Error('useProcedureContext must be used within an AppProvider');
-    }
-    return context;
-}
+  if (!context) {
+    throw new Error('useProcedureContext must be used within an AppProvider');
+  }
+  return context;
+};

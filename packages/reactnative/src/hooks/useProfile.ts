@@ -1,6 +1,6 @@
-import {useState, useEffect, useMemo, useCallback} from 'react';
-import {ERC725, ERC725JSONSchema} from '@erc725/erc725.js';
+import { ERC725, ERC725JSONSchema } from '@erc725/erc725.js';
 import lsp3ProfileSchema from '@erc725/erc725.js/schemas/LSP3ProfileMetadata.json';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import useAccount from '../hooks/scaffold-eth/useAccount';
 import useNetwork from '../hooks/scaffold-eth/useNetwork';
 
@@ -43,9 +43,9 @@ interface UseProfileResult {
  * @returns {UseProfileResult} - The profile data, issued assets, and a function to fetch the profile manually.
  */
 export function useProfile(
-  options: UseProfileOptions = {enabled: true},
+  options: UseProfileOptions = { enabled: true }
 ): UseProfileResult {
-  const {enabled = true} = options;
+  const { enabled = true } = options;
   const account = useAccount();
   const network = useNetwork();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -63,8 +63,8 @@ export function useProfile(
       account.address,
       network.provider,
       {
-        ipfsGateway: network.ipfsGateway,
-      },
+        ipfsGateway: network.ipfsGateway
+      }
     );
 
     try {
@@ -103,8 +103,8 @@ export function useProfile(
     () => ({
       profile,
       issuedAssets,
-      fetchProfile,
+      fetchProfile
     }),
-    [profile, issuedAssets, fetchProfile],
+    [profile, issuedAssets, fetchProfile]
   );
 }

@@ -1,75 +1,75 @@
-import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React from 'react';
 import { useSelector } from 'react-redux';
-
-import Onboarding from './Auth/Onboarding'
-import CreatePassword from './Auth/common/CreatePassword'
-import CreateController from './Auth/creation/CreateController'
-import CreateProfile from './Auth/creation/CreateProfile'
-import DeployProfile from './Auth/creation/DeployProfile'
-import SetupRecovery from './Auth/recovery/SetupRecovery';
 import ConfirmEmail from './Auth/common/ConfirmEmail';
+import CreatePassword from './Auth/common/CreatePassword';
+import CreateController from './Auth/creation/CreateController';
+import CreateProfile from './Auth/creation/CreateProfile';
+import DeployProfile from './Auth/creation/DeployProfile';
+import Onboarding from './Auth/Onboarding';
 import RecoverProfile from './Auth/recovery/RecoverProfile';
-
+import SetupRecovery from './Auth/recovery/SetupRecovery';
 import Dashboard from './Dashboard';
 import EditProfile from './EditProfile';
 import Transfer from './Transfer';
 
-type Props = {}
+type Props = {};
 
 type AppStackParamsList = {
-    Onboarding: undefined;
-    CreatePassword: undefined;
-    CreateController: undefined;
-    CreateProfile: undefined;
-    DeployProfile: {
-        lsp3DataValue: {
-            verification: {
-                method: string;
-                data: string;
-            },
-            url: string
-        }
+  Onboarding: undefined;
+  CreatePassword: undefined;
+  CreateController: undefined;
+  CreateProfile: undefined;
+  DeployProfile: {
+    lsp3DataValue: {
+      verification: {
+        method: string;
+        data: string;
+      };
+      url: string;
     };
-    SetupRecovery: undefined;
-    ConfirmEmail: undefined;
-    RecoverProfile: undefined;
-    Dashboard: undefined;
-    EditProfile: undefined;
-    Transfer: undefined;
-}
+  };
+  SetupRecovery: undefined;
+  ConfirmEmail: undefined;
+  RecoverProfile: undefined;
+  Dashboard: undefined;
+  EditProfile: undefined;
+  Transfer: undefined;
+};
 
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
 
-export default function Navigation({ }: Props) {
-    const auth = useSelector((state: any) => state.auth)
-    return (
-        <NavigationContainer>
-            <AppStack.Navigator
-                screenOptions={{
-                    headerShown: false,
-                    animation: 'slide_from_right',
-                }}>
-                {
-                    !auth.isLoggedIn && (
-                        <>
-                            <AppStack.Screen name="Onboarding" component={Onboarding} />
-                            <AppStack.Screen name="CreatePassword" component={CreatePassword} />
-                            <AppStack.Screen name="CreateController" component={CreateController} />
-                            <AppStack.Screen name="CreateProfile" component={CreateProfile} />
-                            <AppStack.Screen name="DeployProfile" component={DeployProfile} />
-                            <AppStack.Screen name="SetupRecovery" component={SetupRecovery} />
-                            <AppStack.Screen name="ConfirmEmail" component={ConfirmEmail} />
-                            <AppStack.Screen name="RecoverProfile" component={RecoverProfile} />
-                        </>
-                    )
-                }
+export default function Navigation({}: Props) {
+  const auth = useSelector((state: any) => state.auth);
+  return (
+    <NavigationContainer>
+      <AppStack.Navigator
+        screenOptions={{
+          headerShown: false,
+          animation: 'slide_from_right'
+        }}
+      >
+        {!auth.isLoggedIn && (
+          <>
+            <AppStack.Screen name="Onboarding" component={Onboarding} />
+            <AppStack.Screen name="CreatePassword" component={CreatePassword} />
+            <AppStack.Screen
+              name="CreateController"
+              component={CreateController}
+            />
+            <AppStack.Screen name="CreateProfile" component={CreateProfile} />
+            <AppStack.Screen name="DeployProfile" component={DeployProfile} />
+            <AppStack.Screen name="SetupRecovery" component={SetupRecovery} />
+            <AppStack.Screen name="ConfirmEmail" component={ConfirmEmail} />
+            <AppStack.Screen name="RecoverProfile" component={RecoverProfile} />
+          </>
+        )}
 
-                <AppStack.Screen name="Dashboard" component={Dashboard} />
-                <AppStack.Screen name="EditProfile" component={EditProfile} />
-                <AppStack.Screen name="Transfer" component={Transfer} />
-            </AppStack.Navigator>
-        </NavigationContainer>
-    )
+        <AppStack.Screen name="Dashboard" component={Dashboard} />
+        <AppStack.Screen name="EditProfile" component={EditProfile} />
+        <AppStack.Screen name="Transfer" component={Transfer} />
+      </AppStack.Navigator>
+    </NavigationContainer>
+  );
 }

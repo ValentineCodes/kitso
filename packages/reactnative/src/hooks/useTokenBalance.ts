@@ -1,8 +1,8 @@
-import {useEffect} from 'react';
-import useContractRead from './scaffold-eth/useContractRead'; // Import your existing hook
-import useAccount from './scaffold-eth/useAccount';
 import LSP7 from '@lukso/lsp-smart-contracts/artifacts/LSP7DigitalAsset.json';
 import LSP8 from '@lukso/lsp-smart-contracts/artifacts/LSP8IdentifiableDigitalAsset.json'; // Adjust the path as necessary
+import { useEffect } from 'react';
+import useAccount from './scaffold-eth/useAccount';
+import useContractRead from './scaffold-eth/useContractRead'; // Import your existing hook
 
 interface UseTokenBalanceOptions {
   tokenAddress: string; // The LSP7 token contract address
@@ -11,11 +11,11 @@ interface UseTokenBalanceOptions {
 
 export default function useTokenBalance({
   tokenAddress,
-  type,
+  type
 }: UseTokenBalanceOptions) {
   const account = useAccount();
 
-  const {data, isLoading, error, refetch} = useContractRead({
+  const { data, isLoading, error, refetch } = useContractRead({
     abi: type === 'LSP7' ? LSP7.abi : LSP8.abi,
     address: tokenAddress,
     functionName: 'balanceOf',
@@ -23,7 +23,7 @@ export default function useTokenBalance({
     enabled: Boolean(tokenAddress && account.address), // Ensure the hook only runs when addresses are provided
     onError: error => {
       console.error('Error fetching LSP7 token balance:', error);
-    },
+    }
   });
 
   useEffect(() => {
@@ -36,6 +36,6 @@ export default function useTokenBalance({
   return {
     balance: data ? data[0] : null, // Assuming balanceOf returns a tuple [balance]
     isLoading,
-    error,
+    error
   };
 }

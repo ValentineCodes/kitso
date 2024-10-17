@@ -1,21 +1,18 @@
-import {useModal} from 'react-native-modalfy';
+import { useModal } from 'react-native-modalfy';
+import { useToast } from 'react-native-toast-notifications';
+import { useDeployedContractInfo } from './useDeployedContractInfo';
 import useNetwork from './useNetwork';
-import {useDeployedContractInfo} from './useDeployedContractInfo';
-import {useToast} from 'react-native-toast-notifications';
 import useTargetNetwork from './useTargetNetwork';
-
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
-import {BigNumber, ethers} from 'ethers';
-
-import UniversalProfileContract from '@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json';
 import KeyManagerContract from '@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json';
-
+import UniversalProfileContract from '@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json';
+import { BigNumber, ethers } from 'ethers';
 import SInfo from 'react-native-sensitive-info';
+import { TransactionReceipt } from 'viem';
+import { STORAGE_KEY } from '../../utils/constants';
+import { Account } from '../useWallet';
 import useAccount from './useAccount';
-import {TransactionReceipt} from 'viem';
-import {STORAGE_KEY} from '../../utils/constants';
-import {Account} from '../useWallet';
 
 interface UseScaffoldWriteConfig {
   contractName: string;
@@ -48,13 +45,13 @@ export default function useScaffoldContractWrite({
   args,
   value,
   blockConfirmations,
-  gasLimit,
+  gasLimit
 }: UseScaffoldWriteConfig) {
   const writeArgs = args;
   const writeValue = value;
 
-  const {openModal} = useModal();
-  const {data: deployedContractData} = useDeployedContractInfo(contractName);
+  const { openModal } = useModal();
+  const { data: deployedContractData } = useDeployedContractInfo(contractName);
   const network = useNetwork();
   const account = useAccount();
   const toast = useToast();
@@ -70,17 +67,17 @@ export default function useScaffoldContractWrite({
   const sendTransaction = async (
     config: SendTxConfig = {
       args: undefined,
-      value: undefined,
-    },
+      value: undefined
+    }
   ): Promise<TransactionReceipt> => {
-    const {args, value} = config;
+    const { args, value } = config;
     const _args = args || writeArgs || [];
     const _value = value || writeValue || BigNumber.from(0);
     const _gasLimit = gasLimit || 1000000;
 
     if (!deployedContractData) {
       throw new Error(
-        'Target Contract is not deployed, did you forget to run `yarn deploy`?',
+        'Target Contract is not deployed, did you forget to run `yarn deploy`?'
       );
     }
     if (network.id !== targetNetwork.id) {
@@ -94,41 +91,41 @@ export default function useScaffoldContractWrite({
         const provider = new ethers.providers.JsonRpcProvider(network.provider);
 
         const controller: Account = JSON.parse(
-          await SInfo.getItem('controller', STORAGE_KEY),
+          await SInfo.getItem('controller', STORAGE_KEY)
         );
 
         const controllerWallet = new ethers.Wallet(
-          controller.privateKey,
+          controller.privateKey
         ).connect(provider);
 
         // @ts-ignore
         const contract = new ethers.Contract(
           deployedContractData.address,
           deployedContractData.abi,
-          controllerWallet,
+          controllerWallet
         );
 
         const universalProfile = new ethers.Contract(
           account.address,
           UniversalProfileContract.abi,
-          controllerWallet,
+          controllerWallet
         );
         keyManager = new ethers.Contract(
           account.keyManager,
           KeyManagerContract.abi,
-          controllerWallet,
+          controllerWallet
         );
 
         const functionData = contract.interface.encodeFunctionData(
           functionName,
-          _args,
+          _args
         );
 
         executeData = universalProfile.interface.encodeFunctionData('execute', [
           0, // Operation type (0 for call)
           deployedContractData!.address, // Target contract address
           _value, // Value in LYX (0 for read/write without transferring value)
-          functionData, // Encoded function data
+          functionData // Encoded function data
         ]);
 
         openModal('SignTransactionModal', {
@@ -139,7 +136,7 @@ export default function useScaffoldContractWrite({
           value: _value,
           gasLimit: _gasLimit,
           onConfirm,
-          onReject,
+          onReject
         });
       } catch (error) {
         reject(error);
@@ -152,12 +149,12 @@ export default function useScaffoldContractWrite({
       async function onConfirm() {
         try {
           const tx = await keyManager.functions.execute(executeData, {
-            gasLimit: _gasLimit,
+            gasLimit: _gasLimit
           });
           const receipt = await tx.wait(blockConfirmations || 1);
 
           toast.show('Transaction Successful!', {
-            type: 'success',
+            type: 'success'
           });
 
           resolve(receipt);
@@ -169,6 +166,6 @@ export default function useScaffoldContractWrite({
   };
 
   return {
-    write: sendTransaction,
+    write: sendTransaction
   };
 }

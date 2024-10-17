@@ -1,19 +1,20 @@
+import { ScrollView } from 'native-base';
 import React from 'react';
-import NetworkToken from '../../../../../components/cards/tokens/NetworkToken';
-import {ScrollView} from 'native-base';
 import LSP7Token from '../../../../../components/cards/tokens/LSP7Token';
-import {useProfile} from '../../../../../context/ProfileContext';
+import NetworkToken from '../../../../../components/cards/tokens/NetworkToken';
+import { useProfile } from '../../../../../context/ProfileContext';
 
 type Props = {};
 
 export default function Tokens({}: Props) {
-  const {lsp5ReceivedAssets} = useProfile();
+  const { lsp5ReceivedAssets } = useProfile();
 
   return (
     <ScrollView
-      contentContainerStyle={{flexGrow: 1, paddingBottom: 100}}
+      contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
       pt={75}
-      p={2}>
+      p={2}
+    >
       <NetworkToken />
 
       {lsp5ReceivedAssets
