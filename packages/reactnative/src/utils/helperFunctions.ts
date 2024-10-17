@@ -1,4 +1,4 @@
-import {utils} from 'ethers';
+import { utils } from 'ethers';
 
 export const shuffleArray = (array: any[]) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -14,7 +14,7 @@ export const shuffleArray = (array: any[]) => {
 export const truncateAddress = (address: string) => {
   return `${address.slice(0, 6)}...${address.slice(
     address.length - 4,
-    address.length,
+    address.length
   )}`;
 };
 

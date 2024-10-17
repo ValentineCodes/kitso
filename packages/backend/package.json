@@ -8,7 +8,9 @@
     "clean": "rm -rf dist",
     "build": "tsc",
     "dev": "NODE_ENV=development nodemon --exec node --loader ts-node/esm src/server.ts",
-    "start": "NODE_ENV=development node dist/server.js"
+    "start": "NODE_ENV=development node dist/server.js",
+    "format:write": "prettier src --write",
+    "format:check": "prettier src --check"
   },
   "author": "Valentine Orga",
   "license": "ISC",
@@ -36,7 +38,9 @@
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.21",
     "@types/node": "^20.14.12",
+    "@types/prettier": "^3.0.0",
     "nodemon": "^3.0.2",
+    "prettier": "3.3.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   }

@@ -1,9 +1,9 @@
+import { Image, View, VStack } from 'native-base';
 import React from 'react';
-import {Image, View, VStack} from 'native-base';
 import Blockie from '../../../../../components/Blockie';
-import {useIPFSGateway} from '../../../../../hooks/useIPFSGateway';
-import {WINDOW_WIDTH} from '../../../../../utils/styles';
 import useAccount from '../../../../../hooks/scaffold-eth/useAccount';
+import { useIPFSGateway } from '../../../../../hooks/useIPFSGateway';
+import { WINDOW_WIDTH } from '../../../../../utils/styles';
 
 type ProfileImageProps = {
   coverImageURL: string | null;
@@ -12,16 +12,17 @@ type ProfileImageProps = {
 
 export default function ProfileImages({
   coverImageURL,
-  profileImageURL,
+  profileImageURL
 }: ProfileImageProps) {
   const account = useAccount();
-  const {parseIPFSUrl} = useIPFSGateway();
+  const { parseIPFSUrl } = useIPFSGateway();
 
   return (
-    <View h="25%" zIndex={1} bgColor={'purple.100'}>
+    <View h="20%" zIndex={1} bgColor={'purple.100'}>
+      {/* Profile cover */}
       {coverImageURL ? (
         <Image
-          source={{uri: parseIPFSUrl(coverImageURL)}}
+          source={{ uri: parseIPFSUrl(coverImageURL) }}
           alt="profile cover"
           w={'full'}
           h={'full'}
@@ -42,17 +43,19 @@ export default function ProfileImages({
         position={'absolute'}
         left={'4'}
         bottom={-((WINDOW_WIDTH * 0.2) / 2)}
-        alignItems={'flex-start'}>
+        alignItems={'flex-start'}
+      >
         <View
           w={WINDOW_WIDTH * 0.2}
-          style={{aspectRatio: 1}}
+          style={{ aspectRatio: 1 }}
           borderRadius={'full'}
           borderWidth={5}
           borderColor={'white'}
-          bgColor={'green.100'}>
+          bgColor={'green.100'}
+        >
           {profileImageURL ? (
             <Image
-              source={{uri: parseIPFSUrl(profileImageURL)}}
+              source={{ uri: parseIPFSUrl(profileImageURL) }}
               alt="profile image"
               w={'full'}
               h={'full'}
@@ -75,7 +78,8 @@ export default function ProfileImages({
             right={0}
             borderWidth={3}
             borderColor={'white'}
-            borderRadius={'full'}>
+            borderRadius={'full'}
+          >
             <Blockie address={account.address} size={20} />
           </View>
         </View>

@@ -1,8 +1,13 @@
-import { ReactElement } from "react";
-import { TransactionBase, TransactionReceipt, formatEther, isAddress } from "viem";
-import Address from "../../../../../../components/scaffold-eth/Address";
-import { replacer } from "../../../../../../../utils/scaffold-eth/common";
-import { Text } from "native-base";
+import { Text } from 'native-base';
+import { ReactElement } from 'react';
+import {
+  formatEther,
+  isAddress,
+  TransactionBase,
+  TransactionReceipt
+} from 'viem';
+import { replacer } from '../../../../../../../utils/scaffold-eth/common';
+import Address from '../../../../../../components/scaffold-eth/Address';
 
 type DisplayContent =
   | string
@@ -16,42 +21,49 @@ type DisplayContent =
 
 export const displayTxResult = (
   displayContent: DisplayContent | DisplayContent[],
-  asText = false,
+  asText = false
 ): string | ReactElement | number => {
   if (displayContent == null) {
-    return "";
+    return '';
   }
 
-  if (typeof displayContent === "bigint") {
+  if (typeof displayContent === 'bigint') {
     try {
       const asNumber = Number(displayContent);
-      if (asNumber <= Number.MAX_SAFE_INTEGER && asNumber >= Number.MIN_SAFE_INTEGER) {
+      if (
+        asNumber <= Number.MAX_SAFE_INTEGER &&
+        asNumber >= Number.MIN_SAFE_INTEGER
+      ) {
         return asNumber;
       } else {
-        return "Ξ" + formatEther(displayContent);
+        return 'Ξ' + formatEther(displayContent);
       }
     } catch (e) {
-      return "Ξ" + formatEther(displayContent);
+      return 'Ξ' + formatEther(displayContent);
     }
   }
 
-  if (typeof displayContent === "string" && isAddress(displayContent)) {
+  if (typeof displayContent === 'string' && isAddress(displayContent)) {
     return asText ? displayContent : <Address address={displayContent} />;
   }
 
   if (Array.isArray(displayContent)) {
     const mostReadable = (v: DisplayContent) =>
-      ["number", "boolean"].includes(typeof v) ? v : displayTxResultAsText(v);
-    const displayable = JSON.stringify(displayContent.map(mostReadable), replacer);
+      ['number', 'boolean'].includes(typeof v) ? v : displayTxResultAsText(v);
+    const displayable = JSON.stringify(
+      displayContent.map(mostReadable),
+      replacer
+    );
 
     return asText ? (
       displayable
     ) : (
-      <Text>{displayable.replaceAll(",", ",\n")}</Text>
-    )
+      <Text>{displayable.replaceAll(',', ',\n')}</Text>
+    );
   }
 
   return JSON.stringify(displayContent, replacer, 2);
-}
+};
 
-const displayTxResultAsText = (displayContent: DisplayContent) => displayTxResult(displayContent, true);
+const displayTxResultAsText = (displayContent: DisplayContent) =>
+  displayTxResult(displayContent, true);

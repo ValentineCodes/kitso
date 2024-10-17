@@ -1,14 +1,13 @@
-import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React from 'react';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
-
-import Home from './Tab/Home';
-import DebugContracts from './Tab/DebugContracts';
-import Wallet from './Tab/Wallet';
-import Settings from './Tab/Settings';
-import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../utils/styles';
 import { COLORS } from '../../utils/constants';
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../utils/styles';
+import DebugContracts from './Tab/DebugContracts';
+import Home from './Tab/Home';
+import Settings from './Tab/Settings';
+import Wallet from './Tab/Wallet';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,7 +21,7 @@ const renderTabIcon = (focused: boolean, name: string) => (
   />
 );
 
-export default function Dashboard({ }: Props) {
+export default function Dashboard({}: Props) {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -31,39 +30,39 @@ export default function Dashboard({ }: Props) {
           backgroundColor: '#fff',
           borderTopWidth: 0,
           paddingBottom: 0,
-          height: WINDOW_HEIGHT * 0.07,
+          height: WINDOW_HEIGHT * 0.07
         },
         headerShown: false,
         tabBarActiveTintColor: 'white',
-        tabBarItemStyle: { marginVertical: 5 },
+        tabBarItemStyle: { marginVertical: 5 }
       }}
     >
       <Tab.Screen
         name="Home"
         component={Home}
         options={{
-          tabBarIcon: ({ focused }) => renderTabIcon(focused, 'home'),
+          tabBarIcon: ({ focused }) => renderTabIcon(focused, 'home')
         }}
       />
       <Tab.Screen
         name="DebugContracts"
         component={DebugContracts}
         options={{
-          tabBarIcon: ({ focused }) => renderTabIcon(focused, 'bug'),
+          tabBarIcon: ({ focused }) => renderTabIcon(focused, 'bug')
         }}
       />
       <Tab.Screen
         name="Wallet"
         component={Wallet}
         options={{
-          tabBarIcon: ({ focused }) => renderTabIcon(focused, 'wallet'),
+          tabBarIcon: ({ focused }) => renderTabIcon(focused, 'wallet')
         }}
       />
       <Tab.Screen
         name="Settings"
         component={Settings}
         options={{
-          tabBarIcon: ({ focused }) => renderTabIcon(focused, 'settings'),
+          tabBarIcon: ({ focused }) => renderTabIcon(focused, 'settings')
         }}
       />
     </Tab.Navigator>

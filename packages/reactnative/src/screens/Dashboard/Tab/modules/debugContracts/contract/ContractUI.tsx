@@ -1,15 +1,14 @@
-import {HStack, ScrollView, Spinner, Text, VStack, View} from 'native-base';
-import React, {useReducer} from 'react';
-
-import {useDeployedContractInfo} from '../../../../../../hooks/scaffold-eth/useDeployedContractInfo';
-import useTargetNetwork from '../../../../../../hooks/scaffold-eth/useTargetNetwork';
-import {COLORS} from '../../../../../../utils/constants';
+import { useIsFocused, useRoute } from '@react-navigation/native';
+import { HStack, ScrollView, Spinner, Text, View, VStack } from 'native-base';
+import React, { useReducer } from 'react';
 import Address from '../../../../../../components/scaffold-eth/Address';
 import Balance from '../../../../../../components/scaffold-eth/Balance';
+import { useDeployedContractInfo } from '../../../../../../hooks/scaffold-eth/useDeployedContractInfo';
+import useTargetNetwork from '../../../../../../hooks/scaffold-eth/useTargetNetwork';
+import { COLORS } from '../../../../../../utils/constants';
 import ContractReadMethods from './ContractReadMethods';
 import ContractVariables from './ContractVariables';
 import ContractWriteMethods from './ContractWriteMethods';
-import {useIsFocused, useRoute} from '@react-navigation/native';
 
 export default function ContractUI() {
   const route = useRoute();
@@ -17,10 +16,10 @@ export default function ContractUI() {
   const contractName = route.name;
   const [refreshDisplayVariables, triggerRefreshDisplayVariables] = useReducer(
     value => !value,
-    false,
+    false
   );
   const targetNetwork = useTargetNetwork();
-  const {data: deployedContractData, isLoading: isDeployedContractLoading} =
+  const { data: deployedContractData, isLoading: isDeployedContractLoading } =
     useDeployedContractInfo(contractName);
 
   if (isDeployedContractLoading || !isFocused) {
@@ -29,7 +28,8 @@ export default function ContractUI() {
         flex={1}
         justifyContent="center"
         alignItems="center"
-        bgColor="white">
+        bgColor="white"
+      >
         <Spinner color={COLORS.primary} size={'lg'} />
       </View>
     );
@@ -52,7 +52,8 @@ export default function ContractUI() {
         rounded={'2xl'}
         borderWidth={'1'}
         borderColor={'muted.300'}
-        bgColor={'white'}>
+        bgColor={'white'}
+      >
         <Text fontSize={'lg'} fontWeight={'semibold'}>
           {contractName}
         </Text>
@@ -85,7 +86,8 @@ export default function ContractUI() {
         p={'4'}
         rounded={'2xl'}
         borderWidth={'1'}
-        borderColor={'muted.300'}>
+        borderColor={'muted.300'}
+      >
         <ContractVariables
           refreshDisplayVariables={refreshDisplayVariables}
           deployedContractData={deployedContractData}
@@ -98,7 +100,8 @@ export default function ContractUI() {
         px={'4'}
         py={'1'}
         rounded={'2xl'}
-        h={'16'}>
+        h={'16'}
+      >
         <Text fontSize={'lg'} fontWeight={'semibold'}>
           Read
         </Text>
@@ -112,7 +115,8 @@ export default function ContractUI() {
         rounded={'2xl'}
         borderWidth={'1'}
         borderColor={'muted.300'}
-        bgColor={'white'}>
+        bgColor={'white'}
+      >
         <ContractReadMethods deployedContractData={deployedContractData} />
       </VStack>
 
@@ -122,7 +126,8 @@ export default function ContractUI() {
         px={'4'}
         py={'1'}
         rounded={'2xl'}
-        h={'16'}>
+        h={'16'}
+      >
         <Text fontSize={'lg'} fontWeight={'semibold'}>
           Write
         </Text>
@@ -136,7 +141,8 @@ export default function ContractUI() {
         p={'4'}
         rounded={'2xl'}
         borderWidth={'1'}
-        borderColor={'muted.300'}>
+        borderColor={'muted.300'}
+      >
         <ContractWriteMethods
           deployedContractData={deployedContractData}
           onChange={triggerRefreshDisplayVariables}

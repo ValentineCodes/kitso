@@ -1,24 +1,18 @@
-import {
-  Divider,
-  ScrollView,
-  Text,
-  View
-} from 'native-base';
-import React, {useState, useEffect, useRef} from 'react';
-import {ActivityIndicator, StyleSheet} from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { Divider, ScrollView, Text, View } from 'native-base';
+import React, { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import SInfo from 'react-native-sensitive-info';
-import {useToast} from 'react-native-toast-notifications';
-import {createWallet} from 'react-native-web3-wallet';
-
-import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader';
-import {COLORS, STORAGE_KEY} from '../../../utils/constants';
-import {FONT_SIZE} from '../../../utils/styles';
+import { useToast } from 'react-native-toast-notifications';
+import { createWallet } from 'react-native-web3-wallet';
 import Button from '../../../components/Button';
+import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader';
 import SeedPhrase from '../../../components/SeedPhrase';
+import { COLORS, STORAGE_KEY } from '../../../utils/constants';
+import { FONT_SIZE } from '../../../utils/styles';
 
 interface Wallet {
   mnemonic: string;
@@ -34,7 +28,7 @@ export default function CreateController({}: Props) {
   const toast = useToast();
 
   const [wallet, setWallet] = useState<Wallet>();
-  const isSeedPhraseRevealed = useRef(false)
+  const isSeedPhraseRevealed = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const copySeedPhrase = () => {
@@ -45,14 +39,14 @@ export default function CreateController({}: Props) {
 
     Clipboard.setString(wallet.mnemonic);
     toast.show('Copied to clipboard', {
-      type: 'success',
+      type: 'success'
     });
   };
 
   const saveWallet = async () => {
     if (!wallet || !isSeedPhraseRevealed.current) {
       toast.show('Psst!.. Copy your seed phrase before proceeding', {
-        type: 'warning',
+        type: 'warning'
       });
       return;
     }
@@ -62,14 +56,14 @@ export default function CreateController({}: Props) {
 
       const controller = {
         address: wallet.address,
-        privateKey: wallet.privateKey,
+        privateKey: wallet.privateKey
       };
 
       // store controller account in secure and redux storage
       await SInfo.setItem(
         'controller',
         JSON.stringify(controller),
-        STORAGE_KEY,
+        STORAGE_KEY
       );
 
       // @ts-ignore
@@ -85,7 +79,7 @@ export default function CreateController({}: Props) {
       const wallet = {
         mnemonic: newWallet.mnemonic.join(' '),
         address: newWallet.address,
-        privateKey: newWallet.privateKey,
+        privateKey: newWallet.privateKey
       };
 
       // @ts-ignore
@@ -110,7 +104,8 @@ export default function CreateController({}: Props) {
           color={COLORS.primary}
           fontSize={1.7 * FONT_SIZE['xl']}
           lineHeight="40"
-          bold>
+          bold
+        >
           Write Down Your Seed Phrase
         </Text>
         <Text textAlign="center" fontSize={FONT_SIZE['lg']} my="2">
@@ -125,9 +120,12 @@ export default function CreateController({}: Props) {
             <ActivityIndicator size="large" color={COLORS.primary} />
           </View>
         ) : (
-          <SeedPhrase mnemonic={wallet?.mnemonic} onReveal={() => {
-            isSeedPhraseRevealed.current = true
-          }} />
+          <SeedPhrase
+            mnemonic={wallet?.mnemonic}
+            onReveal={() => {
+              isSeedPhraseRevealed.current = true;
+            }}
+          />
         )}
 
         <Divider bgColor="muted.100" my="4" />
@@ -142,7 +140,7 @@ export default function CreateController({}: Props) {
           text="Next"
           disabled={isLoading}
           onPress={saveWallet}
-          style={{marginBottom: 50, marginTop: 20}}
+          style={{ marginBottom: 50, marginTop: 20 }}
         />
       </ScrollView>
     </View>
@@ -153,11 +151,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    padding: 15,
+    padding: 15
   },
   loader: {
     height: 280,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   }
 });

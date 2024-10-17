@@ -38,7 +38,10 @@
     "add:contract": "yarn workspace @kitso/hardhat add",
     "remove:frontend": "yarn workspace @kitso/reactnative remove",
     "remove:backend": "yarn workspace @kitso/backend remove",
-    "remove:contract": "yarn workspace @kitso/hardhat remove"
+    "remove:contract": "yarn workspace @kitso/hardhat remove",
+    "format:frontend": "yarn workspace @kitso/reactnative format:write",
+    "format:backend": "yarn workspace @kitso/backend format:write",
+    "format:contract": "yarn workspace @kitso/hardhat format:write"
   },
   "packageManager": "yarn@3.2.3",
   "devDependencies": {

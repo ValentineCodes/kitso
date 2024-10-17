@@ -1,4 +1,4 @@
-const {ethers} = require("ethers")
+const { ethers } = require('ethers');
 
 // Create a provider instance with the URL of your local node
 const provider = new ethers.JsonRpcProvider('http://192.168.246.72:7545');

@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
-import { useIsMounted } from "usehooks-ts";
-import { ContractCodeStatus, contracts } from "../../../utils/scaffold-eth/contract";
-import scaffoldConfig from "../../../scaffold.config";
+import { useEffect, useState } from 'react';
+import { useIsMounted } from 'usehooks-ts';
+import scaffoldConfig from '../../../scaffold.config';
+import {
+  ContractCodeStatus,
+  contracts
+} from '../../../utils/scaffold-eth/contract';
 
 /**
  * Gets the matching contract info for the provided contract name from the contracts present in deployedContracts.ts
@@ -11,7 +14,9 @@ export const useDeployedContractInfo = (contractName: string) => {
   const isMounted = useIsMounted();
   const { targetNetworks } = scaffoldConfig;
   const deployedContract = contracts?.[targetNetworks[0].id]?.[contractName];
-  const [status, setStatus] = useState<ContractCodeStatus>(ContractCodeStatus.LOADING);
+  const [status, setStatus] = useState<ContractCodeStatus>(
+    ContractCodeStatus.LOADING
+  );
 
   useEffect(() => {
     const checkContractDeployment = async () => {
@@ -32,6 +37,6 @@ export const useDeployedContractInfo = (contractName: string) => {
 
   return {
     data: status === ContractCodeStatus.DEPLOYED ? deployedContract : undefined,
-    isLoading: status === ContractCodeStatus.LOADING,
+    isLoading: status === ContractCodeStatus.LOADING
   };
 };

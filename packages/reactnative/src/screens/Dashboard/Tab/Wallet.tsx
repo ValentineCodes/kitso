@@ -1,31 +1,26 @@
-import {
-  HStack,
-  Pressable,
-  ScrollView,
-  Text,
-  VStack,
-} from 'native-base';
-import React, {useEffect} from 'react';
-import {BackHandler, NativeEventSubscription, StatusBar} from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
 import {
   useFocusEffect,
   useIsFocused,
-  useNavigation,
+  useNavigation
 } from '@react-navigation/native';
-
-import {COLORS} from '../../../utils/constants';
-import {FONT_SIZE} from '../../../utils/styles';
-import {getFirst4Hex} from '../../../utils/helperFunctions';
-
-import useAccount from '../../../hooks/scaffold-eth/useAccount';
-
-import {useProfile} from '../../../context/ProfileContext';
-
-import Assets from './modules/wallet/Assets';
-import Link, {LinkProps} from './modules/wallet/Link';
-import ProfileImages from './modules/wallet/ProfileImages';
-import Clipboard from '@react-native-clipboard/clipboard';
+import { HStack, Pressable, ScrollView, Text, VStack } from 'native-base';
+import React, { useEffect } from 'react';
+import {
+  BackHandler,
+  NativeEventSubscription,
+  RefreshControl,
+  StatusBar
+} from 'react-native';
 import { useToast } from 'react-native-toast-notifications';
+import { useProfile } from '../../../context/ProfileContext';
+import useAccount from '../../../hooks/scaffold-eth/useAccount';
+import { COLORS } from '../../../utils/constants';
+import { getFirst4Hex } from '../../../utils/helperFunctions';
+import { FONT_SIZE } from '../../../utils/styles';
+import Assets from './modules/wallet/Assets';
+import Link, { LinkProps } from './modules/wallet/Link';
+import ProfileImages from './modules/wallet/ProfileImages';
 
 let backHandler: NativeEventSubscription;
 
@@ -33,10 +28,16 @@ type WalletProps = {};
 
 function Wallet({}: WalletProps) {
   const isFocused = useIsFocused();
-  const {profile} = useProfile();
+  const {
+    profile,
+    fetchProfile,
+    fetchAssets,
+    isFetchingProfile,
+    isFetchingAssets
+  } = useProfile();
   const account = useAccount();
   const navigation = useNavigation();
-  const toast = useToast()
+  const toast = useToast();
 
   useFocusEffect(() => {
     backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -54,26 +55,48 @@ function Wallet({}: WalletProps) {
 
   if (!isFocused) return;
 
+  const refetch = async () => {
+    await fetchProfile();
+    await fetchAssets();
+  };
+
   const copyAddress = () => {
-    Clipboard.setString(account.address)
-    toast.show("Copied to clipboard", {
-        type: "success"
-    })
-}
+    Clipboard.setString(account.address);
+    toast.show('Copied to clipboard', {
+      type: 'success'
+    });
+  };
 
   return (
     <ScrollView
-      contentContainerStyle={{flexGrow: 1}}
-      bgColor={'white'}>
+      contentContainerStyle={{ flexGrow: 1 }}
+      bgColor={'white'}
+      refreshControl={
+        <RefreshControl
+          refreshing={isFetchingProfile || isFetchingAssets}
+          onRefresh={refetch}
+          colors={[COLORS.primary]}
+          tintColor={COLORS.primary}
+        />
+      }
+    >
       <StatusBar
         translucent
         barStyle={'light-content'}
         backgroundColor={'transparent'}
       />
 
-      <ProfileImages 
-        coverImageURL={profile?.backgroundImage && profile.backgroundImage.length > 0 ? profile.backgroundImage[0].url : null}
-        profileImageURL={profile?.profileImage && profile.profileImage.length > 0 ? profile.profileImage[0].url : null}
+      <ProfileImages
+        coverImageURL={
+          profile?.backgroundImage && profile.backgroundImage.length > 0
+            ? profile.backgroundImage[0].url
+            : null
+        }
+        profileImageURL={
+          profile?.profileImage && profile.profileImage.length > 0
+            ? profile.profileImage[0].url
+            : null
+        }
       />
 
       {/* @ts-ignore */}
@@ -87,18 +110,24 @@ function Wallet({}: WalletProps) {
           borderWidth={'1'}
           borderRadius={'2xl'}
           borderColor={'gray.300'}
-          fontWeight={'medium'}>
+          fontWeight={'medium'}
+        >
           Edit profile
         </Text>
       </Pressable>
 
       <VStack px={'2'} pb={2}>
         {/* Username */}
-        <Pressable onPress={copyAddress} flexDir="row" alignItems="center" _pressed={{ opacity: 0.7 }}>
+        <Pressable
+          onPress={copyAddress}
+          flexDir="row"
+          alignItems="center"
+          _pressed={{ opacity: 0.7 }}
+        >
           <Text color={COLORS.primary} fontSize={FONT_SIZE['xl'] * 1.2} bold>
             @{profile?.name || 'anonymous'}
           </Text>
-          <Text color="gray.400" fontSize={FONT_SIZE['xl']} bold>
+          <Text color="gray.400" fontSize={FONT_SIZE['xl']} bold mb={-0.8}>
             #{getFirst4Hex(account.address)}
           </Text>
         </Pressable>
@@ -133,7 +162,8 @@ function Wallet({}: WalletProps) {
                 borderWidth={'1'}
                 borderRadius={'2xl'}
                 borderColor={'gray.300'}
-                alignSelf={'flex-start'}>
+                alignSelf={'flex-start'}
+              >
                 {tag}
               </Text>
             ))}

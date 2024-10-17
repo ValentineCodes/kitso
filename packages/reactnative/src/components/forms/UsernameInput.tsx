@@ -1,11 +1,11 @@
-import {VStack, Input, Pressable, HStack, Icon, Text} from 'native-base';
-import React, {useState} from 'react';
-import {COLORS} from '../../utils/constants';
-import {FONT_SIZE} from '../../utils/styles';
+import { HStack, Icon, Input, Pressable, Text, VStack } from 'native-base';
+import React, { useState } from 'react';
 // @ts-ignore
 import FontAwesome5 from 'react-native-vector-icons/dist/FontAwesome5';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
+import { COLORS } from '../../utils/constants';
+import { FONT_SIZE } from '../../utils/styles';
 
 type Props = {
   value: string;
@@ -20,7 +20,7 @@ export default function UsernameInput({
   placeholder,
   onChange,
   onSubmit,
-  onCancel,
+  onCancel
 }: Props) {
   const [username, setUsername] = useState(value);
   const [isEditing, setIsEditing] = useState(false);
@@ -51,7 +51,8 @@ export default function UsernameInput({
           py={1}
           borderRadius="sm"
           bgColor={'gray.100'}
-          onPress={() => setIsEditing(true)}>
+          onPress={() => setIsEditing(true)}
+        >
           <Text color={'gray.500'} fontSize="md" fontWeight="semibold">
             Enter username
           </Text>
@@ -80,7 +81,7 @@ export default function UsernameInput({
             selectTextOnFocus
             _input={{
               selectionColor: COLORS.highlight,
-              cursorColor: COLORS.primary,
+              cursorColor: COLORS.primary
             }}
             textAlign="center"
           />
@@ -97,13 +98,15 @@ export default function UsernameInput({
         <Pressable
           onPress={() => setIsEditing(true)}
           flexDir={'row'}
-          alignItems="center">
+          alignItems="center"
+        >
           <Text
             textAlign="center"
             color={COLORS.primary}
             fontSize={FONT_SIZE.xl}
             bold
-            maxW="60%">
+            maxW="60%"
+          >
             @{username}
           </Text>
           <Icon

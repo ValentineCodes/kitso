@@ -1,5 +1,6 @@
-import {ethers} from 'ethers';
+import { ethers } from 'ethers';
 import { ALCHEMY_KEY } from './constants';
+
 export interface Providers {
   localhost: string;
   ethereum: string;
@@ -22,7 +23,7 @@ const providers = {
   optimism: `https://opt-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
   optimismGoerli: `https://opt-goerli.g.alchemy.com/v2/${ALCHEMY_KEY}`,
   polygon: `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
-  polygonMumbai: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_KEY}`,
+  polygonMumbai: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_KEY}`
 };
 
 export const getProviderWithName = (name: keyof typeof providers) => {

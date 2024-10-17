@@ -1,26 +1,23 @@
 import React from 'react';
-
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {ToastProvider} from 'react-native-toast-notifications';
-import {MenuProvider} from 'react-native-popup-menu';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
-  ModalOptions,
-  ModalProvider,
   createModalStack,
+  ModalOptions,
+  ModalProvider
 } from 'react-native-modalfy';
-
-// Contexts
-import {ProcedureProvider} from '../context/ProcedureContext';
-import {ProfileProvider} from '../context/ProfileContext';
-
-// Modals
-import SignTransactionModal from '../components/modals/SignTransactionModal';
-import SignMessageModal from '../components/modals/SignMessageModal';
-import TxReceiptModal from '../components/modals/TxReceiptModal';
-import SignTransferModal from '../components/modals/SignTransferModal';
+import { MenuProvider } from 'react-native-popup-menu';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ToastProvider } from 'react-native-toast-notifications';
 import ConsentModal from '../components/modals/ConsentModal';
 import ImageCaptureModal from '../components/modals/ImageCaptureModal';
+import SignMessageModal from '../components/modals/SignMessageModal';
+// Modals
+import SignTransactionModal from '../components/modals/SignTransactionModal';
+import SignTransferModal from '../components/modals/SignTransferModal';
+import TxReceiptModal from '../components/modals/TxReceiptModal';
+// Contexts
+import { ProcedureProvider } from '../context/ProcedureContext';
+import { ProfileProvider } from '../context/ProfileContext';
 
 type Props = {
   children: JSX.Element;
@@ -32,16 +29,16 @@ const modalConfig = {
   TxReceiptModal,
   SignTransferModal,
   ConsentModal,
-  ImageCaptureModal,
+  ImageCaptureModal
 };
 const defaultOptions: ModalOptions = {
   backdropOpacity: 0.6,
-  disableFlingGesture: true,
+  disableFlingGesture: true
 };
 
 const modalStack = createModalStack(modalConfig, defaultOptions);
 
-export default function Providers({children}: Props) {
+export default function Providers({ children }: Props) {
   return (
     <GestureHandlerRootView>
       <ToastProvider>

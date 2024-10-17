@@ -1,29 +1,28 @@
-import {configureStore, combineReducers} from '@reduxjs/toolkit';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import {
-  persistReducer,
-  persistStore,
   FLUSH,
-  REHYDRATE,
   PAUSE,
   PERSIST,
+  persistReducer,
+  persistStore,
   PURGE,
   REGISTER,
+  REHYDRATE
 } from 'redux-persist';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import Auth from './reducers/Auth';
 import Accounts from './reducers/Accounts';
+import Auth from './reducers/Auth';
+import Balance from './reducers/Balance';
 import Networks from './reducers/Networks';
 import Profiles from './reducers/Profiles';
-import Transactions from './reducers/Transactions';
-import Balance from './reducers/Balance';
 import Recipients from './reducers/Recipients';
+import Transactions from './reducers/Transactions';
 
 const persistConfig = {
   key: 'root',
   version: 1,
   storage: AsyncStorage,
-  blacklist: ["balance", "activeSessions", "networks"]
+  blacklist: ['balance', 'activeSessions', 'networks']
 };
 
 const reducers = combineReducers({
@@ -43,9 +42,9 @@ export const store = configureStore({
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+      }
+    })
 });
 
 export const persistor = persistStore(store);

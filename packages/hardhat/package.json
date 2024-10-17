@@ -13,7 +13,9 @@
     "test": "REPORT_GAS=true hardhat test --network hardhat",
     "verify": "hardhat etherscan-verify",
     "hardhat-verify": "hardhat verify",
-    "clean": "hardhat clean"
+    "clean": "hardhat clean",
+    "format:write": "prettier --write 'contracts/**/*.sol' && prettier test scripts --write",
+    "format:check": "prettier --list-different --plugin=prettier-plugin-solidity 'contracts/**/*.sol' && prettier test scripts --check"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.7.0",
@@ -27,7 +29,7 @@
     "@typechain/hardhat": "^9.1.0",
     "@types/eslint": "^8",
     "@types/mocha": "^9.1.1",
-    "@types/prettier": "^2",
+    "@types/prettier": "^3.0.0",
     "@types/qrcode": "^1",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
@@ -41,7 +43,8 @@
     "hardhat-deploy": "^0.11.45",
     "hardhat-deploy-ethers": "^0.4.1",
     "hardhat-gas-reporter": "^1.0.9",
-    "prettier": "^2.8.4",
+    "prettier": "3.3.3",
+    "prettier-plugin-solidity": "^1.4.1",
     "solidity-coverage": "^0.8.5",
     "ts-node": "^10.9.1",
     "typechain": "^8.1.0",
