@@ -6,7 +6,7 @@ import {
 } from '@react-navigation/native';
 import { HStack, Pressable, ScrollView, Text, VStack } from 'native-base';
 import React, { useEffect } from 'react';
-import { BackHandler, NativeEventSubscription, StatusBar } from 'react-native';
+import { BackHandler, NativeEventSubscription, RefreshControl, StatusBar } from 'react-native';
 import { useToast } from 'react-native-toast-notifications';
 import { useProfile } from '../../../context/ProfileContext';
 import useAccount from '../../../hooks/scaffold-eth/useAccount';
@@ -23,7 +23,7 @@ type WalletProps = {};
 
 function Wallet({}: WalletProps) {
   const isFocused = useIsFocused();
-  const { profile } = useProfile();
+  const { profile, fetchProfile, fetchAssets, isFetchingProfile, isFetchingAssets } = useProfile();
   const account = useAccount();
   const navigation = useNavigation();
   const toast = useToast();
@@ -44,6 +44,11 @@ function Wallet({}: WalletProps) {
 
   if (!isFocused) return;
 
+  const refetch = async () => {
+    await fetchProfile()
+    await fetchAssets()
+  }
+
   const copyAddress = () => {
     Clipboard.setString(account.address);
     toast.show('Copied to clipboard', {
@@ -52,7 +57,9 @@ function Wallet({}: WalletProps) {
   };
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }} bgColor={'white'}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }} bgColor={'white'} 
+    refreshControl={<RefreshControl refreshing={isFetchingProfile || isFetchingAssets} onRefresh={refetch} colors={[COLORS.primary]} tintColor={COLORS.primary} />}
+    >
       <StatusBar
         translucent
         barStyle={'light-content'}
@@ -100,7 +107,7 @@ function Wallet({}: WalletProps) {
           <Text color={COLORS.primary} fontSize={FONT_SIZE['xl'] * 1.2} bold>
             @{profile?.name || 'anonymous'}
           </Text>
-          <Text color="gray.400" fontSize={FONT_SIZE['xl']} bold>
+          <Text color="gray.400" fontSize={FONT_SIZE['xl']} bold mb={-0.8}>
             #{getFirst4Hex(account.address)}
           </Text>
         </Pressable>
