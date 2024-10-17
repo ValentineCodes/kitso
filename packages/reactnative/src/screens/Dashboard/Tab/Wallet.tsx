@@ -6,7 +6,12 @@ import {
 } from '@react-navigation/native';
 import { HStack, Pressable, ScrollView, Text, VStack } from 'native-base';
 import React, { useEffect } from 'react';
-import { BackHandler, NativeEventSubscription, RefreshControl, StatusBar } from 'react-native';
+import {
+  BackHandler,
+  NativeEventSubscription,
+  RefreshControl,
+  StatusBar
+} from 'react-native';
 import { useToast } from 'react-native-toast-notifications';
 import { useProfile } from '../../../context/ProfileContext';
 import useAccount from '../../../hooks/scaffold-eth/useAccount';
@@ -23,7 +28,13 @@ type WalletProps = {};
 
 function Wallet({}: WalletProps) {
   const isFocused = useIsFocused();
-  const { profile, fetchProfile, fetchAssets, isFetchingProfile, isFetchingAssets } = useProfile();
+  const {
+    profile,
+    fetchProfile,
+    fetchAssets,
+    isFetchingProfile,
+    isFetchingAssets
+  } = useProfile();
   const account = useAccount();
   const navigation = useNavigation();
   const toast = useToast();
@@ -45,9 +56,9 @@ function Wallet({}: WalletProps) {
   if (!isFocused) return;
 
   const refetch = async () => {
-    await fetchProfile()
-    await fetchAssets()
-  }
+    await fetchProfile();
+    await fetchAssets();
+  };
 
   const copyAddress = () => {
     Clipboard.setString(account.address);
@@ -57,8 +68,17 @@ function Wallet({}: WalletProps) {
   };
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }} bgColor={'white'} 
-    refreshControl={<RefreshControl refreshing={isFetchingProfile || isFetchingAssets} onRefresh={refetch} colors={[COLORS.primary]} tintColor={COLORS.primary} />}
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      bgColor={'white'}
+      refreshControl={
+        <RefreshControl
+          refreshing={isFetchingProfile || isFetchingAssets}
+          onRefresh={refetch}
+          colors={[COLORS.primary]}
+          tintColor={COLORS.primary}
+        />
+      }
     >
       <StatusBar
         translucent
