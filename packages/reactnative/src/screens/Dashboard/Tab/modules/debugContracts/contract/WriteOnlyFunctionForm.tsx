@@ -1,7 +1,8 @@
 import { Abi, AbiFunction, Address } from 'abitype';
 import { BigNumber } from 'ethers';
-import { Button, HStack, Text, View } from 'native-base';
+import { Button, HStack, Pressable, Text, View } from 'native-base';
 import React, { useState } from 'react';
+import { ActivityIndicator } from 'react-native';
 import { useModal } from 'react-native-modalfy';
 import { useToast } from 'react-native-toast-notifications';
 import { TransactionReceipt } from 'viem';
@@ -118,24 +119,30 @@ export default function WriteOnlyFunctionForm({
           <View />
         )}
 
-        <Button
+        <Pressable
+          _pressed={{ backgroundColor: 'rgba(39, 184, 88, 0.5)' }}
+          onPress={handleWrite}
+          isDisabled={writeDisabled || isLoading}
+          flexDir="row"
           alignSelf={'flex-end'}
+          justifyContent="center"
+          alignItems="center"
           my={'2'}
           w={'20'}
           py={'2'}
           borderRadius={'3xl'}
           bgColor={COLORS.primaryLight}
-          isLoading={isLoading}
-          isLoadingText="Send"
-          _loading={{ bgColor: COLORS.primary }}
-          isDisabled={writeDisabled || isLoading}
-          _pressed={{ backgroundColor: 'rgba(39, 184, 88, 0.5)' }}
-          onPress={handleWrite}
         >
+          {isLoading && (
+            <ActivityIndicator
+              color={COLORS.primary}
+              style={{ marginRight: 2 }}
+            />
+          )}
           <Text fontSize={'md'} fontWeight={'medium'} color={COLORS.primary}>
             Send
           </Text>
-        </Button>
+        </Pressable>
       </HStack>
     </View>
   );

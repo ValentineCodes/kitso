@@ -1,6 +1,7 @@
 import { Abi, AbiFunction } from 'abitype';
-import { Button, HStack, Text, View, VStack } from 'native-base';
+import { Pressable, Text, View, VStack } from 'native-base';
 import React, { useState } from 'react';
+import { ActivityIndicator } from 'react-native';
 import { useToast } from 'react-native-toast-notifications';
 import { Address } from 'viem';
 import useContractRead from '../../../../../../hooks/scaffold-eth/useContractRead';
@@ -78,26 +79,34 @@ export default function ReadOnlyFunctionForm({
           ))}
         </VStack>
       )}
-      <Button
-        alignSelf={'flex-end'}
-        my={'2'}
-        w={'20'}
-        py={'2'}
-        borderRadius={'3xl'}
-        bgColor={COLORS.primaryLight}
-        isLoading={isFetching}
-        isLoadingText="Read"
-        _loading={{ bgColor: COLORS.primary }}
+
+      <Pressable
         _pressed={{ backgroundColor: 'rgba(39, 184, 88, 0.5)' }}
         onPress={async () => {
           const data = await refetch();
           setResult(data);
         }}
+        isDisabled={isFetching}
+        flexDir="row"
+        alignSelf={'flex-end'}
+        justifyContent="center"
+        alignItems="center"
+        my={'2'}
+        w={'20'}
+        py={'2'}
+        borderRadius={'3xl'}
+        bgColor={COLORS.primaryLight}
       >
+        {isFetching && (
+          <ActivityIndicator
+            color={COLORS.primary}
+            style={{ marginRight: 2 }}
+          />
+        )}
         <Text fontSize={'md'} fontWeight={'medium'} color={COLORS.primary}>
           Read
         </Text>
-      </Button>
+      </Pressable>
     </View>
   );
 }
