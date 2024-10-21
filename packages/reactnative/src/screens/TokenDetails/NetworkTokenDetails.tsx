@@ -31,8 +31,13 @@ export default function NetworkTokenDetails({}: Props) {
     }
   };
 
+  const transferLyx = () => {
+    // @ts-ignore
+    navigation.navigate('Transfer');
+  };
+
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }} bgColor="white" p="4">
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }} bgColor="#F9FAFB" p="4">
       <Pressable
         onPress={() => navigation.goBack()}
         _pressed={{ opacity: 0.4 }}
@@ -44,6 +49,7 @@ export default function NetworkTokenDetails({}: Props) {
           color="black"
         />
       </Pressable>
+
       <VStack flex={1} space="6">
         <View
           w="full"
@@ -72,8 +78,7 @@ export default function NetworkTokenDetails({}: Props) {
           </View>
         </View>
 
-        {/* @ts-ignore */}
-        <Pressable onPress={() => navigation.navigate('Transfer')}>
+        <Pressable onPress={transferLyx} bgColor="white">
           <Text
             py="3"
             textAlign="center"
@@ -119,6 +124,7 @@ export default function NetworkTokenDetails({}: Props) {
                 borderWidth={'1'}
                 borderRadius={'2xl'}
                 borderColor={'gray.300'}
+                bgColor="white"
               >
                 <Icon
                   as={<Ionicons name="link-outline" />}
