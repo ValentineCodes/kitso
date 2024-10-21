@@ -12,6 +12,7 @@ import RecoverProfile from './Auth/recovery/RecoverProfile';
 import SetupRecovery from './Auth/recovery/SetupRecovery';
 import Dashboard from './Dashboard';
 import EditProfile from './EditProfile';
+import NetworkTokenDetails from './TokenDetails/NetworkTokenDetails';
 import Transfer from './Transfer';
 
 type Props = {};
@@ -36,6 +37,7 @@ type AppStackParamsList = {
   Dashboard: undefined;
   EditProfile: undefined;
   Transfer: undefined;
+  NetworkTokenDetails: undefined;
 };
 
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
@@ -69,6 +71,10 @@ export default function Navigation({}: Props) {
         <AppStack.Screen name="Dashboard" component={Dashboard} />
         <AppStack.Screen name="EditProfile" component={EditProfile} />
         <AppStack.Screen name="Transfer" component={Transfer} />
+        <AppStack.Screen
+          name="NetworkTokenDetails"
+          component={NetworkTokenDetails}
+        />
       </AppStack.Navigator>
     </NavigationContainer>
   );
