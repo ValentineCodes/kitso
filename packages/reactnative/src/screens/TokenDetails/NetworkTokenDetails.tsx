@@ -57,7 +57,7 @@ export default function NetworkTokenDetails({}: Props) {
           justifyContent="center"
           alignItems="center"
           bgColor="white"
-          borderWidth={'1'}
+          borderWidth={0.5}
           borderRadius={'2xl'}
           borderColor={'gray.200'}
         >
@@ -82,7 +82,7 @@ export default function NetworkTokenDetails({}: Props) {
           <Text
             py="3"
             textAlign="center"
-            borderWidth={'1'}
+            borderWidth={0.5}
             borderRadius={'2xl'}
             borderColor={'gray.300'}
             fontWeight={'medium'}
@@ -121,7 +121,7 @@ export default function NetworkTokenDetails({}: Props) {
                 mb={4}
                 px="6"
                 py="3"
-                borderWidth={'1'}
+                borderWidth={0.5}
                 borderRadius={'2xl'}
                 borderColor={'gray.300'}
                 bgColor="white"

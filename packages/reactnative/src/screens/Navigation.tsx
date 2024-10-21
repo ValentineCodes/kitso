@@ -12,6 +12,7 @@ import RecoverProfile from './Auth/recovery/RecoverProfile';
 import SetupRecovery from './Auth/recovery/SetupRecovery';
 import Dashboard from './Dashboard';
 import EditProfile from './EditProfile';
+import LSP7TokenDetails from './TokenDetails/LSP7TokenDetails';
 import NetworkTokenDetails from './TokenDetails/NetworkTokenDetails';
 import Transfer from './Transfer';
 
@@ -38,6 +39,7 @@ type AppStackParamsList = {
   EditProfile: undefined;
   Transfer: undefined;
   NetworkTokenDetails: undefined;
+  LSP7TokenDetails: undefined;
 };
 
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
@@ -75,6 +77,7 @@ export default function Navigation({}: Props) {
           name="NetworkTokenDetails"
           component={NetworkTokenDetails}
         />
+        <AppStack.Screen name="LSP7TokenDetails" component={LSP7TokenDetails} />
       </AppStack.Navigator>
     </NavigationContainer>
   );

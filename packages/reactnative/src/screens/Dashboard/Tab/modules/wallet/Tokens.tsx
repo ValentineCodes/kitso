@@ -15,6 +15,11 @@ export default function Tokens({}: Props) {
     // @ts-ignore
     navigation.navigate('NetworkTokenDetails');
   };
+
+  const viewLSP7TokenDetails = () => {
+    // @ts-ignore
+    navigation.navigate('LSP7TokenDetails');
+  };
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
@@ -28,13 +33,14 @@ export default function Tokens({}: Props) {
       {lsp5ReceivedAssets
         .filter(token => token.type === 'LSP7')
         .map(token => (
-          <LSP7Token
-            key={token.name}
-            address={token.address}
-            image={token.image}
-            name={token.name}
-            symbol={token.symbol}
-          />
+          <Pressable key={token.name} onPress={viewLSP7TokenDetails}>
+            <LSP7Token
+              address={token.address}
+              image={token.image}
+              name={token.name}
+              symbol={token.symbol}
+            />
+          </Pressable>
         ))}
     </ScrollView>
   );
