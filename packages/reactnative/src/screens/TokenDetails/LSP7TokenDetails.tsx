@@ -53,7 +53,7 @@ export default function LSP7TokenDetails({}: Props) {
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
-      bgColor="#F9FAFB"
+      bgColor={COLORS.background}
       p="4"
     >
       <Pressable

@@ -5,7 +5,8 @@ export const COLORS = {
   primary: '#36C566',
   primaryLight: '#E8F7ED',
   primaryDark: '#2A974D',
-  highlight: '#11ee83'
+  highlight: '#11ee83',
+  background: '#F9FAFB'
 };
 
 // The local IP address via WIFI-HOTSPOT

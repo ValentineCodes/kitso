@@ -14,6 +14,7 @@ import { Linking } from 'react-native';
 import { useToast } from 'react-native-toast-notifications';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
+import { COLORS } from '../../utils/constants';
 import { FONT_SIZE, WINDOW_WIDTH } from '../../utils/styles';
 
 type Props = {};
@@ -37,7 +38,11 @@ export default function NetworkTokenDetails({}: Props) {
   };
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }} bgColor="#F9FAFB" p="4">
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      bgColor={COLORS.background}
+      p="4"
+    >
       <Pressable
         onPress={() => navigation.goBack()}
         _pressed={{ opacity: 0.4 }}

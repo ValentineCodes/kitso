@@ -1,6 +1,7 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { View } from 'native-base';
 import React from 'react';
+import { COLORS } from '../../../../../utils/constants';
 import { FONT_SIZE } from '../../../../../utils/styles';
 import Collectibles from './Collectibles';
 // screens
@@ -13,7 +14,7 @@ type Props = {};
 
 export default function Assets({}: Props) {
   return (
-    <View flex={1} bgColor="#F9FAFB">
+    <View flex={1} bgColor={COLORS.background}>
       <Tab.Navigator
         screenOptions={{
           tabBarLabelStyle: {
