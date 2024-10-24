@@ -21,6 +21,7 @@ import { COLORS } from '../../utils/constants';
 import { truncateAddress } from '../../utils/helperFunctions';
 import { FONT_SIZE, WINDOW_WIDTH } from '../../utils/styles';
 import { LinkProps } from '../Dashboard/Tab/modules/wallet/Link';
+import useURL from '../../hooks/useURL';
 
 type Props = {};
 
@@ -28,15 +29,7 @@ export default function LSP7TokenDetails({}: Props) {
   const navigation = useNavigation();
   const toast = useToast();
   const network = useNetwork();
-
-  const openURL = async (url: string) => {
-    try {
-      await Linking.openURL(url);
-    } catch (error) {
-      console.error(error);
-      toast.show('Failed to open URL', { type: 'danger' });
-    }
-  };
+  const {openURL} = useURL()
 
   const copyContractAddress = () => {
     Clipboard.setString('0x80d898c5a3a0b118a0c8c8adcdbb260fc687f1ce');

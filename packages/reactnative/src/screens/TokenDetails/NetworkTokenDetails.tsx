@@ -10,27 +10,17 @@ import {
   VStack
 } from 'native-base';
 import React from 'react';
-import { Linking } from 'react-native';
-import { useToast } from 'react-native-toast-notifications';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
 import { COLORS } from '../../utils/constants';
 import { FONT_SIZE, WINDOW_WIDTH } from '../../utils/styles';
+import useURL from '../../hooks/useURL';
 
 type Props = {};
 
 export default function NetworkTokenDetails({}: Props) {
   const navigation = useNavigation();
-  const toast = useToast();
-
-  const openURL = async (url: string) => {
-    try {
-      await Linking.openURL(url);
-    } catch (error) {
-      console.error(error);
-      toast.show('Failed to open URL', { type: 'danger' });
-    }
-  };
+  const {openURL} = useURL()
 
   const transferLyx = () => {
     // @ts-ignore
