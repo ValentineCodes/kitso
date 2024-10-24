@@ -17,3 +17,6 @@ export const STORAGE_KEY = {
   sharedPreferencesName: 'kitso.android.storage',
   keychainService: 'kitso.ios.storage'
 };
+
+// Digital asset types
+export const TOKEN_TYPES = ['LSP7', 'LSP8', 'LSP8 COLLECTION'];
