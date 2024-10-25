@@ -9,6 +9,7 @@ export type AssetMetadata = {
   name: string;
   symbol: string;
   icon: string | null;
+  backgroundImage: string | null;
   type: string;
 };
 
@@ -31,14 +32,22 @@ const useAssetMetadata = ({ assetAddress }: UseAssetMetadataOptions = {}) => {
   const fetchMetadata = useCallback(
     async (address: string) => {
       const erc725 = getERC725(address);
-      const { value } = await erc725.fetchData('LSP4Metadata');
+      const metadata = await erc725.fetchData('LSP4Metadata');
       return {
-        name: value.LSP4Metadata.name,
-        icon:
-          value.LSP4Metadata.icon[0]?.url.replace(
+        ...metadata.value.LSP4Metadata,
+        backgroundImage:
+          metadata.value.LSP4Metadata.backgroundImage[0]?.url.replace(
             'ipfs://',
             network.ipfsGateway
-          ) || null
+          ) || null,
+        icon:
+          metadata.value.LSP4Metadata.icon[0]?.url.replace(
+            'ipfs://',
+            network.ipfsGateway
+          ) || null,
+        images: metadata.value.LSP4Metadata.images.map(
+          image => image[0]?.url.replace('ipfs://', network.ipfsGateway) || null
+        )
       };
     },
     [network]
@@ -76,6 +85,7 @@ const useAssetMetadata = ({ assetAddress }: UseAssetMetadataOptions = {}) => {
           name: metadata.name,
           symbol,
           icon: metadata.icon,
+          backgroundImage: metadata.backgroundImage,
           type
         };
       } catch (error) {
@@ -85,7 +95,8 @@ const useAssetMetadata = ({ assetAddress }: UseAssetMetadataOptions = {}) => {
           name: 'Unknown',
           symbol: 'Unknown',
           icon: null,
-          type: 'LSP7' // Default type
+          backgroundImage: null,
+          type: 'LSP7'
         };
       }
     },

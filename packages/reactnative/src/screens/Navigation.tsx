@@ -39,7 +39,9 @@ type AppStackParamsList = {
   EditProfile: undefined;
   Transfer: undefined;
   NetworkTokenDetails: undefined;
-  LSP7TokenDetails: undefined;
+  LSP7TokenDetails: {
+    assetAddress: string;
+  };
 };
 
 const AppStack = createNativeStackNavigator<AppStackParamsList>();

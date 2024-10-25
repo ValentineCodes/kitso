@@ -12,15 +12,15 @@ import {
 import React from 'react';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
+import useURL from '../../hooks/useURL';
 import { COLORS } from '../../utils/constants';
 import { FONT_SIZE, WINDOW_WIDTH } from '../../utils/styles';
-import useURL from '../../hooks/useURL';
 
 type Props = {};
 
 export default function NetworkTokenDetails({}: Props) {
   const navigation = useNavigation();
-  const {openURL} = useURL()
+  const { openURL } = useURL();
 
   const transferLyx = () => {
     // @ts-ignore

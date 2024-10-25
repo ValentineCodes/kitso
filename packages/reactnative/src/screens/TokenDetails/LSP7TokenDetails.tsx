@@ -1,5 +1,5 @@
 import Clipboard from '@react-native-clipboard/clipboard';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import {
   HStack,
   Icon,
@@ -10,29 +10,36 @@ import {
   View,
   VStack
 } from 'native-base';
-import React from 'react';
-import { Linking } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { useToast } from 'react-native-toast-notifications';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
 import Blockie from '../../components/Blockie';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
+import useAssetMetadata from '../../hooks/useAssetMetadata';
+import useURL from '../../hooks/useURL';
 import { COLORS } from '../../utils/constants';
 import { truncateAddress } from '../../utils/helperFunctions';
 import { FONT_SIZE, WINDOW_WIDTH } from '../../utils/styles';
 import { LinkProps } from '../Dashboard/Tab/modules/wallet/Link';
-import useURL from '../../hooks/useURL';
 
 type Props = {};
 
 export default function LSP7TokenDetails({}: Props) {
   const navigation = useNavigation();
+  const route = useRoute();
+
+  const { assetAddress } = route.params;
+
   const toast = useToast();
   const network = useNetwork();
-  const {openURL} = useURL()
+  const { openURL } = useURL();
+  const { fetchMetadata, fetchSymbol } = useAssetMetadata();
+
+  const [metadata, setMetadata] = useState();
 
   const copyContractAddress = () => {
-    Clipboard.setString('0x80d898c5a3a0b118a0c8c8adcdbb260fc687f1ce');
+    Clipboard.setString(assetAddress);
     toast.show('Copied to clipboard', {
       type: 'success'
     });
@@ -42,6 +49,15 @@ export default function LSP7TokenDetails({}: Props) {
     // @ts-ignore
     navigation.navigate('Transfer');
   };
+
+  useEffect(() => {
+    (async () => {
+      const metadata = await fetchMetadata(assetAddress);
+      const symbol = await fetchSymbol(assetAddress);
+
+      setMetadata({ ...metadata, symbol });
+    })();
+  }, []);
 
   return (
     <ScrollView
@@ -80,12 +96,14 @@ export default function LSP7TokenDetails({}: Props) {
             h={WINDOW_WIDTH * 0.17}
             p={3}
           >
-            <Image
-              source={require('../../../assets/images/lukso_logo.png')}
-              alt="LYX token"
-              w={'full'}
-              h={'full'}
-            />
+            {metadata && (
+              <Image
+                source={{ uri: metadata?.icon }}
+                alt="LYX token"
+                w={'full'}
+                h={'full'}
+              />
+            )}
           </View>
         </View>
 
@@ -99,13 +117,13 @@ export default function LSP7TokenDetails({}: Props) {
             fontWeight={'medium'}
             fontSize="lg"
           >
-            Send LYX
+            Send {metadata?.symbol}
           </Text>
         </Pressable>
 
         <VStack space="2">
           <Text bold fontSize="xl">
-            LUKSO
+            {metadata?.name}
           </Text>
           <Text fontSize="sm">Total supply of 42,000,000</Text>
         </VStack>
@@ -114,9 +132,7 @@ export default function LSP7TokenDetails({}: Props) {
           <Text bold fontSize="md">
             Token Description
           </Text>
-          <Text fontSize="sm">
-            This is the native token of the LUKSO blockchain.
-          </Text>
+          <Text fontSize="sm">{metadata?.description}</Text>
         </VStack>
 
         <VStack space="2">
@@ -124,18 +140,23 @@ export default function LSP7TokenDetails({}: Props) {
             Token Images
           </Text>
 
-          <View
-            borderRadius="lg"
-            w={WINDOW_WIDTH * 0.15}
-            h={WINDOW_WIDTH * 0.15}
-          >
-            <Image
-              source={require('../../../assets/images/lukso_logo.png')}
-              alt="LYX token"
-              w={'full'}
-              h={'full'}
-            />
-          </View>
+          <HStack flexWrap={'wrap'} space={'2'}>
+            {metadata?.images?.map(image => (
+              <View
+                key={image}
+                borderRadius="lg"
+                w={WINDOW_WIDTH * 0.15}
+                h={WINDOW_WIDTH * 0.15}
+              >
+                <Image
+                  source={{ uri: image }}
+                  alt="LYX token"
+                  w={'full'}
+                  h={'full'}
+                />
+              </View>
+            ))}
+          </HStack>
         </VStack>
 
         <VStack space="2">
@@ -234,33 +255,31 @@ export default function LSP7TokenDetails({}: Props) {
             Links
           </Text>
 
-          {[{ title: 'website', url: 'https:valentineorga.vercel.app' }].map(
-            (link: LinkProps) => (
-              <Pressable key={link.url} onPress={() => openURL(link.url)}>
-                <HStack
-                  alignItems={'center'}
-                  space={2}
-                  mb={4}
-                  px="6"
-                  py="3"
-                  borderWidth={0.5}
-                  borderRadius={'xl'}
-                  borderColor={'gray.300'}
-                  bgColor="white"
-                >
-                  <Icon
-                    as={<Ionicons name="link-outline" />}
-                    size={FONT_SIZE['lg']}
-                    color="black"
-                    rotation={-45}
-                  />
-                  <Text bold fontSize={'md'} fontWeight={'light'}>
-                    {link.title}
-                  </Text>
-                </HStack>
-              </Pressable>
-            )
-          )}
+          {metadata?.links?.map((link: LinkProps) => (
+            <Pressable key={link.url} onPress={() => openURL(link.url)}>
+              <HStack
+                alignItems={'center'}
+                space={2}
+                mb={4}
+                px="6"
+                py="3"
+                borderWidth={0.5}
+                borderRadius={'xl'}
+                borderColor={'gray.300'}
+                bgColor="white"
+              >
+                <Icon
+                  as={<Ionicons name="link-outline" />}
+                  size={FONT_SIZE['lg']}
+                  color="black"
+                  rotation={-45}
+                />
+                <Text bold fontSize={'md'} fontWeight={'light'}>
+                  {link.title}
+                </Text>
+              </HStack>
+            </Pressable>
+          ))}
         </VStack>
 
         <VStack space="2">
@@ -279,12 +298,9 @@ export default function LSP7TokenDetails({}: Props) {
             bgColor="white"
           >
             <HStack alignItems="center" space={2}>
-              <Blockie
-                address={'0x80d898c5a3a0b118a0c8c8adcdbb260fc687f1ce'}
-                size={25}
-              />
+              <Blockie address={assetAddress} size={25} />
               <Text bold fontSize="sm">
-                {truncateAddress('0x80d898c5a3a0b118a0c8c8adcdbb260fc687f1ce')}
+                {truncateAddress(assetAddress)}
               </Text>
             </HStack>
             <HStack alignItems="center" space={3}>
@@ -298,9 +314,7 @@ export default function LSP7TokenDetails({}: Props) {
                   as={<Ionicons name="open-outline" />}
                   size={5}
                   onPress={() =>
-                    openURL(
-                      `${network.blockExplorer}address/0x80d898c5a3a0b118a0c8c8adcdbb260fc687f1ce`
-                    )
+                    openURL(`${network.blockExplorer}address/${assetAddress}`)
                   }
                 />
               )}

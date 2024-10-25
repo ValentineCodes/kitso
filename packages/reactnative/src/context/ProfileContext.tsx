@@ -72,7 +72,7 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({
   const account = useAccount();
   const network = useNetwork();
 
-  const {fetchAssetMetadata} = useAssetMetadata()
+  const { fetchAssetMetadata } = useAssetMetadata();
 
   const [profile, setProfile] = useState<Profile | null>(null);
   const [lsp12IssuedAssets, setLsp12IssuedAssets] = useState<AssetMetadata[]>(
