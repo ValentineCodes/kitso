@@ -22,7 +22,7 @@ export default function Collectibles({}: Props) {
             address={token.address}
             name={token.name}
             symbol={token.symbol}
-            image={token.image}
+            image={token.icon}
             type={token.type}
           />
         ))}

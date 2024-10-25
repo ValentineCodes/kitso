@@ -36,7 +36,7 @@ export default function Tokens({}: Props) {
           <Pressable key={token.name} onPress={viewLSP7TokenDetails}>
             <LSP7Token
               address={token.address}
-              image={token.image}
+              image={token.icon}
               name={token.name}
               symbol={token.symbol}
             />

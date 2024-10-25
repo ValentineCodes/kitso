@@ -41,7 +41,7 @@ interface AssetMetadata {
   address: string;
   name: string;
   symbol: string;
-  image: string | null;
+  icon: string | null;
   type: 'LSP7' | 'LSP8' | 'LSP8 COLLECTION';
 }
 
