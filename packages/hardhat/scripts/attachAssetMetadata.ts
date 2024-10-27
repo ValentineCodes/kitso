@@ -187,7 +187,7 @@ export async function attachAssetMetadata(
 }
 
 // Replace with the correct asset address and image path
-const assetAddress = '0x7F3a6b7762434D4FCA82Ed486a09DEDE8d9f4ebA'; // Your asset address
+const assetAddress = '0x7693d152c741aAAfeCea293901F3431f3314E185'; // Your asset address
 const imagePath = path.join(__dirname, '../assets/images/token.jpeg'); // Update with your image file path
 
 attachAssetMetadata(assetAddress, imagePath)

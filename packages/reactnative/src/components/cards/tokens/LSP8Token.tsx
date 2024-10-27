@@ -59,7 +59,7 @@ const Creators = () => {
           </Text>
           <HStack alignItems={'center'}>
             <Text color={'black'} bold>
-              @edthedrunk
+              @valentine
             </Text>
 
             <Text bold color={'gray.400'}>
