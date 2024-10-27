@@ -1,6 +1,5 @@
 import { ERC725, ERC725JSONSchema } from '@erc725/erc725.js';
 import lsp3ProfileSchema from '@erc725/erc725.js/schemas/LSP3ProfileMetadata.json';
-import lsp4MetadataSchema from '@erc725/erc725.js/schemas/LSP4DigitalAsset.json';
 import React, {
   createContext,
   ReactNode,
@@ -11,25 +10,7 @@ import React, {
 } from 'react';
 import useAccount from '../hooks/scaffold-eth/useAccount';
 import useNetwork from '../hooks/scaffold-eth/useNetwork';
-
-// Types for LSP4Metadata
-interface LSP4Metadata {
-  assets: Asset[]; // Array of assets
-  backgroundImage: Image[]; // Array of images
-  description: string; // Description of the asset
-  icon: Image[]; // Array of icon images
-  images: Image[]; // Additional images
-  links: Link[]; // Array of links related to the asset
-  name: string; // Name of the asset
-}
-
-// Types for Asset (can be defined based on its structure)
-interface Asset {
-  // Define the properties of Asset based on its structure
-  // For example:
-  // id: string;
-  // type: string;
-}
+import useAssetMetadata from '../hooks/useAssetMetadata';
 
 // Types for Image
 interface Image {
@@ -46,16 +27,6 @@ interface Link {
   url: string; // URL of the link
 }
 
-// Type for the overall response
-interface LSP4Response {
-  dynamicName: string; // Dynamic name
-  key: string; // Key of the metadata
-  name: string; // Name of the metadata
-  value: {
-    LSP4Metadata: LSP4Metadata; // Nested LSP4Metadata object
-  };
-}
-
 // Profile Types
 interface Profile {
   name: string;
@@ -70,7 +41,7 @@ interface AssetMetadata {
   address: string;
   name: string;
   symbol: string;
-  image: string | null;
+  icon: string | null;
   type: 'LSP7' | 'LSP8' | 'LSP8 COLLECTION';
 }
 
@@ -94,14 +65,15 @@ interface ProfileProviderProps {
 // Create Profile Context
 const ProfileContext = createContext<UseProfileResult | undefined>(undefined);
 
-const TOKEN_TYPES = ['LSP7', 'LSP8', 'LSP8 COLLECTION'];
-
 // Profile Provider Component
 export const ProfileProvider: React.FC<ProfileProviderProps> = ({
   children
 }) => {
   const account = useAccount();
   const network = useNetwork();
+
+  const { fetchAssetMetadata } = useAssetMetadata();
+
   const [profile, setProfile] = useState<Profile | null>(null);
   const [lsp12IssuedAssets, setLsp12IssuedAssets] = useState<AssetMetadata[]>(
     []
@@ -170,52 +142,11 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({
         'LSP5ReceivedAssets[]'
       );
 
-      // Fetch LSP4 Metadata for a given asset address
-      const fetchLSP4Metadata = async (
-        assetAddress: string
-      ): Promise<AssetMetadata> => {
-        try {
-          const erc725 = new ERC725(
-            lsp4MetadataSchema,
-            assetAddress,
-            network.provider,
-            {
-              ipfsGateway: network.ipfsGateway
-            }
-          );
-
-          const metadata = await erc725.fetchData('LSP4Metadata');
-          const symbol = await erc725.fetchData('LSP4TokenSymbol');
-          const type = await erc725.fetchData('LSP4TokenType');
-
-          return {
-            address: assetAddress,
-            name: metadata.value.LSP4Metadata.name,
-            symbol: symbol.value,
-            image:
-              metadata.value.LSP4Metadata.icon[0]?.url.replace(
-                'ipfs://',
-                network.ipfsGateway
-              ) || null,
-            type: TOKEN_TYPES[type.value as unknown as number]
-          };
-        } catch (error) {
-          console.error('Error fetching LSP4 metadata:', error);
-          return {
-            address: assetAddress,
-            name: 'Unknown',
-            symbol: 'Unknown',
-            image: null,
-            type: 'LSP7'
-          }; // Default fallback
-        }
-      };
-
       const lsp12List: AssetMetadata[] = [];
       // Process LSP12 issued assets
       if (Array.isArray(lsp12IssuedAssetsData.value)) {
         for (const asset of lsp12IssuedAssetsData.value) {
-          const metadata = await fetchLSP4Metadata(asset);
+          const metadata = await fetchAssetMetadata(asset);
           lsp12List.push(metadata);
         }
       }
@@ -224,7 +155,7 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({
       // Process LSP5 received assets
       if (Array.isArray(lsp5ReceivedAssetsData.value)) {
         for (const asset of lsp5ReceivedAssetsData.value) {
-          const metadata = await fetchLSP4Metadata(asset);
+          const metadata = await fetchAssetMetadata(asset);
           lsp5List.push(metadata);
         }
       }

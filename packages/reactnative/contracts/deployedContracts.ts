@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "../utils/scaffold-eth/contract";
 const deployedContracts = {
   1337: {
     MockLSP7: {
-      address: "0xe19d8b035cd8aCF85c360E8d12eBb1cB072ff80f",
+      address: "0x7F3a6b7762434D4FCA82Ed486a09DEDE8d9f4ebA",
       abi: [
         {
           inputs: [
@@ -846,7 +846,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     MockLSP8: {
-      address: "0x0a8EAB53e32531a3718256A63FF362ab43a783A9",
+      address: "0x7693d152c741aAAfeCea293901F3431f3314E185",
       abi: [
         {
           inputs: [
@@ -1822,7 +1822,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     YourContract: {
-      address: "0xA60c552B4221d51482bbF1F5729b743CaC7078d4",
+      address: "0xFCa9A6abC01730c97cd44984796493d97414a670",
       abi: [
         {
           inputs: [

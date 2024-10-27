@@ -1,9 +1,8 @@
 import { HStack, Icon, Pressable, Text } from 'native-base';
 import React from 'react';
-import { Linking } from 'react-native';
-import { useToast } from 'react-native-toast-notifications';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
+import useURL from '../../../../../hooks/useURL';
 import { FONT_SIZE } from '../../../../../utils/styles';
 
 export interface LinkProps {
@@ -12,18 +11,9 @@ export interface LinkProps {
 }
 
 export default function Link({ title, url }: LinkProps) {
-  const toast = useToast();
-
-  const openURL = async () => {
-    try {
-      await Linking.openURL(url);
-    } catch (error) {
-      console.error(error);
-      toast.show('Failed to open URL', { type: 'danger' });
-    }
-  };
+  const { openURL } = useURL({ url });
   return (
-    <Pressable onPress={openURL}>
+    <Pressable onPress={() => openURL()}>
       <HStack
         alignItems={'center'}
         alignSelf={'flex-start'}

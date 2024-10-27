@@ -5,14 +5,18 @@ export const COLORS = {
   primary: '#36C566',
   primaryLight: '#E8F7ED',
   primaryDark: '#2A974D',
-  highlight: '#11ee83'
+  highlight: '#11ee83',
+  background: '#F9FAFB'
 };
 
 // The local IP address via WIFI-HOTSPOT
-export const LOCAL_PROVIDER = 'http://192.168.0.112:8545';
+export const LOCAL_PROVIDER = 'http://192.168.0.124:8545';
 
 // secure storage key
 export const STORAGE_KEY = {
   sharedPreferencesName: 'kitso.android.storage',
   keychainService: 'kitso.ios.storage'
 };
+
+// Digital asset types
+export const TOKEN_TYPES = ['LSP7', 'LSP8', 'LSP8 COLLECTION'];
