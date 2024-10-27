@@ -232,7 +232,7 @@ export default function LSP7TokenDetails({}: Props) {
                 </View>
                 <HStack alignItems={'center'}>
                   <Text color={'black'} bold>
-                    @edthedrunk
+                    @valentine
                   </Text>
 
                   <Text bold color={'gray.400'}>
