@@ -16,7 +16,7 @@ import {
   View,
   VStack
 } from 'native-base';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useModal } from 'react-native-modalfy';
 import SInfo from 'react-native-sensitive-info';
 import { useToast } from 'react-native-toast-notifications';
@@ -47,7 +47,7 @@ export default function EditProfile({}: Props) {
   const navigation = useNavigation();
   const toast = useToast();
   const { openModal } = useModal();
-  const { profile } = useProfile();
+  const { profile, fetchProfile } = useProfile();
   const account = useAccount();
   const network = useNetwork();
   const { parseIPFSUrl } = useIPFSGateway();
@@ -119,8 +119,8 @@ export default function EditProfile({}: Props) {
           description: bio,
           links: links.map(link => ({ title: link.title, url: link.url })),
           tags,
-          profileImage: [],
-          backgroundImage: []
+          profileImage: profile?.profileImage || [],
+          backgroundImage: profile?.backgroundImage || []
         }
       };
 
@@ -138,17 +138,20 @@ export default function EditProfile({}: Props) {
 
         if (!uploadedImage) {
           toast.show(`Failed to upload ${field} image`, { type: 'danger' });
+          setIsUploading(false);
           return false;
         }
 
-        profileMetadata.LSP3Profile[field].push({
-          ...dimensions,
-          verification: {
-            method: 'keccak256(bytes)',
-            data: uploadedImage.bufferHash
-          },
-          url: `ipfs://${uploadedImage.ipfsHash}`
-        });
+        profileMetadata.LSP3Profile[field] = [
+          {
+            ...dimensions,
+            verification: {
+              method: 'keccak256(bytes)',
+              data: uploadedImage.bufferHash
+            },
+            url: `ipfs://${uploadedImage.ipfsHash}`
+          }
+        ];
 
         return true;
       };
@@ -160,22 +163,25 @@ export default function EditProfile({}: Props) {
           width: 1024,
           height: 1024
         }))
-      )
+      ) {
         return;
+      }
+
       if (
         coverImage &&
         !(await handleImageUpload(coverImage, 'backgroundImage', {
           width: 1500,
           height: 500
         }))
-      )
+      ) {
         return;
+      }
 
       // Upload profile metadata
-      const profile = await uploadProfile(profileMetadata);
-      if (!profile) {
+      const _profile = await uploadProfile(profileMetadata);
+      if (!_profile) {
         toast.show('Failed to upload profile metadata', { type: 'danger' });
-        return;
+        throw new Error('Failed to upload profile metadata');
       }
 
       const profileMetadataHash = ethers.utils.keccak256(
@@ -187,13 +193,14 @@ export default function EditProfile({}: Props) {
           method: 'keccak256(utf8)',
           data: profileMetadataHash
         },
-        url: `ipfs://${profile.ipfsHash}`
+        url: `ipfs://${_profile.ipfsHash}`
       };
 
       const provider = new ethers.providers.JsonRpcProvider(network.provider);
       const controller: Controller = JSON.parse(
         await SInfo.getItem('controller', STORAGE_KEY)
       );
+
       const controllerWallet = new ethers.Wallet(controller.privateKey).connect(
         provider
       );
@@ -201,7 +208,10 @@ export default function EditProfile({}: Props) {
       const erc725 = new ERC725(
         LSP3ProfileMetadataSchemas as any,
         account.address,
-        provider
+        provider,
+        {
+          ipfsGateway: network.ipfsGateway
+        }
       );
 
       const universalProfile = new ethers.Contract(
@@ -222,27 +232,22 @@ export default function EditProfile({}: Props) {
       ]);
 
       // Encode setData and execute calls
-      const setDataCallData = universalProfile.interface.encodeFunctionData(
+      const editProfileCalldata = universalProfile.interface.encodeFunctionData(
         'setData',
         [encodedData.keys[0], encodedData.values[0]]
       );
 
-      const executeData = universalProfile.interface.encodeFunctionData(
-        'execute',
-        [
-          0, // Operation type (0 for call)
-          account.address, // Target contract address
-          0, // Value in LYX
-          setDataCallData // Encoded setData call
-        ]
-      );
-
       // Call execute on Key Manager
-      const tx = await keyManager.execute(executeData, { gasLimit: 1000000 });
-      console.log('Transaction sent:', tx.hash);
+      const tx = await keyManager.functions.execute(editProfileCalldata, {
+        gasLimit: 3000000
+      });
 
       // Wait for confirmation
       await tx.wait();
+
+      // refresh profile
+      fetchProfile().catch(error => null);
+
       toast.show('Profile Updated Successfully!', { type: 'success' });
     } catch (error) {
       toast.show('Failed to edit profile!', { type: 'danger' });
@@ -252,7 +257,7 @@ export default function EditProfile({}: Props) {
     }
   };
 
-  const selectCoverImage = () => {
+  const selectCoverImage = useCallback(() => {
     if (coverImage) {
       return { uri: coverImage.uri };
     } else if (profile?.backgroundImage && profile.backgroundImage.length > 0) {
@@ -262,9 +267,9 @@ export default function EditProfile({}: Props) {
     } else {
       return require('../../assets/images/default_profile_cover.jpg');
     }
-  };
+  }, [coverImage, profile]);
 
-  const selectProfileImage = () => {
+  const selectProfileImage = useCallback(() => {
     if (profileImage) {
       return { uri: profileImage.uri };
     } else if (profile?.profileImage && profile.profileImage.length > 0) {
@@ -274,7 +279,7 @@ export default function EditProfile({}: Props) {
     } else {
       return require('../../assets/images/default_profile_image.jpeg');
     }
-  };
+  }, [profileImage, profile]);
 
   const captureCoverImage = () => {
     openModal('ImageCaptureModal', {
@@ -293,7 +298,7 @@ export default function EditProfile({}: Props) {
   };
 
   return (
-    <View style={[styles.screenContainer, { padding: 0 }]}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }} bgColor={'white'}>
       <StatusBar translucent backgroundColor={'rgba(0,0,0,0)'} />
       {/* Profile cover */}
       <Pressable onPress={captureCoverImage} h={'20%'}>
@@ -444,6 +449,6 @@ export default function EditProfile({}: Props) {
         onPress={editProfile}
         style={{ marginBottom: 15, width: '95%', alignSelf: 'center' }}
       />
-    </View>
+    </ScrollView>
   );
 }

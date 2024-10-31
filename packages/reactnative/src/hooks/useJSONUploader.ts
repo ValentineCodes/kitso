@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { keccak256 } from 'ethers/lib/utils';
 import { useEffect, useState } from 'react';
 
 const pinataEndpoint = 'https://api.pinata.cloud/pinning/pinJSONToIPFS';
