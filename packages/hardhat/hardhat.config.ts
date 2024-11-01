@@ -22,6 +22,8 @@ const deployerPrivateKey =
 const etherscanApiKey =
   process.env.ETHERSCAN_API_KEY || 'DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW';
 
+const localProvider = process.env.LOCAL_PROVIDER || 'http://127.0.0.1:8545';
+
 const config: HardhatUserConfig = {
   solidity: {
     version: '0.8.19',
@@ -51,7 +53,7 @@ const config: HardhatUserConfig = {
       }
     },
     ganache: {
-      url: `http://192.168.0.124:8545`,
+      url: localProvider,
       accounts: [deployerPrivateKey],
       chainId: 1337
     },

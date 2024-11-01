@@ -10,7 +10,7 @@ export const COLORS = {
 };
 
 // The local IP address via WIFI-HOTSPOT
-export const LOCAL_PROVIDER = 'http://192.168.0.124:8545';
+export const LOCAL_PROVIDER = 'http://192.168.0.134:8545';
 
 // secure storage key
 export const STORAGE_KEY = {
