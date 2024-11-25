@@ -83,11 +83,6 @@ export default function SignTransferModal({
   };
 
   const transfer = async () => {
-    const accounts = await SInfo.getItem('accounts', {
-      sharedPreferencesName: 'sern.android.storage',
-      keychainService: 'sern.ios.storage'
-    });
-
     const provider = new ethers.providers.JsonRpcProvider(network.provider);
 
     const controller = JSON.parse(

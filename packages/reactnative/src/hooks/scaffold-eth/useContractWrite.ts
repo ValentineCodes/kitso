@@ -92,8 +92,6 @@ export default function useContractWrite({
           await SInfo.getItem('controller', STORAGE_KEY)
         );
 
-        console.log('controller: ', controller.address);
-
         const controllerWallet = new ethers.Wallet(
           controller.privateKey
         ).connect(provider);
