@@ -10,7 +10,14 @@ const Blockie = ({ address, size }: Props) => {
   const iconScale = 0.4 * size;
   const iconSize = 10;
   return (
-    <View style={{ width: size, height: size }}>
+    <View
+      style={{
+        width: size,
+        height: size,
+        overflow: 'hidden',
+        borderRadius: size / 2
+      }}
+    >
       {/* EXTREMELY HACKY SOLUTION, LOAD WEBVIEW SO WE CAN GENERATE BLOCKIE ON A CANVAS*/}
       <WebView
         style={{ width: size, height: size }}
@@ -20,7 +27,7 @@ const Blockie = ({ address, size }: Props) => {
                     <!DOCTYPE html>
                         <head>
                         <style>
-                            body { background: #ffffff; margin: 0px;} img,canvas { display: inline-block; margin: 0px; border-radius: 100%}
+                            body { background: 'transparent'; margin: 0px;} img,canvas { display: inline-block; margin: 0px; border-radius: 100%}
                         </style>
                         </head>
                         <body>

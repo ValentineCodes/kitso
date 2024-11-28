@@ -31,12 +31,12 @@ export default function useWallet() {
     return _mnemonic;
   }
 
-  async function _getAccounts(): Promise<Controller[]> {
+  async function getController(): Promise<Controller> {
     // read controller from secure storage
     const _controller = await SInfo.getItem('controller', STORAGE_KEY);
     const controller = JSON.parse(_controller!) || [];
 
-    setAccounts(controller);
+    setAccounts([controller]);
 
     return controller;
   }
@@ -77,14 +77,14 @@ export default function useWallet() {
 
   useEffect(() => {
     _getMnemonic();
-    _getAccounts();
+    getController();
   }, []);
 
   return {
     mnemonic,
     controller,
     getMnemonic: _getMnemonic,
-    getAccounts: _getAccounts,
+    getController: getController,
     storeMnemonic: _storeMnemonic,
     storeAccount: _storeAccount
   };
