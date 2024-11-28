@@ -10,8 +10,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ToastProvider } from 'react-native-toast-notifications';
 import ConsentModal from '../components/modals/ConsentModal';
 import ImageCaptureModal from '../components/modals/ImageCaptureModal';
-import SignMessageModal from '../components/modals/SignMessageModal';
 // Modals
+import ReceiveModal from '../components/modals/ReceiveModal';
+import SignMessageModal from '../components/modals/SignMessageModal';
 import SignTransactionModal from '../components/modals/SignTransactionModal';
 import SignTransferModal from '../components/modals/SignTransferModal';
 import TxReceiptModal from '../components/modals/TxReceiptModal';
@@ -29,7 +30,8 @@ const modalConfig = {
   TxReceiptModal,
   SignTransferModal,
   ConsentModal,
-  ImageCaptureModal
+  ImageCaptureModal,
+  ReceiveModal
 };
 const defaultOptions: ModalOptions = {
   backdropOpacity: 0.6,

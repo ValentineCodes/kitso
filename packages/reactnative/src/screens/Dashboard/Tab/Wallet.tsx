@@ -12,6 +12,7 @@ import {
   RefreshControl,
   StatusBar
 } from 'react-native';
+import { useModal } from 'react-native-modalfy';
 import { useToast } from 'react-native-toast-notifications';
 import { useProfile } from '../../../context/ProfileContext';
 import useAccount from '../../../hooks/scaffold-eth/useAccount';
@@ -38,6 +39,7 @@ function Wallet({}: WalletProps) {
   const account = useAccount();
   const navigation = useNavigation();
   const toast = useToast();
+  const { openModal } = useModal();
 
   useFocusEffect(() => {
     backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -100,21 +102,44 @@ function Wallet({}: WalletProps) {
       />
 
       {/* @ts-ignore */}
-      <Pressable onPress={() => navigation.navigate('EditProfile')}>
-        <Text
-          alignSelf={'flex-end'}
-          mt={3}
-          mr={2}
-          px={'4'}
-          py={'1'}
-          borderWidth={'1'}
-          borderRadius={'2xl'}
-          borderColor={'gray.300'}
-          fontWeight={'medium'}
+      <HStack alignItems={'center'} alignSelf={'flex-end'}>
+        <Pressable onPress={() => openModal('ReceiveModal')}>
+          <Text
+            mt={3}
+            mr={2}
+            px={'4'}
+            py={'1'}
+            borderWidth={'1'}
+            borderRadius={'2xl'}
+            borderColor={'green.300'}
+            fontWeight={'medium'}
+            color={'green.400'}
+          >
+            Receive
+          </Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => {
+            // @ts-ignore
+            navigation.navigate('EditProfile');
+          }}
         >
-          Edit profile
-        </Text>
-      </Pressable>
+          <Text
+            alignSelf={'flex-end'}
+            mt={3}
+            mr={2}
+            px={'4'}
+            py={'1'}
+            borderWidth={'1'}
+            borderRadius={'2xl'}
+            borderColor={'gray.300'}
+            fontWeight={'medium'}
+          >
+            Edit profile
+          </Text>
+        </Pressable>
+      </HStack>
 
       <VStack px={'2'} pb={2}>
         {/* Username */}

@@ -9,15 +9,16 @@ export default function Settings({}: Props) {
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1, padding: 10 }}
-      bgColor={'white'}>
+      bgColor={'white'}
+    >
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      <View ml={'2'}>
-      <Account type="controller" />
-      </View>
-      <View ml={'2'}>
-      <Account type="keymanager" />
-      </View>
-      <Account type="profile" />
+        <Account type="profile" />
+        <View ml={'2'}>
+          <Account type="controller" />
+        </View>
+        <View ml={'2'}>
+          <Account type="keymanager" />
+        </View>
       </ScrollView>
     </ScrollView>
   );

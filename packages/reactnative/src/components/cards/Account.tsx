@@ -10,96 +10,98 @@ import {
 import React, { useEffect, useState } from 'react';
 // @ts-ignore
 import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';
+import { useProfile } from '../../context/ProfileContext';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
 import { useCryptoPrice } from '../../hooks/scaffold-eth/useCryptoPrice';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
+import { useIPFSGateway } from '../../hooks/useIPFSGateway';
+import useWallet, { Controller } from '../../hooks/useWallet';
 import { WINDOW_WIDTH } from '../../styles/screenDimensions';
 import { truncateAddress } from '../../utils/helperFunctions';
 import Blockie from '../Blockie';
 import CopyableText from '../CopyableText';
-import { useIPFSGateway } from '../../hooks/useIPFSGateway';
-import { useProfile } from '../../context/ProfileContext';
-import useWallet, { Controller } from '../../hooks/useWallet';
 
-export type AccountType = 'profile' | 'controller' | 'keymanager'
+export type AccountType = 'profile' | 'controller' | 'keymanager';
 
 interface AccountCardProps {
   type: AccountType;
-};
+}
 
-export default function Account({ type  }: AccountCardProps) {
+export default function Account({ type }: AccountCardProps) {
   const account = useAccount();
-  const {getController} = useWallet();
+  const { getController } = useWallet();
   const network = useNetwork();
 
-  const [controller, setController] = useState<Controller>()
+  const [controller, setController] = useState<Controller>();
 
-
-  const {
-    profile
-  } = useProfile();
+  const { profile } = useProfile();
   const { parseIPFSUrl } = useIPFSGateway();
 
   const _getAccountAddress = (): string => {
-    if(type === 'profile') {
-      return account.address
+    if (type === 'profile') {
+      return account.address;
     } else {
-      return account.keyManager
+      return account.keyManager;
     }
-  }
+  };
 
   const getAccountAddress = (): string => {
-    return type === 'controller' && controller? controller?.address : _getAccountAddress()
-  }
+    return type === 'controller' && controller
+      ? controller?.address
+      : _getAccountAddress();
+  };
 
   useEffect(() => {
     (async () => {
-      const controller = await getController()
-      setController(controller)
-    })()
-  }, [])
+      const controller = await getController();
+      setController(controller);
+    })();
+  }, []);
 
   const { balance } = useBalance({ address: getAccountAddress() });
   const { price } = useCryptoPrice({ enabled: true });
 
   const renderProfileCoverImage = () => {
-    if(profile?.backgroundImage && profile.backgroundImage.length > 0) {
-      return <Image
-      source={{uri: parseIPFSUrl(profile.backgroundImage[0].url)
-      }}
-      alt="profile cover"
-      w={'full'}
-      h={'full'}
-      resizeMode="cover"
-    />
-    } else  {
-      return  <Image
-      source={require('../../../assets/images/default_profile_cover.jpg')}
-      alt="profile cover"
-      w={'full'}
-      h={'full'}
-      resizeMode="cover"
-    />
+    if (profile?.backgroundImage && profile.backgroundImage.length > 0) {
+      return (
+        <Image
+          source={{ uri: parseIPFSUrl(profile.backgroundImage[0].url) }}
+          alt="profile cover"
+          w={'full'}
+          h={'full'}
+          resizeMode="cover"
+        />
+      );
+    } else {
+      return (
+        <Image
+          source={require('../../../assets/images/default_profile_cover.jpg')}
+          alt="profile cover"
+          w={'full'}
+          h={'full'}
+          resizeMode="cover"
+        />
+      );
     }
-  }
+  };
 
   const renderProfileImage = () => {
-    if(profile?.profileImage && profile.profileImage.length > 0) {
-      return (      
-      <Image
-      source={{uri: parseIPFSUrl(profile.profileImage[0].url)
-      }}
-      alt="profile image"
-      w={'full'}
-      h={'full'}
-      resizeMode="cover"
-      borderRadius={'full'}
-    />)
-    } else  {
-      return  <Blockie address={account.address} size={WINDOW_WIDTH * 0.12} />
+    if (profile?.profileImage && profile.profileImage.length > 0) {
+      return (
+        <Image
+          source={{ uri: parseIPFSUrl(profile.profileImage[0].url) }}
+          alt="profile image"
+          w={'full'}
+          h={'full'}
+          resizeMode="cover"
+          borderRadius={'full'}
+        />
+      );
+    } else {
+      return <Blockie address={account.address} size={WINDOW_WIDTH * 0.12} />;
     }
-  }
+  };
   return (
     <View
       w={WINDOW_WIDTH * 0.7}
@@ -111,18 +113,20 @@ export default function Account({ type  }: AccountCardProps) {
     >
       <View bg={'gray.200'} w={'full'} height={WINDOW_WIDTH * 0.3}>
         {/* Cover Box */}
-        {type === "profile" ? renderProfileCoverImage() : type === "controller"?  (
+        {type === 'profile' ? (
+          renderProfileCoverImage()
+        ) : type === 'controller' ? (
           <View flex={1} justifyContent={'center'} alignItems={'center'}>
             <Text fontSize={'lg'} fontWeight={'medium'}>
               Controller
             </Text>
           </View>
-        ): (
+        ) : (
           <View flex={1} justifyContent={'center'} alignItems={'center'}>
-          <Text fontSize={'lg'} fontWeight={'medium'}>
-            Key Manager
-          </Text>
-        </View>
+            <Text fontSize={'lg'} fontWeight={'medium'}>
+              Key Manager
+            </Text>
+          </View>
         )}
 
         {/* Profile Box */}
@@ -142,8 +146,13 @@ export default function Account({ type  }: AccountCardProps) {
             justifyContent={'center'}
             alignItems={'center'}
           >
-            {type === "profile" ? renderProfileImage() : (
-              <Blockie address={getAccountAddress()} size={WINDOW_WIDTH * 0.12} />
+            {type === 'profile' ? (
+              renderProfileImage()
+            ) : (
+              <Blockie
+                address={getAccountAddress()}
+                size={WINDOW_WIDTH * 0.12}
+              />
             )}
           </View>
         </VStack>
@@ -182,17 +191,19 @@ export default function Account({ type  }: AccountCardProps) {
           textStyle={{ fontSize: 16 }}
         />
 
-        {type === 'controller' && <HStack alignItems={'center'} space={2}>
-          <Text fontSize={'2xl'}>**********</Text>
+        {type === 'controller' && (
+          <HStack alignItems={'center'} space={2}>
+            <Text fontSize={'2xl'}>**********</Text>
 
-          <Pressable>
-            <Icon
-              as={<MaterialIcons name="visibility-off" />}
-              size={5}
-              color="muted.400"
-            />
-          </Pressable>
-        </HStack>}
+            <Pressable>
+              <Icon
+                as={<MaterialIcons name="visibility-off" />}
+                size={5}
+                color="muted.400"
+              />
+            </Pressable>
+          </HStack>
+        )}
       </VStack>
     </View>
   );
