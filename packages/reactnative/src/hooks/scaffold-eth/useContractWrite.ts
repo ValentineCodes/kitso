@@ -12,6 +12,7 @@ import { useState } from 'react';
 import SInfo from 'react-native-sensitive-info';
 import { TransactionReceipt } from 'viem';
 import { STORAGE_KEY } from '../../utils/constants';
+import useSettings from '../useSettings';
 import { Controller } from '../useWallet';
 import useAccount from './useAccount';
 
@@ -54,6 +55,7 @@ export default function useContractWrite({
   const writeValue = value;
   const _gasLimit = gasLimit || 1000000;
 
+  const settings = useSettings();
   const { openModal } = useModal();
   const network = useNetwork();
   const toast = useToast();
@@ -121,6 +123,11 @@ export default function useContractWrite({
           _value, // Value in LYX (0 for read/write without transferring value)
           functionData // Encoded function data
         ]);
+
+        if (settings.autoSign) {
+          onConfirm();
+          return;
+        }
 
         openModal('SignTransactionModal', {
           contract: keyManager,

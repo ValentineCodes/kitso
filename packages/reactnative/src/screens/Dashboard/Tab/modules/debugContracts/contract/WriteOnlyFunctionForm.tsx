@@ -136,7 +136,8 @@ export default function WriteOnlyFunctionForm({
           {isLoading && (
             <ActivityIndicator
               color={COLORS.primary}
-              style={{ marginRight: 2 }}
+              style={{ marginRight: 4 }}
+              size={16}
             />
           )}
           <Text fontSize={'md'} fontWeight={'medium'} color={COLORS.primary}>
