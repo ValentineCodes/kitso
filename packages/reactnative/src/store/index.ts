@@ -16,6 +16,7 @@ import Balance from './reducers/Balance';
 import Networks from './reducers/Networks';
 import Profiles from './reducers/Profiles';
 import Recipients from './reducers/Recipients';
+import Settings from './reducers/Settings';
 import Transactions from './reducers/Transactions';
 
 const persistConfig = {
@@ -32,7 +33,8 @@ const reducers = combineReducers({
   profiles: Profiles,
   transactions: Transactions,
   balance: Balance,
-  recipients: Recipients
+  recipients: Recipients,
+  settings: Settings
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);

@@ -6,14 +6,16 @@ type Props = {};
 
 export default function AccountsList({}: Props) {
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      <Account type="profile" />
-      <View ml={'2'}>
-        <Account type="controller" />
-      </View>
-      <View ml={'2'}>
-        <Account type="keymanager" />
-      </View>
-    </ScrollView>
+    <View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <Account type="profile" />
+        <View ml={'2'}>
+          <Account type="controller" />
+        </View>
+        <View ml={'2'}>
+          <Account type="keymanager" />
+        </View>
+      </ScrollView>
+    </View>
   );
 }
