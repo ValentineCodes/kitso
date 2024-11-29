@@ -8,6 +8,7 @@ import {
   VStack
 } from 'native-base';
 import React, { useEffect, useState } from 'react';
+import { useModal } from 'react-native-modalfy';
 // @ts-ignore
 import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';
 import { useProfile } from '../../context/ProfileContext';
@@ -32,6 +33,7 @@ export default function Account({ type }: AccountCardProps) {
   const account = useAccount();
   const { getController } = useWallet();
   const network = useNetwork();
+  const { openModal } = useModal();
 
   const [controller, setController] = useState<Controller>();
 
@@ -195,7 +197,7 @@ export default function Account({ type }: AccountCardProps) {
           <HStack alignItems={'center'} space={2}>
             <Text fontSize={'2xl'}>**********</Text>
 
-            <Pressable>
+            <Pressable onPress={() => openModal('PrivateKeyModal')}>
               <Icon
                 as={<MaterialIcons name="visibility-off" />}
                 size={5}

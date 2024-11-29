@@ -11,6 +11,8 @@ import { ToastProvider } from 'react-native-toast-notifications';
 import ConsentModal from '../components/modals/ConsentModal';
 import ImageCaptureModal from '../components/modals/ImageCaptureModal';
 // Modals
+import PrivateKeyModal from '../components/modals/PrivateKeyModal';
+import QRCodeModal from '../components/modals/QRCodeModal';
 import ReceiveModal from '../components/modals/ReceiveModal';
 import SignMessageModal from '../components/modals/SignMessageModal';
 import SignTransactionModal from '../components/modals/SignTransactionModal';
@@ -31,7 +33,9 @@ const modalConfig = {
   SignTransferModal,
   ConsentModal,
   ImageCaptureModal,
-  ReceiveModal
+  ReceiveModal,
+  PrivateKeyModal,
+  QRCodeModal
 };
 const defaultOptions: ModalOptions = {
   backdropOpacity: 0.6,

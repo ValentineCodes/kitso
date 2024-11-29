@@ -9,17 +9,13 @@ import {
   VStack
 } from 'native-base';
 import React from 'react';
-import Modal from 'react-native-modal';
 import QRCode from 'react-native-qrcode-svg';
 import Share from 'react-native-share';
 import { useToast } from 'react-native-toast-notifications';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
-import { useSelector } from 'react-redux';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
-import { Account } from '../../store/reducers/Accounts';
-import { Network } from '../../store/reducers/Networks';
 import { WINDOW_WIDTH } from '../../styles/screenDimensions';
 import { COLORS } from '../../utils/constants';
 import { FONT_SIZE } from '../../utils/styles';
@@ -57,92 +53,85 @@ export default function ReceiveModal({ modal: { closeModal } }: Props) {
       borderRadius="30"
       p="5"
       space={4}
+      alignItems="center"
       w={WINDOW_WIDTH * 0.9}
     >
-      <VStack
-        bgColor="white"
-        borderRadius="30"
-        p="2"
-        space={4}
-        alignItems="center"
-      >
-        <HStack alignItems="center" justifyContent="space-between" w="full">
-          <Text fontSize={FONT_SIZE['xl']} bold>
-            Receive {network.token}
-          </Text>
-          <Pressable onPress={closeModal} _pressed={{ opacity: 0.4 }}>
-            <Icon
-              as={<Ionicons name="close-outline" />}
-              size={1.5 * FONT_SIZE['xl']}
-            />
-          </Pressable>
-        </HStack>
-
-        <Divider bgColor="muted.100" />
-
-        <QRCode value={account.address} size={12 * FONT_SIZE['xl']} />
-
-        <Text fontSize={FONT_SIZE['xl']} fontWeight="medium" textAlign="center">
-          {account.address}
+      <HStack alignItems="center" justifyContent="space-between" w="full">
+        <Text fontSize={FONT_SIZE['xl']} bold>
+          Receive {network.token}
         </Text>
+        <Pressable onPress={closeModal} _pressed={{ opacity: 0.4 }}>
+          <Icon
+            as={<Ionicons name="close-outline" />}
+            size={1.5 * FONT_SIZE['xl']}
+          />
+        </Pressable>
+      </HStack>
 
-        <Divider bgColor="muted.100" />
+      <Divider bgColor="muted.100" />
 
-        <Text fontSize={FONT_SIZE['md']} textAlign="center">
-          Send only {network.name} ({network.token}) to this address. Sending
-          any other coins may result in permanent loss.
-        </Text>
+      <QRCode value={account.address} size={12 * FONT_SIZE['xl']} />
 
-        <HStack alignItems="center" space="10" mt="5">
-          <Pressable alignItems="center" onPress={copyAddress}>
-            {({ isPressed }) => (
-              <>
-                <View
-                  bgColor={
-                    isPressed ? 'rgba(39, 184, 88, 0.2)' : COLORS.primaryLight
-                  }
-                  p="4"
+      <Text fontSize={FONT_SIZE['xl']} fontWeight="medium" textAlign="center">
+        {account.address}
+      </Text>
+
+      <Divider bgColor="muted.100" />
+
+      <Text fontSize={FONT_SIZE['md']} textAlign="center">
+        Send only {network.name} ({network.token}) to this address. Sending any
+        other coins may result in permanent loss.
+      </Text>
+
+      <HStack alignItems="center" space="10" mt="5">
+        <Pressable alignItems="center" onPress={copyAddress}>
+          {({ isPressed }) => (
+            <>
+              <View
+                bgColor={
+                  isPressed ? 'rgba(39, 184, 88, 0.2)' : COLORS.primaryLight
+                }
+                p="4"
+                borderRadius="full"
+              >
+                <Icon
+                  as={<Ionicons name="reader" />}
+                  size={1.2 * FONT_SIZE['xl']}
+                  color={COLORS.primary}
                   borderRadius="full"
-                >
-                  <Icon
-                    as={<Ionicons name="reader" />}
-                    size={1.2 * FONT_SIZE['xl']}
-                    color={COLORS.primary}
-                    borderRadius="full"
-                  />
-                </View>
-                <Text fontSize={FONT_SIZE['lg']} bold mt="2">
-                  Copy
-                </Text>
-              </>
-            )}
-          </Pressable>
+                />
+              </View>
+              <Text fontSize={FONT_SIZE['lg']} bold mt="2">
+                Copy
+              </Text>
+            </>
+          )}
+        </Pressable>
 
-          <Pressable alignItems="center" onPress={shareAddress}>
-            {({ isPressed }) => (
-              <>
-                <View
-                  bgColor={
-                    isPressed ? 'rgba(39, 184, 88, 0.2)' : COLORS.primaryLight
-                  }
-                  p="4"
+        <Pressable alignItems="center" onPress={shareAddress}>
+          {({ isPressed }) => (
+            <>
+              <View
+                bgColor={
+                  isPressed ? 'rgba(39, 184, 88, 0.2)' : COLORS.primaryLight
+                }
+                p="4"
+                borderRadius="full"
+              >
+                <Icon
+                  as={<Ionicons name="paper-plane" />}
+                  size={1.2 * FONT_SIZE['xl']}
+                  color={COLORS.primary}
                   borderRadius="full"
-                >
-                  <Icon
-                    as={<Ionicons name="paper-plane" />}
-                    size={1.2 * FONT_SIZE['xl']}
-                    color={COLORS.primary}
-                    borderRadius="full"
-                  />
-                </View>
-                <Text fontSize={FONT_SIZE['lg']} bold mt="2">
-                  Share
-                </Text>
-              </>
-            )}
-          </Pressable>
-        </HStack>
-      </VStack>
+                />
+              </View>
+              <Text fontSize={FONT_SIZE['lg']} bold mt="2">
+                Share
+              </Text>
+            </>
+          )}
+        </Pressable>
+      </HStack>
     </VStack>
   );
 }
