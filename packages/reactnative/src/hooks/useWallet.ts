@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import SInfo from 'react-native-sensitive-info';
 import { useDispatch } from 'react-redux';
+import { ethers } from '../../patches/ethers';
 import { addAccount } from '../store/reducers/Accounts';
-import { STORAGE_KEY } from '../utils/constants';
+import { useSecureStorage } from './useSecureStorage';
 
 export interface Controller {
   address: string;
@@ -16,6 +16,8 @@ export default function useWallet() {
   const [mnemonic, setMnemonic] = useState('');
   const [controller, setAccounts] = useState<Controller[]>([]);
 
+  const { saveItem, getItem } = useSecureStorage();
+
   const dispatch = useDispatch();
 
   /**
@@ -24,7 +26,7 @@ export default function useWallet() {
    */
   async function _getMnemonic(): Promise<string> {
     // read mnemonic from secure storage
-    const _mnemonic = await SInfo.getItem('mnemonic', STORAGE_KEY);
+    const _mnemonic = (await getItem('mnemonic')) as string;
 
     setMnemonic(_mnemonic);
 
@@ -33,8 +35,7 @@ export default function useWallet() {
 
   async function getController(): Promise<Controller> {
     // read controller from secure storage
-    const _controller = await SInfo.getItem('controller', STORAGE_KEY);
-    const controller = JSON.parse(_controller!) || [];
+    const controller = (await getItem('controller')) as Controller;
 
     setAccounts([controller]);
 
@@ -49,7 +50,7 @@ export default function useWallet() {
     setMnemonic(_mnemonic);
 
     // encrypt and store mnemonic
-    await SInfo.setItem('mnemonic', _mnemonic, STORAGE_KEY);
+    await saveItem('mnemonic', _mnemonic);
   }
 
   /**
@@ -59,20 +60,37 @@ export default function useWallet() {
    */
   async function _storeAccount(_controller: Controller, _isImported: boolean) {
     // read controller from secure storage
-    const controller = JSON.parse(
-      await SInfo.getItem('controller', STORAGE_KEY)
-    );
+    const controller = (await getItem('controller')) as Controller;
 
-    const newAccounts = [JSON.parse(controller), _controller];
+    const newAccounts = [controller, _controller];
 
     // encrypt and store controller
-    await SInfo.setItem('controller', JSON.stringify(newAccounts), STORAGE_KEY);
+    await saveItem('controller', JSON.stringify(newAccounts));
 
     setAccounts(newAccounts);
 
     dispatch(
       addAccount({ address: _controller.address, isImported: _isImported })
     );
+  }
+
+  async function createWallet() {
+    let privateSeed = ethers.randomBytes(16);
+
+    //2048 words
+    const mnemonic = ethers.Mnemonic.entropyToPhrase(privateSeed);
+
+    const hdnode = ethers.HDNodeWallet.fromPhrase(
+      mnemonic,
+      'mnemonicPassword',
+      "m/44'/60'/0'/0/0"
+    );
+
+    return {
+      mnemonic,
+      address: hdnode.address,
+      privateKey: hdnode.privateKey
+    };
   }
 
   useEffect(() => {
@@ -86,6 +104,7 @@ export default function useWallet() {
     getMnemonic: _getMnemonic,
     getController: getController,
     storeMnemonic: _storeMnemonic,
-    storeAccount: _storeAccount
+    storeAccount: _storeAccount,
+    createWallet
   };
 }

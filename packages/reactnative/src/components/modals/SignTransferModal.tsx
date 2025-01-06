@@ -7,9 +7,8 @@ import { parseFloat, truncateAddress } from '../../utils/helperFunctions';
 import { FONT_SIZE, WINDOW_WIDTH } from '../../utils/styles';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
-import { BigNumber, ethers } from 'ethers';
+import { ethers, toBigInt } from 'ethers';
 import { Linking } from 'react-native';
-import SInfo from 'react-native-sensitive-info';
 import { useToast } from 'react-native-toast-notifications';
 import { Address } from 'viem';
 import Button from '../../components/Button';
@@ -17,8 +16,9 @@ import { useProfile } from '../../context/ProfileContext';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
+import { useSecureStorage } from '../../hooks/useSecureStorage';
+import { Controller } from '../../hooks/useWallet';
 import { addRecipient } from '../../store/reducers/Recipients';
-import { STORAGE_KEY } from '../../utils/constants';
 import Fail from './modules/Fail';
 import Success from './modules/Success';
 
@@ -28,14 +28,14 @@ type Props = {
     params: {
       from: Account;
       to: Address;
-      value: BigNumber;
+      value: bigint;
     };
   };
 };
 
 interface GasCost {
-  min: BigNumber | null;
-  max: BigNumber | null;
+  min: bigint | null;
+  max: bigint | null;
 }
 
 export default function SignTransferModal({
@@ -47,6 +47,8 @@ export default function SignTransferModal({
 
   const toast = useToast();
 
+  const { getItem } = useSecureStorage();
+
   const network = useNetwork();
   const account = useAccount();
   const { profile } = useProfile();
@@ -56,8 +58,9 @@ export default function SignTransferModal({
   const [isTransferring, setIsTransferring] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showFailModal, setShowFailModal] = useState(false);
-  const [txReceipt, setTxReceipt] =
-    useState<ethers.providers.TransactionReceipt | null>(null);
+  const [txReceipt, setTxReceipt] = useState<ethers.TransactionReceipt | null>(
+    null
+  );
   const [estimatedGasCost, setEstimatedGasCost] = useState<GasCost>({
     min: null,
     max: null
@@ -67,27 +70,25 @@ export default function SignTransferModal({
     const minAmount =
       estimatedGasCost.min &&
       parseFloat(
-        ethers.utils.formatEther(value.add(estimatedGasCost.min)),
+        ethers.formatEther(value + estimatedGasCost.min),
         8
       ).toString();
     const maxAmount =
       estimatedGasCost.max &&
       parseFloat(
-        ethers.utils.formatEther(value.add(estimatedGasCost.max)),
+        ethers.formatEther(value + estimatedGasCost.max),
         8
       ).toString();
     return {
-      min: minAmount,
-      max: maxAmount
+      min: String(minAmount),
+      max: String(maxAmount)
     };
   };
 
   const transfer = async () => {
-    const provider = new ethers.providers.JsonRpcProvider(network.provider);
+    const provider = new ethers.JsonRpcProvider(network.provider);
 
-    const controller = JSON.parse(
-      await SInfo.getItem('controller', STORAGE_KEY)
-    );
+    const controller = (await getItem('controller')) as Controller;
 
     const wallet = new ethers.Wallet(controller.privateKey).connect(provider);
     try {
@@ -96,7 +97,7 @@ export default function SignTransferModal({
       const tx = await wallet.sendTransaction({
         from: from.address,
         to: to,
-        value: ethers.utils.parseEther(value.toString())
+        value: ethers.parseEther(value.toString())
       });
 
       const txReceipt = await tx.wait(1);
@@ -117,9 +118,7 @@ export default function SignTransferModal({
     if (!network.blockExplorer || !txReceipt) return;
 
     try {
-      await Linking.openURL(
-        `${network.blockExplorer}/tx/${txReceipt.transactionHash}`
-      );
+      await Linking.openURL(`${network.blockExplorer}/tx/${txReceipt.hash}`);
     } catch (error) {
       toast.show('Cannot open url', {
         type: 'danger'
@@ -128,11 +127,11 @@ export default function SignTransferModal({
   };
 
   const estimateGasCost = async () => {
-    const provider = new ethers.providers.JsonRpcProvider(network.provider);
+    const provider = new ethers.JsonRpcProvider(network.provider);
 
-    const gasPrice = await provider.getGasPrice();
+    const gasPrice = (await provider.getFeeData()).gasPrice;
 
-    const gasEstimate = gasPrice.mul(BigNumber.from(21000));
+    const gasEstimate = (gasPrice || toBigInt(0)) * toBigInt(21000);
 
     const feeData = await provider.getFeeData();
 
@@ -142,18 +141,18 @@ export default function SignTransferModal({
     };
 
     if (feeData.gasPrice) {
-      gasCost.min = gasEstimate.mul(feeData.gasPrice);
+      gasCost.min = gasEstimate * feeData.gasPrice;
     }
 
     if (feeData.maxFeePerGas) {
-      gasCost.max = gasEstimate.mul(feeData.maxFeePerGas);
+      gasCost.max = gasEstimate * feeData.maxFeePerGas;
     }
 
     setEstimatedGasCost(gasCost);
   };
 
   useEffect(() => {
-    const provider = new ethers.providers.JsonRpcProvider(network.provider);
+    const provider = new ethers.JsonRpcProvider(network.provider);
 
     provider.off('block');
 
@@ -223,7 +222,7 @@ export default function SignTransferModal({
         </VStack>
 
         <Text fontSize={2 * FONT_SIZE['xl']} bold textAlign="center">
-          {ethers.utils.formatEther(value)} {network.token}
+          {ethers.formatEther(value)} {network.token}
         </Text>
 
         <VStack borderWidth="1" borderColor="muted.300" borderRadius="10">
@@ -243,11 +242,10 @@ export default function SignTransferModal({
                 fontWeight="medium"
                 textAlign="right"
               >
-                {estimatedGasCost.min &&
-                  parseFloat(
-                    ethers.utils.formatEther(estimatedGasCost.min),
-                    8
-                  )}{' '}
+                {String(
+                  estimatedGasCost.min &&
+                    parseFloat(ethers.formatEther(estimatedGasCost.min), 8)
+                )}{' '}
                 {network.token}
               </Text>
               <Text
@@ -259,11 +257,10 @@ export default function SignTransferModal({
                 Max fee:
               </Text>
               <Text fontSize={FONT_SIZE['md']} textAlign="right">
-                {estimatedGasCost.max &&
-                  parseFloat(
-                    ethers.utils.formatEther(estimatedGasCost.max),
-                    8
-                  )}{' '}
+                {String(
+                  estimatedGasCost.max &&
+                    parseFloat(ethers.formatEther(estimatedGasCost.max), 8)
+                )}{' '}
                 {network.token}
               </Text>
             </VStack>

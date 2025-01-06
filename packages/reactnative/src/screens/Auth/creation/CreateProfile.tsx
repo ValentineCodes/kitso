@@ -163,8 +163,8 @@ export default function CreateProfile({}: Props) {
         return;
       }
 
-      const profileMetadataHash = ethers.utils.keccak256(
-        ethers.utils.toUtf8Bytes(JSON.stringify(profileMetadata))
+      const profileMetadataHash = ethers.keccak256(
+        ethers.toUtf8Bytes(JSON.stringify(profileMetadata))
       );
 
       const lsp3DataValue = {

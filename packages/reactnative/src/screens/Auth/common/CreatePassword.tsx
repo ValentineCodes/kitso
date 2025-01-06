@@ -16,7 +16,7 @@ import Button from '../../../components/Button';
 import PasswordInput from '../../../components/forms/PasswordInput';
 import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader';
 import { useProcedureContext } from '../../../context/ProcedureContext';
-import useSecurity from '../../../hooks/useSecurity';
+import { useSecureStorage } from '../../../hooks/useSecureStorage';
 import styles from '../../../styles/global';
 import { COLORS } from '../../../utils/constants';
 import { FONT_SIZE } from '../../../utils/styles';
@@ -36,7 +36,7 @@ function CreatePassword({}: Props) {
   const [isCreating, setIsCreating] = useState(false);
   const [isBiometricsAvailable, setIsBiometricsAvailable] = useState(false);
 
-  const { setSecurity } = useSecurity();
+  const { saveItem } = useSecureStorage();
 
   const createPassword = async () => {
     if (!password) {
@@ -69,7 +69,7 @@ function CreatePassword({}: Props) {
         isBiometricsEnabled
       };
 
-      await setSecurity(security);
+      await saveItem('security', security);
 
       // clean up
       setPassword('');
@@ -88,6 +88,7 @@ function CreatePassword({}: Props) {
           break;
       }
     } catch (error) {
+      console.error(error);
       toast.show('Failed to create password. Please try again', {
         type: 'danger'
       });

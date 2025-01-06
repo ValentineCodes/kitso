@@ -1,17 +1,15 @@
 import Clipboard from '@react-native-clipboard/clipboard';
+import { useNavigation } from '@react-navigation/native';
 import { Divider, ScrollView, Text, View } from 'native-base';
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
-import 'react-native-get-random-values';
-import '@ethersproject/shims';
-import { useNavigation } from '@react-navigation/native';
-import SInfo from 'react-native-sensitive-info';
 import { useToast } from 'react-native-toast-notifications';
-import { createWallet } from 'react-native-web3-wallet';
 import Button from '../../../components/Button';
 import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader';
 import SeedPhrase from '../../../components/SeedPhrase';
-import { COLORS, STORAGE_KEY } from '../../../utils/constants';
+import { useSecureStorage } from '../../../hooks/useSecureStorage';
+import useWallet from '../../../hooks/useWallet';
+import { COLORS } from '../../../utils/constants';
 import { FONT_SIZE } from '../../../utils/styles';
 
 interface Wallet {
@@ -26,6 +24,10 @@ export default function CreateController({}: Props) {
   const navigation = useNavigation();
 
   const toast = useToast();
+
+  const { saveItem, getItem } = useSecureStorage();
+
+  const { createWallet } = useWallet();
 
   const [wallet, setWallet] = useState<Wallet>();
   const isSeedPhraseRevealed = useRef(false);
@@ -52,7 +54,7 @@ export default function CreateController({}: Props) {
     }
     try {
       // store mnemonic in secure storage
-      await SInfo.setItem('mnemonic', wallet.mnemonic, STORAGE_KEY);
+      await saveItem('mnemonic', wallet.mnemonic);
 
       const controller = {
         address: wallet.address,
@@ -60,11 +62,7 @@ export default function CreateController({}: Props) {
       };
 
       // store controller account in secure and redux storage
-      await SInfo.setItem(
-        'controller',
-        JSON.stringify(controller),
-        STORAGE_KEY
-      );
+      await saveItem('controller', controller);
 
       // @ts-ignore
       navigation.navigate('CreateProfile');
@@ -75,14 +73,8 @@ export default function CreateController({}: Props) {
 
   const generateNewWallet = () => {
     setTimeout(async () => {
-      const newWallet = await createWallet('', undefined, undefined, true);
-      const wallet = {
-        mnemonic: newWallet.mnemonic.join(' '),
-        address: newWallet.address,
-        privateKey: newWallet.privateKey
-      };
+      const wallet = await createWallet();
 
-      // @ts-ignore
       setWallet(wallet);
       setIsLoading(false);
     }, 100);

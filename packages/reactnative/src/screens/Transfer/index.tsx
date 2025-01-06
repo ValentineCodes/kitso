@@ -26,14 +26,13 @@ import { ALCHEMY_KEY, COLORS } from '../../utils/constants';
 import { FONT_SIZE } from '../../utils/styles';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
-import { BigNumber, ethers } from 'ethers';
+import { ethers, toBigInt } from 'ethers';
 import { useModal } from 'react-native-modalfy';
 import { useToast } from 'react-native-toast-notifications';
 import QRCodeScanner from '../../components/modals/QRCodeScanner';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
 import { useCryptoPrice } from '../../hooks/scaffold-eth/useCryptoPrice';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
-import { Profile } from '../../store/reducers/Profiles';
 import { clearRecipients } from '../../store/reducers/Recipients';
 import {
   isENS,
@@ -59,8 +58,8 @@ export default function Transfer({}: Props) {
 
   const recipients: string[] = useSelector((state: any) => state.recipients);
 
-  const [balance, setBalance] = useState<BigNumber | null>(null);
-  const [gasCost, setGasCost] = useState<BigNumber | null>(null);
+  const [balance, setBalance] = useState<bigint | null>(null);
+  const [gasCost, setGasCost] = useState<bigint | null>(null);
 
   const [toAddress, setToAddress] = useState('');
   const [amount, setAmount] = useState('');
@@ -74,11 +73,11 @@ export default function Transfer({}: Props) {
 
   const getBalance = async () => {
     try {
-      const provider = new ethers.providers.JsonRpcProvider(network.provider);
+      const provider = new ethers.JsonRpcProvider(network.provider);
       const balance = await provider.getBalance(account.address);
-      const gasPrice = await provider.getGasPrice();
+      const gasPrice = (await provider.getFeeData()).gasPrice;
 
-      const gasCost = gasPrice.mul(BigNumber.from(21000));
+      const gasCost = (gasPrice || toBigInt(0)) * toBigInt(21000);
 
       setGasCost(gasCost);
       setBalance(balance);
@@ -100,7 +99,7 @@ export default function Transfer({}: Props) {
   }, [price, amount, isAmountInCrypto]);
 
   const confirm = () => {
-    if (!ethers.utils.isAddress(toAddress)) {
+    if (!ethers.isAddress(toAddress)) {
       toast.show('Invalid address', {
         type: 'danger'
       });
@@ -125,13 +124,13 @@ export default function Transfer({}: Props) {
     }
 
     if (_amount.trim() && balance && gasCost && !isNaN(Number(_amount))) {
-      if (Number(_amount) >= Number(ethers.utils.formatEther(balance))) {
+      if (Number(_amount) >= Number(ethers.formatEther(balance))) {
         toast.show('Insufficient amount', {
           type: 'danger'
         });
         return;
       } else if (
-        Number(ethers.utils.formatEther(balance.sub(gasCost))) < Number(_amount)
+        Number(ethers.formatEther(balance - gasCost)) < Number(_amount)
       ) {
         toast.show('Insufficient amount for gas', {
           type: 'danger'
@@ -144,8 +143,8 @@ export default function Transfer({}: Props) {
   };
 
   const formatBalance = () => {
-    return Number(ethers.utils.formatEther(balance!))
-      ? parseFloat(Number(ethers.utils.formatEther(balance!)).toString(), 4)
+    return Number(ethers.formatEther(balance!))
+      ? parseFloat(Number(ethers.formatEther(balance!)).toString(), 4)
       : 0;
   };
 
@@ -158,13 +157,13 @@ export default function Transfer({}: Props) {
 
     if (isENS(value)) {
       try {
-        const provider = new ethers.providers.JsonRpcProvider(
+        const provider = new ethers.JsonRpcProvider(
           `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`
         );
 
         const address = await provider.resolveName(value);
 
-        if (address && ethers.utils.isAddress(address)) {
+        if (address && ethers.isAddress(address)) {
           setToAddress(address);
         } else {
           setToAddressError('Invalid ENS');
@@ -190,11 +189,9 @@ export default function Transfer({}: Props) {
     }
 
     if (value.trim() && balance && !isNaN(amount) && gasCost) {
-      if (amount >= Number(ethers.utils.formatEther(balance))) {
+      if (amount >= Number(ethers.formatEther(balance))) {
         setAmountError('Insufficient amount');
-      } else if (
-        Number(ethers.utils.formatEther(balance.sub(gasCost))) < amount
-      ) {
+      } else if (Number(ethers.formatEther(balance - gasCost)) < amount) {
         setAmountError('Insufficient amount for gas');
       } else if (amountError) {
         setAmountError('');
@@ -205,8 +202,8 @@ export default function Transfer({}: Props) {
   };
 
   const setMaxAmount = () => {
-    if (balance && gasCost && balance.gt(gasCost)) {
-      const max = ethers.utils.formatEther(balance.sub(gasCost));
+    if (balance && gasCost && balance > gasCost) {
+      const max = ethers.formatEther(balance - gasCost);
       handleAmountChange(max);
       setIsAmountInCrypto(true);
     }
@@ -258,7 +255,7 @@ export default function Transfer({}: Props) {
 
   useEffect(() => {
     if (!isFocused) return;
-    const provider = new ethers.providers.JsonRpcProvider(network.provider);
+    const provider = new ethers.JsonRpcProvider(network.provider);
 
     provider.off('block');
 
@@ -341,7 +338,7 @@ export default function Transfer({}: Props) {
           fontSize="md"
           focusOutlineColor={COLORS.primary}
           InputLeftElement={
-            ethers.utils.isAddress(toAddress) ? (
+            ethers.isAddress(toAddress) ? (
               <View ml="2">
                 <Blockie address={toAddress} size={1.8 * FONT_SIZE['xl']} />
               </View>
@@ -380,7 +377,7 @@ export default function Transfer({}: Props) {
           <Text fontSize={FONT_SIZE['lg']} fontWeight="medium">
             Amount:
           </Text>
-          {balance && gasCost && balance.gte(gasCost) && (
+          {balance && gasCost && balance >= gasCost && (
             <TouchableOpacity activeOpacity={0.4} onPress={setMaxAmount}>
               <Text
                 color={COLORS.primary}

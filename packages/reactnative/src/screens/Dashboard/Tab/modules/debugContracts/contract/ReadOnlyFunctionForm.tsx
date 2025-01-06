@@ -27,7 +27,7 @@ export default function ReadOnlyFunctionForm({
   const [form, setForm] = useState<Record<string, any>>(() =>
     getInitialFormState(abiFunction)
   );
-  const [result, setResult] = useState<unknown>();
+  const [result, setResult] = useState<any>();
   const toast = useToast();
 
   const { isLoading: isFetching, refetch } = useContractRead({
@@ -59,6 +59,25 @@ export default function ReadOnlyFunctionForm({
     );
   });
 
+  function renderResult() {
+    if (result.map)
+      return result.map((data: any) => (
+        <Text key={Math.random().toString()} fontSize={'sm'}>
+          {typeof data == 'object' && isNaN(data)
+            ? JSON.stringify(data)
+            : data.toString()}
+        </Text>
+      ));
+
+    return (
+      <Text fontSize={'sm'}>
+        {typeof result == 'object' && isNaN(result)
+          ? JSON.stringify(result)
+          : result.toString()}
+      </Text>
+    );
+  }
+
   return (
     <View>
       <Text fontSize={'md'} fontWeight={'medium'} my={'2'}>
@@ -70,13 +89,7 @@ export default function ReadOnlyFunctionForm({
           <Text fontSize={'md'} fontWeight={'semibold'}>
             Result:
           </Text>
-          {result.map(data => (
-            <Text key={Math.random().toString()} fontSize={'sm'}>
-              {typeof data == 'object' && isNaN(data)
-                ? JSON.stringify(data)
-                : data.toString()}
-            </Text>
-          ))}
+          {renderResult()}
         </VStack>
       )}
 

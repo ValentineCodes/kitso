@@ -76,7 +76,7 @@ export default function LSP7Token({ address, image, name, symbol }: Props) {
 
           <HStack alignItems={'center'} space={2}>
             <Text fontSize={'2xl'} bold>
-              {balance && ethers.utils.formatUnits(balance, 0)}
+              {balance && ethers.formatUnits(balance, 0)}
             </Text>
             <Text fontSize={'md'} bold color={'gray.400'}>
               {symbol}

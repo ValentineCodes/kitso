@@ -7,11 +7,11 @@ import '@ethersproject/shims';
 import KeyManagerContract from '@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json';
 import UniversalProfileContract from '@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json';
 import { Abi } from 'abitype';
-import { BigNumber, ContractInterface, ethers } from 'ethers';
+import { ContractInterface, ethers, toBigInt } from 'ethers';
 import { useState } from 'react';
-import SInfo from 'react-native-sensitive-info';
 import { TransactionReceipt } from 'viem';
 import { STORAGE_KEY } from '../../utils/constants';
+import { useSecureStorage } from '../useSecureStorage';
 import useSettings from '../useSettings';
 import { Controller } from '../useWallet';
 import useAccount from './useAccount';
@@ -21,14 +21,14 @@ interface UseWriteConfig {
   address: string;
   functionName: string;
   args?: any[];
-  value?: BigNumber | undefined;
+  value?: bigint | undefined;
   blockConfirmations?: number;
-  gasLimit?: BigNumber | undefined;
+  gasLimit?: bigint | undefined;
 }
 
 interface SendTxConfig {
   args?: any[];
-  value?: BigNumber | undefined;
+  value?: bigint | undefined;
 }
 
 /**
@@ -63,6 +63,8 @@ export default function useContractWrite({
   const account = useAccount();
   const [isLoading, setIsLoading] = useState(false);
 
+  const { getItem } = useSecureStorage();
+
   /**
    *
    * @param config Optional param settings
@@ -79,7 +81,7 @@ export default function useContractWrite({
   ): Promise<TransactionReceipt> => {
     const { args, value } = config;
     const _args = args || writeArgs || [];
-    const _value = value || writeValue || BigNumber.from(0);
+    const _value = value || writeValue || toBigInt(0);
 
     if (network.id !== targetNetwork.id) {
       throw new Error('You are on the wrong network');
@@ -88,11 +90,11 @@ export default function useContractWrite({
     return new Promise(async (resolve, reject) => {
       let keyManager: ethers.Contract, executeData: string;
       try {
-        const provider = new ethers.providers.JsonRpcProvider(network.provider);
+        const provider = new ethers.JsonRpcProvider(network.provider);
 
-        const controller: Controller = JSON.parse(
-          await SInfo.getItem('controller', STORAGE_KEY)
-        );
+        const controller: Controller = (await getItem(
+          'controller'
+        )) as Controller;
 
         const controllerWallet = new ethers.Wallet(
           controller.privateKey
@@ -147,7 +149,7 @@ export default function useContractWrite({
       async function onConfirm() {
         setIsLoading(true);
         try {
-          const tx = await keyManager.functions.execute(executeData, {
+          const tx = await keyManager.execute(executeData, {
             gasLimit: _gasLimit
           });
           const receipt = await tx.wait(blockConfirmations || 1);

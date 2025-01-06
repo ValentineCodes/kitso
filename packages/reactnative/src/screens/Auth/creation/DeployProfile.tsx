@@ -2,7 +2,6 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { Divider, Icon, Text, View, VStack } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
-import SInfo from 'react-native-sensitive-info';
 import { useToast } from 'react-native-toast-notifications';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
@@ -10,10 +9,12 @@ import { useDispatch } from 'react-redux';
 import ProfileAPI from '../../../apis/ProfileAPI';
 import Button from '../../../components/Button';
 import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader';
+import { useSecureStorage } from '../../../hooks/useSecureStorage';
+import { Controller } from '../../../hooks/useWallet';
 import { loginUser } from '../../../store/reducers/Auth';
 import { initProfiles } from '../../../store/reducers/Profiles';
 import styles from '../../../styles/global';
-import { COLORS, STORAGE_KEY } from '../../../utils/constants';
+import { COLORS } from '../../../utils/constants';
 import { FONT_SIZE } from '../../../utils/styles';
 
 type DeploymentStatus = 'loading' | 'success' | 'error';
@@ -21,6 +22,8 @@ type DeploymentStatus = 'loading' | 'success' | 'error';
 export default function DeployProfile() {
   const navigation = useNavigation();
   const route = useRoute();
+
+  const { getItem } = useSecureStorage();
   // @ts-ignore
   const { lsp3DataValue } = route.params;
   const toast = useToast();
@@ -38,8 +41,7 @@ export default function DeployProfile() {
     setDeploymentStatus('loading');
 
     try {
-      const _controller = await SInfo.getItem('controller', STORAGE_KEY);
-      const controller = JSON.parse(_controller!);
+      const controller = (await getItem('controller')) as Controller;
 
       const data = {
         lsp3DataValue,
