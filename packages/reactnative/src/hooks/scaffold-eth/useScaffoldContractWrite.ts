@@ -7,25 +7,24 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import KeyManagerContract from '@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json';
 import UniversalProfileContract from '@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json';
-import { BigNumber, ethers } from 'ethers';
-import SInfo from 'react-native-sensitive-info';
+import { ethers, toBigInt } from 'ethers';
 import { TransactionReceipt } from 'viem';
-import { STORAGE_KEY } from '../../utils/constants';
-import { Account } from '../useWallet';
+import { useSecureStorage } from '../useSecureStorage';
+import { Controller } from '../useWallet';
 import useAccount from './useAccount';
 
 interface UseScaffoldWriteConfig {
   contractName: string;
   functionName: string;
   args?: any[];
-  value?: BigNumber | undefined;
+  value?: bigint | undefined;
   blockConfirmations?: number | undefined;
-  gasLimit?: BigNumber | undefined;
+  gasLimit?: bigint | undefined;
 }
 
 interface SendTxConfig {
   args?: any[] | undefined;
-  value?: BigNumber | undefined;
+  value?: bigint | undefined;
 }
 
 /**
@@ -57,6 +56,8 @@ export default function useScaffoldContractWrite({
   const toast = useToast();
   const targetNetwork = useTargetNetwork();
 
+  const { getItem } = useSecureStorage();
+
   /**
    *
    * @param config Optional param settings
@@ -72,7 +73,7 @@ export default function useScaffoldContractWrite({
   ): Promise<TransactionReceipt> => {
     const { args, value } = config;
     const _args = args || writeArgs || [];
-    const _value = value || writeValue || BigNumber.from(0);
+    const _value = value || writeValue || toBigInt(0);
     const _gasLimit = gasLimit || 1000000;
 
     if (!deployedContractData) {
@@ -88,11 +89,9 @@ export default function useScaffoldContractWrite({
       let keyManager: ethers.Contract, executeData: string;
 
       try {
-        const provider = new ethers.providers.JsonRpcProvider(network.provider);
+        const provider = new ethers.JsonRpcProvider(network.provider);
 
-        const controller: Account = JSON.parse(
-          await SInfo.getItem('controller', STORAGE_KEY)
-        );
+        const controller = (await getItem('controller')) as Controller;
 
         const controllerWallet = new ethers.Wallet(
           controller.privateKey
@@ -148,7 +147,7 @@ export default function useScaffoldContractWrite({
 
       async function onConfirm() {
         try {
-          const tx = await keyManager.functions.execute(executeData, {
+          const tx = await keyManager.execute(executeData, {
             gasLimit: _gasLimit
           });
           const receipt = await tx.wait(blockConfirmations || 1);

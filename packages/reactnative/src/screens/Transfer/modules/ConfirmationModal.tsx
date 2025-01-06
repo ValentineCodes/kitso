@@ -12,31 +12,30 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import KeyManagerContract from '@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json';
 import UniversalProfileContract from '@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { Linking } from 'react-native';
-import SInfo from 'react-native-sensitive-info';
 import { useToast } from 'react-native-toast-notifications';
 import Button from '../../../components/Button';
 import Fail from '../../../components/modals/modules/Fail';
 import Success from '../../../components/modals/modules/Success';
 import useAccount from '../../../hooks/scaffold-eth/useAccount';
 import useNetwork from '../../../hooks/scaffold-eth/useNetwork';
+import { useSecureStorage } from '../../../hooks/useSecureStorage';
 import { Controller } from '../../../hooks/useWallet';
 import { Profile } from '../../../store/reducers/Profiles';
 import { addRecipient } from '../../../store/reducers/Recipients';
-import { STORAGE_KEY } from '../../../utils/constants';
 
 interface TxData {
   from: Profile;
   to: string;
   amount: number;
-  fromBalance: BigNumber | null;
+  fromBalance: bigint | null;
 }
 type Props = {
   isVisible: boolean;
   onClose: () => void;
   txData: TxData;
-  estimateGasCost: BigNumber | null;
+  estimateGasCost: bigint | null;
 };
 
 export default function ConfirmationModal({
@@ -52,6 +51,8 @@ export default function ConfirmationModal({
   const account = useAccount();
   const network = useNetwork();
 
+  const { getItem } = useSecureStorage();
+
   const connectedNetwork: Network = useSelector((state: any) =>
     state.networks.find((network: Network) => network.isConnected)
   );
@@ -59,36 +60,31 @@ export default function ConfirmationModal({
   const [isTransferring, setIsTransferring] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showFailModal, setShowFailModal] = useState(false);
-  const [txReceipt, setTxReceipt] =
-    useState<ethers.providers.TransactionReceipt | null>(null);
+  const [txReceipt, setTxReceipt] = useState<ethers.TransactionReceipt | null>(
+    null
+  );
 
   const formatBalance = () => {
-    return txData.fromBalance &&
-      Number(ethers.utils.formatEther(txData.fromBalance))
-      ? parseFloat(
-          Number(ethers.utils.formatEther(txData.fromBalance)).toString(),
-          4
-        )
+    return txData.fromBalance && Number(ethers.formatEther(txData.fromBalance))
+      ? parseFloat(Number(ethers.formatEther(txData.fromBalance)).toString(), 4)
       : 0;
   };
 
   const calcTotal = () => {
-    return (
+    return String(
       estimateGasCost &&
-      parseFloat(
-        (
-          txData.amount + Number(ethers.utils.formatEther(estimateGasCost))
-        ).toString(),
-        8
-      )
+        parseFloat(
+          (
+            txData.amount + Number(ethers.formatEther(estimateGasCost))
+          ).toString(),
+          8
+        )
     );
   };
 
   const transfer = async () => {
-    const provider = new ethers.providers.JsonRpcProvider(network.provider);
-    const controller: Controller = JSON.parse(
-      await SInfo.getItem('controller', STORAGE_KEY)
-    );
+    const provider = new ethers.JsonRpcProvider(network.provider);
+    const controller: Controller = (await getItem('controller')) as Controller;
     const controllerWallet = new ethers.Wallet(controller.privateKey).connect(
       provider
     );
@@ -113,7 +109,7 @@ export default function ConfirmationModal({
         [
           0, // Operation type (0 for call)
           txData.to, // Target contract address
-          ethers.utils.parseEther(txData.amount.toString()), // Value in LYX
+          ethers.parseEther(txData.amount.toString()), // Value in LYX
           '0x' // Encoded setData call
         ]
       );
@@ -140,7 +136,7 @@ export default function ConfirmationModal({
 
     try {
       await Linking.openURL(
-        `${connectedNetwork.blockExplorer}/tx/${txReceipt.transactionHash}`
+        `${connectedNetwork.blockExplorer}/tx/${txReceipt.hash}`
       );
     } catch (error) {
       toast.show('Cannot open url', {
@@ -233,8 +229,10 @@ export default function ConfirmationModal({
               w="50%"
               textAlign="right"
             >
-              {estimateGasCost &&
-                parseFloat(ethers.utils.formatEther(estimateGasCost), 8)}{' '}
+              {String(
+                estimateGasCost &&
+                  parseFloat(ethers.formatEther(estimateGasCost), 8)
+              )}{' '}
               {connectedNetwork.token}
             </Text>
           </HStack>

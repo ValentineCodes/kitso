@@ -13,7 +13,8 @@ import { useModal } from 'react-native-modalfy';
 import { useToast } from 'react-native-toast-notifications';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
-import useSecurity from '../../hooks/useSecurity';
+import { useSecureStorage } from '../../hooks/useSecureStorage';
+import { Security } from '../../hooks/useSecurity';
 import useWallet from '../../hooks/useWallet';
 import { WINDOW_WIDTH } from '../../styles/screenDimensions';
 import { COLORS } from '../../utils/constants';
@@ -28,9 +29,10 @@ type Props = {
 
 export default function PrivateKeyModal({ modal: { closeModal } }: Props) {
   const toast = useToast();
-  const { getSecurity } = useSecurity();
   const { getController } = useWallet();
   const { openModal } = useModal();
+
+  const { getItem } = useSecureStorage();
 
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -42,7 +44,7 @@ export default function PrivateKeyModal({ modal: { closeModal } }: Props) {
       return;
     }
 
-    const security = await getSecurity();
+    const security = (await getItem('security')) as Security;
 
     if (password !== security.password) {
       setError('Incorrect password!');

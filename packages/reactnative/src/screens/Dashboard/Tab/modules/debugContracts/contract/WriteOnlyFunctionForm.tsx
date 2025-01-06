@@ -1,5 +1,4 @@
 import { Abi, AbiFunction, Address } from 'abitype';
-import { BigNumber } from 'ethers';
 import { Button, HStack, Pressable, Text, View } from 'native-base';
 import React, { useState } from 'react';
 import { ActivityIndicator } from 'react-native';
@@ -52,7 +51,7 @@ export default function WriteOnlyFunctionForm({
     try {
       const receipt = await write({
         args: getParsedContractFunctionArgs(form),
-        value: BigNumber.from(txValue || 0)
+        value: BigInt(txValue || 0)
       });
       setTxReceipt(receipt);
       onChange();

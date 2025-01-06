@@ -45,6 +45,22 @@ export default function DisplayVariable({
     refetch();
   }, [refreshDisplayVariables]);
 
+  const renderResult = () => {
+    if (result === null || result === undefined) return;
+
+    if (typeof result == 'object' && isNaN(result)) {
+      return <Text fontSize={'sm'}>{JSON.stringify(result)}</Text>;
+    }
+    if (typeof result == 'object' && isNaN(result)) {
+      return <Text fontSize={'sm'}>{JSON.stringify(result)}</Text>;
+    }
+    if (isAddress(result.toString())) {
+      return <AddressComp address={result.toString()} />;
+    }
+
+    return <Text fontSize={'sm'}>{result.toString()}</Text>;
+  };
+
   return (
     <VStack space={1} mb={'4'}>
       <HStack alignItems={'center'} space={2}>
@@ -63,32 +79,7 @@ export default function DisplayVariable({
           )}
         </Pressable>
       </HStack>
-      {result !== null &&
-        result !== undefined &&
-        result.map(data => {
-          if (typeof data == 'object' && isNaN(data)) {
-            return (
-              <Text key={Math.random().toString()} fontSize={'sm'}>
-                {JSON.stringify(data)}
-              </Text>
-            );
-          }
-
-          if (isAddress(data.toString())) {
-            return (
-              <AddressComp
-                key={Math.random().toString()}
-                address={data.toString()}
-              />
-            );
-          }
-
-          return (
-            <Text key={Math.random().toString()} fontSize={'sm'}>
-              {data.toString()}
-            </Text>
-          );
-        })}
+      {renderResult()}
     </VStack>
   );
 }

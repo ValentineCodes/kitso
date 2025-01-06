@@ -1,6 +1,6 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { HStack, Image, ScrollView, Text, VStack } from 'native-base';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BackHandler, NativeEventSubscription } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from '../../components/Button';
@@ -48,12 +48,6 @@ export default function Onboarding({}: Props) {
       return true;
     });
   });
-
-  useEffect(() => {
-    return () => {
-      backHandler?.remove();
-    };
-  }, []);
 
   return (
     <ScrollView

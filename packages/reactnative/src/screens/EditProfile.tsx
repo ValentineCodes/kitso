@@ -18,7 +18,6 @@ import {
 } from 'native-base';
 import React, { useCallback, useState } from 'react';
 import { useModal } from 'react-native-modalfy';
-import SInfo from 'react-native-sensitive-info';
 import { useToast } from 'react-native-toast-notifications';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
@@ -34,10 +33,10 @@ import useNetwork from '../hooks/scaffold-eth/useNetwork';
 import useImageUploader from '../hooks/useImageUploader';
 import { useIPFSGateway } from '../hooks/useIPFSGateway';
 import useJSONUploader from '../hooks/useJSONUploader';
+import { useSecureStorage } from '../hooks/useSecureStorage';
 import { Controller } from '../hooks/useWallet';
-import styles from '../styles/global';
 import { WINDOW_WIDTH } from '../styles/screenDimensions';
-import { COLORS, STORAGE_KEY } from '../utils/constants';
+import { COLORS } from '../utils/constants';
 import { truncateAddress } from '../utils/helperFunctions';
 import { FONT_SIZE } from '../utils/styles';
 
@@ -51,6 +50,8 @@ export default function EditProfile({}: Props) {
   const account = useAccount();
   const network = useNetwork();
   const { parseIPFSUrl } = useIPFSGateway();
+
+  const { getItem } = useSecureStorage();
 
   const { upload: uploadImage } = useImageUploader({ enabled: false });
   const { upload: uploadProfile } = useJSONUploader({ enabled: false });
@@ -176,7 +177,6 @@ export default function EditProfile({}: Props) {
       ) {
         return;
       }
-
       // Upload profile metadata
       const _profile = await uploadProfile(profileMetadata);
       if (!_profile) {
@@ -184,8 +184,8 @@ export default function EditProfile({}: Props) {
         throw new Error('Failed to upload profile metadata');
       }
 
-      const profileMetadataHash = ethers.utils.keccak256(
-        ethers.utils.toUtf8Bytes(JSON.stringify(profileMetadata))
+      const profileMetadataHash = ethers.keccak256(
+        ethers.toUtf8Bytes(JSON.stringify(profileMetadata))
       );
 
       const lsp3DataValue = {
@@ -196,10 +196,10 @@ export default function EditProfile({}: Props) {
         url: `ipfs://${_profile.ipfsHash}`
       };
 
-      const provider = new ethers.providers.JsonRpcProvider(network.provider);
-      const controller: Controller = JSON.parse(
-        await SInfo.getItem('controller', STORAGE_KEY)
-      );
+      const provider = new ethers.JsonRpcProvider(network.provider);
+      const controller: Controller = (await getItem(
+        'controller'
+      )) as Controller;
 
       const controllerWallet = new ethers.Wallet(controller.privateKey).connect(
         provider
@@ -238,7 +238,7 @@ export default function EditProfile({}: Props) {
       );
 
       // Call execute on Key Manager
-      const tx = await keyManager.functions.execute(editProfileCalldata, {
+      const tx = await keyManager.execute(editProfileCalldata, {
         gasLimit: 3000000
       });
 

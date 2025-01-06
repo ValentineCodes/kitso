@@ -8,7 +8,8 @@ import Blockie from '../Blockie';
 import Button from '../Button';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
-import { BigNumber, Contract, ethers } from 'ethers';
+import { Contract, ethers, toBigInt } from 'ethers';
+import { useToast } from 'react-native-toast-notifications';
 import { useProfile } from '../../context/ProfileContext';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
 
@@ -20,8 +21,8 @@ type Props = {
       contractAddress: string;
       functionName: string;
       calldata: string;
-      value: BigNumber;
-      gasLimit: BigNumber | number;
+      value: bigint;
+      gasLimit: bigint | number;
       onConfirm: () => void;
       onReject: () => void;
     };
@@ -29,8 +30,8 @@ type Props = {
 };
 
 interface GasCost {
-  min: BigNumber | null;
-  max: BigNumber | null;
+  min: bigint | null;
+  max: bigint | null;
 }
 
 export default function SignTransactionModal({
@@ -39,8 +40,9 @@ export default function SignTransactionModal({
   const account = useAccount();
   const network = useNetwork();
   const { profile } = useProfile();
+  const toast = useToast();
 
-  const { balance, isLoading: isLoadingBalance } = useBalance({
+  const { balance } = useBalance({
     address: account.address
   });
 
@@ -50,55 +52,63 @@ export default function SignTransactionModal({
   });
 
   const estimateGasCost = async () => {
-    const provider = new ethers.providers.JsonRpcProvider(network.provider);
+    try {
+      const provider = new ethers.JsonRpcProvider(network.provider);
 
-    const gasEstimate = await params.contract.estimateGas.execute(
-      params.calldata,
-      {
-        gasLimit: params.gasLimit
+      const gasEstimate = await params.contract.execute.estimateGas(
+        params.calldata,
+        {
+          gasLimit: params.gasLimit
+        }
+      );
+
+      const feeData = await provider.getFeeData();
+
+      const gasCost: GasCost = {
+        min: null,
+        max: null
+      };
+
+      if (feeData.gasPrice) {
+        gasCost.min = toBigInt(gasEstimate) * feeData.gasPrice;
       }
-    );
-    const feeData = await provider.getFeeData();
 
-    const gasCost: GasCost = {
-      min: null,
-      max: null
-    };
+      if (feeData.maxFeePerGas) {
+        gasCost.max = toBigInt(gasEstimate) * feeData.maxFeePerGas;
+      }
 
-    if (feeData.gasPrice) {
-      gasCost.min = gasEstimate.mul(feeData.gasPrice);
+      setEstimatedGasCost(gasCost);
+    } catch (error) {
+      toast.show('Transaction might fail', { type: 'danger' });
+      console.error(error);
     }
-
-    if (feeData.maxFeePerGas) {
-      gasCost.max = gasEstimate.mul(feeData.maxFeePerGas);
-    }
-
-    setEstimatedGasCost(gasCost);
   };
 
   const calcTotal = () => {
     const minAmount =
       estimatedGasCost.min &&
       parseFloat(
-        ethers.utils.formatEther(params.value.add(estimatedGasCost.min)),
+        ethers.formatEther(params.value + estimatedGasCost.min),
         8
       ).toString();
     const maxAmount =
       estimatedGasCost.max &&
       parseFloat(
-        ethers.utils.formatEther(params.value.add(estimatedGasCost.max)),
+        ethers.formatEther(params.value + estimatedGasCost.max),
         8
       ).toString();
     return {
-      min: minAmount,
-      max: maxAmount
+      min: String(minAmount),
+      max: String(maxAmount)
     };
   };
 
   useEffect(() => {
-    const provider = new ethers.providers.JsonRpcProvider(network.provider);
+    const provider = new ethers.JsonRpcProvider(network.provider);
 
     provider.off('block');
+
+    estimateGasCost();
 
     provider.on('block', blockNumber => estimateGasCost());
 
@@ -195,7 +205,7 @@ export default function SignTransactionModal({
       </HStack>
 
       <Text fontSize={2 * FONT_SIZE['xl']} bold textAlign="center">
-        {ethers.utils.formatEther(params.value)} {network.token}
+        {ethers.formatEther(params.value)} {network.token}
       </Text>
 
       <VStack borderWidth="1" borderColor="muted.300" borderRadius="10">
@@ -215,11 +225,10 @@ export default function SignTransactionModal({
               fontWeight="medium"
               textAlign="right"
             >
-              {estimatedGasCost.min &&
-                parseFloat(
-                  ethers.utils.formatEther(estimatedGasCost.min),
-                  8
-                )}{' '}
+              {String(
+                estimatedGasCost.min &&
+                  parseFloat(ethers.formatEther(estimatedGasCost.min), 8)
+              )}{' '}
               {network.token}
             </Text>
             <Text
@@ -231,11 +240,10 @@ export default function SignTransactionModal({
               Max fee:
             </Text>
             <Text fontSize={FONT_SIZE['md']} textAlign="right">
-              {estimatedGasCost.max &&
-                parseFloat(
-                  ethers.utils.formatEther(estimatedGasCost.max),
-                  8
-                )}{' '}
+              {String(
+                estimatedGasCost.max &&
+                  parseFloat(ethers.formatEther(estimatedGasCost.max), 8)
+              )}{' '}
               {network.token}
             </Text>
           </VStack>

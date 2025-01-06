@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
 import axios from 'axios';
-import { keccak256 } from 'ethers/lib/utils';
+import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import RNFetchBlob from 'rn-fetch-blob';
 import { ImageType } from '../components/modals/ImageCaptureModal';
@@ -83,7 +83,7 @@ export default function useImageUploader({
 
       const result = {
         ipfsHash: data.IpfsHash,
-        bufferHash: keccak256(imageBuffer),
+        bufferHash: ethers.keccak256(imageBuffer),
         size: data.PinSize,
         timestamp: data.Timestamp
       };

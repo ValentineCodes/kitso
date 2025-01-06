@@ -44,7 +44,7 @@ export default function useScaffoldContractRead({
 
     try {
       setIsLoading(true);
-      const provider = new ethers.providers.JsonRpcProvider(network.provider);
+      const provider = new ethers.JsonRpcProvider(network.provider);
 
       // @ts-ignore
       const contract = new ethers.Contract(
@@ -53,7 +53,7 @@ export default function useScaffoldContractRead({
         provider
       );
 
-      const result = await contract.functions[functionName](...args, {
+      const result = await contract[functionName](...args, {
         from: account.address
       });
 

@@ -2,10 +2,9 @@ import { useModal } from 'react-native-modalfy';
 import useNetwork from './useNetwork';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
-import { ethers, Wallet } from 'ethers';
-import SInfo from 'react-native-sensitive-info';
-import { STORAGE_KEY } from '../../utils/constants';
-import useAccount from './useAccount';
+import { ethers } from 'ethers';
+import { useSecureStorage } from '../useSecureStorage';
+import { Controller } from '../useWallet';
 
 interface UseSignMessageConfig {
   message?: string;
@@ -21,7 +20,8 @@ export default function useSignMessage({ message }: UseSignMessageConfig) {
 
   const { openModal } = useModal();
   const network = useNetwork();
-  const connectedAccount = useAccount();
+
+  const { getItem } = useSecureStorage();
 
   const signMessage = async (
     config: UseSignMessageConfig = {
@@ -40,13 +40,9 @@ export default function useSignMessage({ message }: UseSignMessageConfig) {
 
       async function onConfirm() {
         try {
-          const provider = new ethers.providers.JsonRpcProvider(
-            network.provider
-          );
+          const provider = new ethers.JsonRpcProvider(network.provider);
 
-          const controller = JSON.parse(
-            await SInfo.getItem('controller', STORAGE_KEY)
-          );
+          const controller = (await getItem('controller')) as Controller;
 
           const wallet = new ethers.Wallet(controller.privateKey).connect(
             provider

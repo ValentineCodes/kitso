@@ -129,7 +129,7 @@ export default function LSP8Token({
             Owns
           </Text>
           <Text bold fontSize={'xs'}>
-            {balance && ethers.utils.formatUnits(balance, '0')}
+            {balance && ethers.formatUnits(balance, '0')}
           </Text>
         </HStack>
 
