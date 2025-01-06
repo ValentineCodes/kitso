@@ -23,6 +23,7 @@ Before you begin, you need to install the following tools:
 - [Yarn](https://classic.yarnpkg.com/lang/en/docs/install)
 - [Git](https://git-scm.com/downloads)
 - [React Native](https://reactnative.dev/docs/environment-setup?guide=native&platform=android)
+- [Yeet](https://www.npmjs.com/package/yeet-cli)
 
 ## Quickstart
 
