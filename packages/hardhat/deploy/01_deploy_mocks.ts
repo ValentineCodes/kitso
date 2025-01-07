@@ -13,25 +13,27 @@ const deployMocks: DeployFunction = async function (
 
   const imagePath = path.join(__dirname, '../assets/images/token.jpeg');
 
-  // // Deploy MockLSP7
-  // const mockLSP7 = await deploy('MockLSP7', {
-  //   from: deployer,
-  //   args: ['Mock LSP7 Token', 'MLSP7', deployer],
-  //   log: true,
-  //   autoMine: true
-  // });
+  // Deploy MockLSP7
+  const mockLSP7 = await deploy('MockLSP7', {
+    from: deployer,
+    args: ['Mock LSP7 Token', 'MLSP7', deployer],
+    log: true,
+    autoMine: true
+  });
 
   // await attachAssetMetadata(mockLSP7.address, imagePath);
 
-  // // Deploy MockLSP8
-  // const mockLSP8 = await deploy('MockLSP8', {
-  //   from: deployer,
-  //   args: ['Mock LSP8 Token', 'MLSP8', deployer],
-  //   log: true,
-  //   autoMine: true
-  // });
+  // Deploy MockLSP8
+  const mockLSP8 = await deploy('MockLSP8', {
+    from: deployer,
+    args: ['Mock LSP8 Token', 'MLSP8', deployer],
+    log: true,
+    autoMine: true
+  });
 
   // await attachAssetMetadata(mockLSP8.address, imagePath);
+
+  console.log('Mocks Deployed! 🎉');
 };
 
 export default deployMocks;

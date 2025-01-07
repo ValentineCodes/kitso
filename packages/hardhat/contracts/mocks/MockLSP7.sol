@@ -12,7 +12,7 @@ contract MockLSP7 is LSP7 {
         address _owner
     ) LSP7(_name, _symbol, _owner, _LSP4_TOKEN_TYPE_TOKEN, true) {}
 
-    function mint(address _to, uint256 _amount) external {
-        _mint(_to, _amount, false, "");
+    function mint() external {
+        _mint(msg.sender, 1 ether, false, "");
     }
 }

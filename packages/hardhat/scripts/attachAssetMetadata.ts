@@ -42,7 +42,7 @@ async function uploadToPinata(
       }
     );
 
-    console.log('Image successfully uploaded to IPFS:', data.IpfsHash);
+    console.log('Image uploaded to IPFS:', data.IpfsHash);
 
     const bufferHash = ethers.keccak256(imageBuffer);
 
@@ -75,7 +75,7 @@ async function uploadJSONToPinata(jsonData: any): Promise<string | null> {
       }
     );
 
-    console.log('JSON successfully uploaded to IPFS:', data.IpfsHash);
+    console.log('JSON uploaded to IPFS:', data.IpfsHash);
     return data.IpfsHash;
   } catch (error) {
     console.error('Error uploading JSON to IPFS:', error);
@@ -181,13 +181,13 @@ export async function attachAssetMetadata(
     encodedMetadata.keys,
     encodedMetadata.values
   );
-  const receipt = await tx.wait();
+  await tx.wait();
 
-  console.log('Metadata updated successfully✅');
+  console.log('Metadata updated ✅');
 }
 
 // Replace with the correct asset address and image path
-const assetAddress = '0x7693d152c741aAAfeCea293901F3431f3314E185'; // Your asset address
+const assetAddress = '0x570DA9f60Bd214BcAe427868a137A29d2483379e'; // Your asset address
 const imagePath = path.join(__dirname, '../assets/images/token.jpeg'); // Update with your image file path
 
 attachAssetMetadata(assetAddress, imagePath)

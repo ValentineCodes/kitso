@@ -34,7 +34,7 @@ export default function useTokenBalance({
   }, [tokenAddress, account.address, refetch]);
 
   return {
-    balance: data ? data[0] : null, // Assuming balanceOf returns a tuple [balance]
+    balance: data ? data : null, // Assuming balanceOf returns a tuple [balance]
     isLoading,
     error
   };
