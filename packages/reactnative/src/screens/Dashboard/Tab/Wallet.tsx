@@ -69,6 +69,33 @@ function Wallet({}: WalletProps) {
     });
   };
 
+  const showBio = () => {
+    openModal('BioModal', {
+      bio: profile!.description
+    });
+  };
+
+  const renderBio = () => {
+    if (!profile) return;
+
+    if (profile.description.length < 100) {
+      return (
+        <Text fontSize={'md'} fontWeight={'normal'} my={2}>
+          {profile.description}
+        </Text>
+      );
+    } else {
+      return (
+        <Text fontSize={'md'} fontWeight={'normal'} my={2}>
+          {profile.description.slice(0, 94)}...
+          <Text fontSize={'md'} bold onPress={showBio}>
+            {' '}
+            See more
+          </Text>
+        </Text>
+      );
+    }
+  };
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
@@ -158,11 +185,7 @@ function Wallet({}: WalletProps) {
         </Pressable>
 
         {/* Bio */}
-        {!!profile?.description && (
-          <Text fontSize={'md'} fontWeight={'normal'} my={2}>
-            {profile.description}
-          </Text>
-        )}
+        {!!profile?.description && renderBio()}
 
         {/* Links */}
         {!!profile?.links && (

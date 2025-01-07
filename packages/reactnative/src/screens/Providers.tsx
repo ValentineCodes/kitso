@@ -8,9 +8,10 @@ import {
 import { MenuProvider } from 'react-native-popup-menu';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ToastProvider } from 'react-native-toast-notifications';
+// Modals
+import BioModal from '../components/modals/BioModal';
 import ConsentModal from '../components/modals/ConsentModal';
 import ImageCaptureModal from '../components/modals/ImageCaptureModal';
-// Modals
 import PrivateKeyModal from '../components/modals/PrivateKeyModal';
 import QRCodeModal from '../components/modals/QRCodeModal';
 import ReceiveModal from '../components/modals/ReceiveModal';
@@ -27,6 +28,7 @@ type Props = {
 };
 
 const modalConfig = {
+  BioModal,
   SignTransactionModal,
   SignMessageModal,
   TxReceiptModal,
