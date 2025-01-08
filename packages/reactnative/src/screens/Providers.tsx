@@ -14,6 +14,7 @@ import ConsentModal from '../components/modals/ConsentModal';
 import ImageCaptureModal from '../components/modals/ImageCaptureModal';
 import PrivateKeyModal from '../components/modals/PrivateKeyModal';
 import QRCodeModal from '../components/modals/QRCodeModal';
+import QRCodeScanner from '../components/modals/QRCodeScanner';
 import ReceiveModal from '../components/modals/ReceiveModal';
 import SignMessageModal from '../components/modals/SignMessageModal';
 import SignTransactionModal from '../components/modals/SignTransactionModal';
@@ -37,7 +38,8 @@ const modalConfig = {
   ImageCaptureModal,
   ReceiveModal,
   PrivateKeyModal,
-  QRCodeModal
+  QRCodeModal,
+  QRCodeScanner
 };
 const defaultOptions: ModalOptions = {
   backdropOpacity: 0.6,

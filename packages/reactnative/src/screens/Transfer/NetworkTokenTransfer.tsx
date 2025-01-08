@@ -14,8 +14,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { BackHandler, StyleSheet, TouchableOpacity } from 'react-native';
 // @ts-ignore
 import FontAwesome5 from 'react-native-vector-icons/dist/FontAwesome5';
-// @ts-ignore
-import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import Blockie from '../../components/Blockie';
 import Button from '../../components/Button';
@@ -26,8 +24,8 @@ import '@ethersproject/shims';
 import { ethers, toBigInt } from 'ethers';
 import { useModal } from 'react-native-modalfy';
 import { useToast } from 'react-native-toast-notifications';
-import QRCodeScanner from '../../components/modals/QRCodeScanner';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
+import useBalance from '../../hooks/scaffold-eth/useBalance';
 import { useCryptoPrice } from '../../hooks/scaffold-eth/useCryptoPrice';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
 import { clearRecipients } from '../../store/reducers/Recipients';
@@ -38,6 +36,8 @@ import {
 } from '../../utils/helperFunctions';
 import ConfirmationModal from './modules/ConfirmationModal';
 import Header from './modules/Header';
+import Recipient from './modules/Recipient';
+import Sender from './modules/Sender';
 
 type Props = {};
 
@@ -54,16 +54,19 @@ export default function NetworkTokenTransfer({}: Props) {
   const account = useAccount();
   const network = useNetwork();
 
+  const { balance: accountBalance } = useBalance({
+    address: account.address
+  });
+
   const recipients: string[] = useSelector((state: any) => state.recipients);
 
   const [balance, setBalance] = useState<bigint | null>(null);
   const [gasCost, setGasCost] = useState<bigint | null>(null);
 
-  const [toAddress, setToAddress] = useState('');
+  const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
-  const [showScanner, setShowScanner] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [toAddressError, setToAddressError] = useState('');
+  const [recipientError, setRecipientError] = useState('');
   const [amountError, setAmountError] = useState('');
   const [isAmountInCrypto, setIsAmountInCrypto] = useState(true);
 
@@ -97,7 +100,7 @@ export default function NetworkTokenTransfer({}: Props) {
   }, [price, amount, isAmountInCrypto]);
 
   const confirm = () => {
-    if (!ethers.isAddress(toAddress)) {
+    if (!ethers.isAddress(recipient)) {
       toast.show('Invalid address', {
         type: 'danger'
       });
@@ -140,17 +143,11 @@ export default function NetworkTokenTransfer({}: Props) {
     setShowConfirmationModal(true);
   };
 
-  const formatBalance = () => {
-    return Number(ethers.formatEther(balance!))
-      ? parseFloat(Number(ethers.formatEther(balance!)).toString(), 4)
-      : 0;
-  };
+  const handleRecipientChange = async (value: string) => {
+    setRecipient(value);
 
-  const handleToAddressChange = async (value: string) => {
-    setToAddress(value);
-
-    if (toAddressError) {
-      setToAddressError('');
+    if (recipientError) {
+      setRecipientError('');
     }
 
     if (isENS(value)) {
@@ -162,12 +159,12 @@ export default function NetworkTokenTransfer({}: Props) {
         const address = await provider.resolveName(value);
 
         if (address && ethers.isAddress(address)) {
-          setToAddress(address);
+          setRecipient(address);
         } else {
-          setToAddressError('Invalid ENS');
+          setRecipientError('Invalid ENS');
         }
       } catch (error) {
-        setToAddressError('Could not resolve ENS');
+        setRecipientError('Could not resolve ENS');
         return;
       }
     }
@@ -273,88 +270,16 @@ export default function NetworkTokenTransfer({}: Props) {
     <VStack flex="1" bgColor="white" p="15" space="6">
       <Header token={network.token} />
 
-      <VStack space="2">
-        <Text fontSize={FONT_SIZE['lg']} fontWeight="medium">
-          From:
-        </Text>
+      <Sender
+        balance={accountBalance && `${accountBalance} ${network.token}`}
+      />
 
-        <View style={styles.fromAccountContainer} bgColor={'#f5f5f5'}>
-          <HStack alignItems="center" space="2">
-            <Blockie address={account.address} size={1.8 * FONT_SIZE['xl']} />
-
-            <VStack w="75%">
-              <Text fontSize={FONT_SIZE['md']} fontWeight="medium">
-                {truncateAddress(account.address)}
-              </Text>
-              <Text fontSize={FONT_SIZE['sm']}>
-                Balance:{' '}
-                {balance !== null && `${formatBalance()} ${network.token}`}
-              </Text>
-            </VStack>
-          </HStack>
-        </View>
-      </VStack>
-
-      <VStack space="2">
-        <HStack alignItems="center" space="2">
-          <Text fontSize={FONT_SIZE['lg']} fontWeight="medium">
-            To:
-          </Text>
-          <TouchableOpacity
-            activeOpacity={0.4}
-            style={{ width: '100%' }}
-            onPress={() => {
-              // if (accounts.length > 1) {
-              //     setShowToAccountsModal(true)
-              // } else {
-              setToAddress(account.address);
-              // }
-            }}
-          >
-            {/* <Text color={COLORS.primary} fontWeight="medium" fontSize={FONT_SIZE['lg']} flex="1">My account<Text color="black">{getToAddressName()}</Text></Text> */}
-          </TouchableOpacity>
-        </HStack>
-
-        <Input
-          value={toAddress}
-          borderRadius="lg"
-          variant="filled"
-          fontSize="md"
-          focusOutlineColor={COLORS.primary}
-          InputLeftElement={
-            ethers.isAddress(toAddress) ? (
-              <View ml="2">
-                <Blockie address={toAddress} size={1.8 * FONT_SIZE['xl']} />
-              </View>
-            ) : undefined
-          }
-          InputRightElement={
-            <TouchableOpacity
-              onPress={() => setShowScanner(true)}
-              style={{ marginRight: 10 }}
-            >
-              <Icon
-                as={<MaterialCommunityIcons name="qrcode-scan" />}
-                size={1.3 * FONT_SIZE['xl']}
-                color={COLORS.primary}
-              />
-            </TouchableOpacity>
-          }
-          placeholder="Recipient Address"
-          onChangeText={handleToAddressChange}
-          _input={{
-            selectionColor: COLORS.primary,
-            cursorColor: COLORS.primary
-          }}
-          onSubmitEditing={confirm}
-        />
-
-        {toAddressError && (
-          <Text fontSize={FONT_SIZE['md']} color="red.400">
-            {toAddressError}
-          </Text>
-        )}
-      </VStack>
+      <Recipient
+        recipient={recipient}
+        error={recipientError}
+        onChange={handleRecipientChange}
+        onSubmit={confirm}
+      />
 
       <VStack space="2">
         <HStack alignItems="center" space="2">
@@ -457,7 +382,7 @@ export default function NetworkTokenTransfer({}: Props) {
               renderItem={({ item }) => (
                 <TouchableOpacity
                   activeOpacity={0.4}
-                  onPress={() => setToAddress(item)}
+                  onPress={() => setRecipient(item)}
                 >
                   <HStack alignItems="center" space="4" mb="4">
                     <Blockie address={item} size={1.7 * FONT_SIZE['xl']} />
@@ -472,17 +397,6 @@ export default function NetworkTokenTransfer({}: Props) {
         )}
       </View>
 
-      {showScanner && (
-        <QRCodeScanner
-          isOpen={showScanner}
-          onClose={() => setShowScanner(false)}
-          onReadCode={address => {
-            setToAddress(address);
-            setShowScanner(false);
-          }}
-        />
-      )}
-
       <Button text="Next" onPress={confirm} />
 
       {showConfirmationModal && (
@@ -491,7 +405,7 @@ export default function NetworkTokenTransfer({}: Props) {
           onClose={() => setShowConfirmationModal(false)}
           txData={{
             from: account,
-            to: toAddress,
+            to: recipient,
             amount:
               !isAmountInCrypto && price
                 ? parseFloat((Number(amount) / price).toString(), 8)
@@ -506,14 +420,6 @@ export default function NetworkTokenTransfer({}: Props) {
 }
 
 const styles = StyleSheet.create({
-  fromAccountContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 5
-  },
   networkLogo: {
     width: 2 * FONT_SIZE['xl'],
     height: 2 * FONT_SIZE['xl']

@@ -1,4 +1,4 @@
-import { Icon, Modal, Pressable } from 'native-base';
+import { Icon, Pressable, View } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { Camera } from 'react-native-camera-kit';
@@ -6,14 +6,18 @@ import { useToast } from 'react-native-toast-notifications';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
 import { Camera as VCamera } from 'react-native-vision-camera';
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from '../../utils/styles';
 
 type Props = {
-  isOpen: boolean;
-  onClose: () => void;
-  onReadCode: (value: string) => void;
+  modal: {
+    closeModal: () => void;
+    params: {
+      onScan: (value: string) => void;
+    };
+  };
 };
 
-export default function QRCodeScanner({ isOpen, onClose, onReadCode }: Props) {
+export default function QRCodeScanner({ modal: { closeModal, params } }: Props) {
   const [isCameraPermitted, setIsCameraPermitted] = useState(false);
 
   const toast = useToast();
@@ -26,7 +30,7 @@ export default function QRCodeScanner({ isOpen, onClose, onReadCode }: Props) {
       toast.show('Cannot use camera', {
         type: 'danger'
       });
-      onClose();
+      closeModal();
     } else if (
       cameraPermission === 'not-determined' ||
       cameraPermission === 'denied'
@@ -43,14 +47,14 @@ export default function QRCodeScanner({ isOpen, onClose, onReadCode }: Props) {
               type: 'warning'
             }
           );
-          onClose();
+          closeModal();
         }
       } catch (error) {
         toast.show('Go to your device settings to Enable Camera', {
           type: 'normal',
           duration: 5000
         });
-        onClose();
+        closeModal();
       }
     } else {
       setIsCameraPermitted(true);
@@ -64,13 +68,15 @@ export default function QRCodeScanner({ isOpen, onClose, onReadCode }: Props) {
   }, []);
 
   return (
-    isOpen &&
     isCameraPermitted && (
-      <Modal isOpen onClose={onClose}>
+      <View 
+      w={WINDOW_WIDTH}
+      h={WINDOW_HEIGHT}
+      >
         <Camera
           scanBarcode={true}
           onReadCode={(event: { nativeEvent: { codeStringValue: string } }) => {
-            onReadCode(event.nativeEvent.codeStringValue);
+            params.onScan(event.nativeEvent.codeStringValue);
           }}
           showFrame={true}
           laserColor="blue"
@@ -78,13 +84,15 @@ export default function QRCodeScanner({ isOpen, onClose, onReadCode }: Props) {
           style={styles.scanner}
         />
         <Pressable
-          onPress={onClose}
+          onPress={closeModal}
           _pressed={{ opacity: 0.4 }}
-          style={styles.closeIcon}
+          position={'absolute'}
+          top={45}
+          right={15}
         >
           <Icon as={<Ionicons name="close" />} size={10} mr="2" color="white" />
         </Pressable>
-      </Modal>
+        </View>
     )
   );
 }
@@ -93,10 +101,5 @@ const styles = StyleSheet.create({
   scanner: {
     width: '100%',
     height: '100%'
-  },
-  closeIcon: {
-    position: 'absolute',
-    top: 50,
-    right: 15
   }
 });
