@@ -1,37 +1,29 @@
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import {
   Divider,
-  FlatList,
-  HStack,
   Image,
-  Text,
-  View,
   VStack
 } from 'native-base';
 import React, { useEffect, useState } from 'react';
-import { BackHandler, TouchableOpacity } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import Blockie from '../../components/Blockie';
+import { BackHandler } from 'react-native';
 import Button from '../../components/Button';
-import { ALCHEMY_KEY, COLORS } from '../../utils/constants';
+import { ALCHEMY_KEY } from '../../utils/constants';
 import { FONT_SIZE } from '../../utils/styles';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import { ethers, toBigInt } from 'ethers';
-import { useModal } from 'react-native-modalfy';
 import { useToast } from 'react-native-toast-notifications';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
-import { clearRecipients } from '../../store/reducers/Recipients';
 import {
   isENS,
   parseFloat,
-  truncateAddress
 } from '../../utils/helperFunctions';
 import Amount from './modules/Amount';
 import ConfirmationModal from './modules/ConfirmationModal';
 import Header from './modules/Header';
+import PastRecipients from './modules/PastRecipients';
 import Recipient from './modules/Recipient';
 import Sender from './modules/Sender';
 
@@ -41,10 +33,6 @@ export default function NetworkTokenTransfer({}: Props) {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
-  const dispatch = useDispatch();
-
-  const { openModal } = useModal();
-
   const toast = useToast();
 
   const account = useAccount();
@@ -53,8 +41,6 @@ export default function NetworkTokenTransfer({}: Props) {
   const { balance: accountBalance } = useBalance({
     address: account.address
   });
-
-  const recipients: string[] = useSelector((state: any) => state.recipients);
 
   const [balance, setBalance] = useState<bigint | null>(null);
   const [gasCost, setGasCost] = useState<bigint | null>(null);
@@ -161,19 +147,6 @@ export default function NetworkTokenTransfer({}: Props) {
     }
   };
 
-  const seekConsentToClearRecipients = () => {
-    openModal('ConsentModal', {
-      title: 'Clear Recents!',
-      subTitle:
-        'This action cannot be reversed. Are you sure you want to go through with this?',
-      okText: "Yes, I'm sure",
-      cancelText: 'Not really',
-      onAccept: () => {
-        dispatch(clearRecipients());
-      }
-    });
-  };
-
   const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
     navigation.goBack();
 
@@ -233,47 +206,7 @@ export default function NetworkTokenTransfer({}: Props) {
 
       <Divider bgColor="muted.300" my="2" />
 
-      <View flex="1">
-        {recipients.length > 0 && (
-          <>
-            <HStack alignItems="center" justifyContent="space-between" mb="4">
-              <Text bold fontSize={FONT_SIZE['xl']}>
-                Recents
-              </Text>
-              <TouchableOpacity
-                activeOpacity={0.4}
-                onPress={seekConsentToClearRecipients}
-              >
-                <Text
-                  color={COLORS.primary}
-                  fontSize={FONT_SIZE['lg']}
-                  fontWeight="medium"
-                >
-                  Clear
-                </Text>
-              </TouchableOpacity>
-            </HStack>
-
-            <FlatList
-              keyExtractor={item => item}
-              data={recipients}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  activeOpacity={0.4}
-                  onPress={() => setRecipient(item)}
-                >
-                  <HStack alignItems="center" space="4" mb="4">
-                    <Blockie address={item} size={1.7 * FONT_SIZE['xl']} />
-                    <Text fontSize={FONT_SIZE['xl']} fontWeight="medium">
-                      {truncateAddress(item)}
-                    </Text>
-                  </HStack>
-                </TouchableOpacity>
-              )}
-            />
-          </>
-        )}
-      </View>
+      <PastRecipients onSelect={setRecipient} />
 
       <Button text="Next" onPress={confirm} />
 
