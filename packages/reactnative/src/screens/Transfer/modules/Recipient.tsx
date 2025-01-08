@@ -1,12 +1,12 @@
 import { ethers } from 'ethers';
 import { Icon, Input, Pressable, Text, View, VStack } from 'native-base';
 import React from 'react';
+import { useModal } from 'react-native-modalfy';
 // @ts-ignore
 import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
 import Blockie from '../../../components/Blockie';
 import { COLORS } from '../../../utils/constants';
 import { FONT_SIZE } from '../../../utils/styles';
-import { useModal } from 'react-native-modalfy';
 
 type Props = {
   recipient: string;
@@ -21,13 +21,13 @@ export default function Recipient({
   onChange,
   onSubmit
 }: Props) {
-  const {openModal} = useModal()
+  const { openModal } = useModal();
 
   const scanQRCode = () => {
-    openModal("QRCodeScanner", {
+    openModal('QRCodeScanner', {
       onScan: onChange
-    })
-  }
+    });
+  };
   return (
     <VStack space="2">
       <Text fontSize={FONT_SIZE['lg']} fontWeight="medium">

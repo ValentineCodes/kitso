@@ -3,17 +3,13 @@ import {
   Divider,
   FlatList,
   HStack,
-  Icon,
   Image,
-  Input,
   Text,
   View,
   VStack
 } from 'native-base';
-import React, { useCallback, useEffect, useState } from 'react';
-import { BackHandler, StyleSheet, TouchableOpacity } from 'react-native';
-// @ts-ignore
-import FontAwesome5 from 'react-native-vector-icons/dist/FontAwesome5';
+import React, { useEffect, useState } from 'react';
+import { BackHandler, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Blockie from '../../components/Blockie';
 import Button from '../../components/Button';
@@ -26,7 +22,6 @@ import { useModal } from 'react-native-modalfy';
 import { useToast } from 'react-native-toast-notifications';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
-import { useCryptoPrice } from '../../hooks/scaffold-eth/useCryptoPrice';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
 import { clearRecipients } from '../../store/reducers/Recipients';
 import {
@@ -34,6 +29,7 @@ import {
   parseFloat,
   truncateAddress
 } from '../../utils/helperFunctions';
+import Amount from './modules/Amount';
 import ConfirmationModal from './modules/ConfirmationModal';
 import Header from './modules/Header';
 import Recipient from './modules/Recipient';
@@ -68,9 +64,6 @@ export default function NetworkTokenTransfer({}: Props) {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [recipientError, setRecipientError] = useState('');
   const [amountError, setAmountError] = useState('');
-  const [isAmountInCrypto, setIsAmountInCrypto] = useState(true);
-
-  const { price } = useCryptoPrice({ enabled: false });
 
   const getBalance = async () => {
     try {
@@ -87,18 +80,6 @@ export default function NetworkTokenTransfer({}: Props) {
     }
   };
 
-  const getAmountConversion = useCallback(() => {
-    if (price === null || isNaN(Number(amount))) return;
-
-    if (isAmountInCrypto) {
-      const dollarValue = Number(amount) * price;
-      return '$' + (dollarValue ? parseFloat(dollarValue.toString(), 8) : '0');
-    } else {
-      const dollarValue = Number(amount) / price;
-      return `${dollarValue ? parseFloat(dollarValue.toString(), 8) : '0'} ${network.token}`;
-    }
-  }, [price, amount, isAmountInCrypto]);
-
   const confirm = () => {
     if (!ethers.isAddress(recipient)) {
       toast.show('Invalid address', {
@@ -108,14 +89,6 @@ export default function NetworkTokenTransfer({}: Props) {
     }
 
     let _amount = amount;
-
-    if (!isAmountInCrypto) {
-      if (price) {
-        _amount = (Number(_amount) / price).toString();
-      } else if (amountError) {
-        setAmountError('');
-      }
-    }
 
     if (isNaN(Number(_amount)) || Number(_amount) < 0) {
       toast.show('Invalid amount', {
@@ -175,14 +148,6 @@ export default function NetworkTokenTransfer({}: Props) {
 
     let amount = Number(value);
 
-    if (!isAmountInCrypto) {
-      if (price) {
-        amount = Number(amount) / price;
-      } else if (amountError) {
-        setAmountError('');
-      }
-    }
-
     if (value.trim() && balance && !isNaN(amount) && gasCost) {
       if (amount >= Number(ethers.formatEther(balance))) {
         setAmountError('Insufficient amount');
@@ -193,39 +158,6 @@ export default function NetworkTokenTransfer({}: Props) {
       }
     } else if (amountError) {
       setAmountError('');
-    }
-  };
-
-  const setMaxAmount = () => {
-    if (balance && gasCost && balance > gasCost) {
-      const max = ethers.formatEther(balance - gasCost);
-      handleAmountChange(max);
-      setIsAmountInCrypto(true);
-    }
-  };
-
-  const convertCurrency = () => {
-    // allow users to start from preferred currency
-    if (!amount && price) {
-      setIsAmountInCrypto(!isAmountInCrypto);
-      return;
-    }
-
-    // validate input
-    if (!amount || !price) return;
-    if (isNaN(Number(amount)) || Number(amount) < 0) {
-      toast.show('Invalid amount', {
-        type: 'danger'
-      });
-      return;
-    }
-
-    setIsAmountInCrypto(!isAmountInCrypto);
-
-    if (isAmountInCrypto) {
-      setAmount((Number(amount) * price).toString());
-    } else {
-      setAmount((Number(amount) / price).toString());
     }
   };
 
@@ -281,77 +213,23 @@ export default function NetworkTokenTransfer({}: Props) {
         onSubmit={confirm}
       />
 
-      <VStack space="2">
-        <HStack alignItems="center" space="2">
-          <Text fontSize={FONT_SIZE['lg']} fontWeight="medium">
-            Amount:
-          </Text>
-          {balance && gasCost && balance >= gasCost && (
-            <TouchableOpacity activeOpacity={0.4} onPress={setMaxAmount}>
-              <Text
-                color={COLORS.primary}
-                fontWeight="medium"
-                fontSize={FONT_SIZE['lg']}
-              >
-                Max
-              </Text>
-            </TouchableOpacity>
-          )}
-        </HStack>
-
-        <Input
-          value={amount}
-          borderRadius="lg"
-          variant="filled"
-          fontSize="lg"
-          focusOutlineColor={COLORS.primary}
-          placeholder={`0 ${isAmountInCrypto ? network.token : 'USD'}`}
-          onChangeText={handleAmountChange}
-          _input={{
-            selectionColor: COLORS.primary,
-            cursorColor: COLORS.primary
-          }}
-          onSubmitEditing={confirm}
-          keyboardType="number-pad"
-          InputLeftElement={
-            <TouchableOpacity
-              activeOpacity={0.4}
-              onPress={convertCurrency}
-              disabled={!Boolean(price)}
-              style={{ marginLeft: 10 }}
-            >
-              {isAmountInCrypto ? (
-                <Image
-                  key={require('../../../assets/images/lukso_logo.png')}
-                  source={require('../../../assets/images/lukso_logo.png')}
-                  alt={network.name}
-                  style={styles.networkLogo}
-                />
-              ) : (
-                <Icon
-                  as={<FontAwesome5 name="dollar-sign" />}
-                  size={1.3 * FONT_SIZE['xl']}
-                  ml={3}
-                  color={COLORS.primary}
-                />
-              )}
-            </TouchableOpacity>
-          }
-          InputRightElement={
-            price !== null ? (
-              <Text fontSize={FONT_SIZE['lg']} color={COLORS.primary} mr="2">
-                {getAmountConversion()}
-              </Text>
-            ) : undefined
-          }
-        />
-
-        {amountError && (
-          <Text fontSize={FONT_SIZE['md']} color="red.400">
-            {amountError}
-          </Text>
-        )}
-      </VStack>
+      <Amount
+        amount={amount}
+        error={amountError}
+        token={network.token}
+        onChange={handleAmountChange}
+        onConfirm={confirm}
+        tokenImage={
+          <Image
+            key={require('../../../assets/images/lukso_logo.png')}
+            source={require('../../../assets/images/lukso_logo.png')}
+            alt={network.name}
+            width={2 * FONT_SIZE['lg']}
+            height={2 * FONT_SIZE['lg']}
+            ml={2}
+          />
+        }
+      />
 
       <Divider bgColor="muted.300" my="2" />
 
@@ -406,10 +284,7 @@ export default function NetworkTokenTransfer({}: Props) {
           txData={{
             from: account,
             to: recipient,
-            amount:
-              !isAmountInCrypto && price
-                ? parseFloat((Number(amount) / price).toString(), 8)
-                : parseFloat(amount, 8),
+            amount: parseFloat(amount, 8),
             fromBalance: balance
           }}
           estimateGasCost={gasCost}
@@ -418,10 +293,3 @@ export default function NetworkTokenTransfer({}: Props) {
     </VStack>
   );
 }
-
-const styles = StyleSheet.create({
-  networkLogo: {
-    width: 2 * FONT_SIZE['xl'],
-    height: 2 * FONT_SIZE['xl']
-  }
-});

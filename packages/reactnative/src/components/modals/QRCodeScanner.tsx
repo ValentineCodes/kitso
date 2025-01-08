@@ -17,7 +17,9 @@ type Props = {
   };
 };
 
-export default function QRCodeScanner({ modal: { closeModal, params } }: Props) {
+export default function QRCodeScanner({
+  modal: { closeModal, params }
+}: Props) {
   const [isCameraPermitted, setIsCameraPermitted] = useState(false);
 
   const toast = useToast();
@@ -69,10 +71,7 @@ export default function QRCodeScanner({ modal: { closeModal, params } }: Props) 
 
   return (
     isCameraPermitted && (
-      <View 
-      w={WINDOW_WIDTH}
-      h={WINDOW_HEIGHT}
-      >
+      <View w={WINDOW_WIDTH} h={WINDOW_HEIGHT}>
         <Camera
           scanBarcode={true}
           onReadCode={(event: { nativeEvent: { codeStringValue: string } }) => {
@@ -92,7 +91,7 @@ export default function QRCodeScanner({ modal: { closeModal, params } }: Props) 
         >
           <Icon as={<Ionicons name="close" />} size={10} mr="2" color="white" />
         </Pressable>
-        </View>
+      </View>
     )
   );
 }
