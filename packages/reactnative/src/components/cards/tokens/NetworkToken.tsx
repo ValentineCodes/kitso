@@ -71,20 +71,18 @@ export default function NetworkToken({}: Props) {
         </VStack>
       </HStack>
 
-      {/* @ts-ignore */}
-      <Pressable onPress={() => navigation.navigate('Transfer')}>
-        <Text
-          alignSelf={'flex-end'}
-          mt={3}
-          px={'4'}
-          py={'1'}
-          borderWidth={'1'}
-          borderRadius={'2xl'}
-          borderColor={'gray.300'}
-          fontWeight={'medium'}
-        >
-          Send
-        </Text>
+      <Pressable
+        // @ts-ignore
+        onPress={() => navigation.navigate('Transfer')}
+        alignSelf={'flex-end'}
+        mt={3}
+        px={'4'}
+        py={'1'}
+        borderWidth={'1'}
+        borderRadius={'2xl'}
+        borderColor={'gray.300'}
+      >
+        <Text fontWeight={'medium'}>Send</Text>
       </Pressable>
     </VStack>
   );

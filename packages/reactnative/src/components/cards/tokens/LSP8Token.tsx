@@ -135,19 +135,16 @@ export default function LSP8Token({
 
         <Creators />
 
-        <Pressable>
-          <Text
-            alignSelf={'flex-end'}
-            mt={4}
-            px={'4'}
-            py={'1'}
-            borderWidth={'1'}
-            borderRadius={'lg'}
-            borderColor={'gray.300'}
-            fontWeight={'medium'}
-          >
-            Send
-          </Text>
+        <Pressable
+          alignSelf={'flex-end'}
+          mt={4}
+          px={'4'}
+          py={'1'}
+          borderWidth={'1'}
+          borderRadius={'lg'}
+          borderColor={'gray.300'}
+        >
+          <Text fontWeight={'medium'}>Send</Text>
         </Pressable>
 
         <Divider my={4} />
