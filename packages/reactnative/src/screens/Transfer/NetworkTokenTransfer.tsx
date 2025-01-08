@@ -6,7 +6,6 @@ import {
   Icon,
   Image,
   Input,
-  Pressable,
   Text,
   View,
   VStack
@@ -15,8 +14,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { BackHandler, StyleSheet, TouchableOpacity } from 'react-native';
 // @ts-ignore
 import FontAwesome5 from 'react-native-vector-icons/dist/FontAwesome5';
-// @ts-ignore
-import Ionicons from 'react-native-vector-icons/dist/Ionicons';
 // @ts-ignore
 import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -40,10 +37,11 @@ import {
   truncateAddress
 } from '../../utils/helperFunctions';
 import ConfirmationModal from './modules/ConfirmationModal';
+import Header from './modules/Header';
 
 type Props = {};
 
-export default function Transfer({}: Props) {
+export default function NetworkTokenTransfer({}: Props) {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
@@ -273,21 +271,7 @@ export default function Transfer({}: Props) {
 
   return (
     <VStack flex="1" bgColor="white" p="15" space="6">
-      <HStack alignItems="center" space={2}>
-        <Pressable
-          onPress={() => navigation.goBack()}
-          _pressed={{ opacity: 0.4 }}
-        >
-          <Icon
-            as={<Ionicons name="arrow-back-outline" />}
-            size={1.3 * FONT_SIZE['xl']}
-            color="black"
-          />
-        </Pressable>
-        <Text fontSize={1.2 * FONT_SIZE['lg']} bold>
-          Send {network.token}
-        </Text>
-      </HStack>
+      <Header token={network.token} />
 
       <VStack space="2">
         <Text fontSize={FONT_SIZE['lg']} fontWeight="medium">

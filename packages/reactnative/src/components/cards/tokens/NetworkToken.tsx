@@ -73,7 +73,7 @@ export default function NetworkToken({}: Props) {
 
       <Pressable
         // @ts-ignore
-        onPress={() => navigation.navigate('Transfer')}
+        onPress={() => navigation.navigate('NetworkTokenTransfer')}
         alignSelf={'flex-end'}
         mt={3}
         px={'4'}
