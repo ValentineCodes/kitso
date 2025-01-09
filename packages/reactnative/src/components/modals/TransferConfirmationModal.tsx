@@ -7,7 +7,6 @@ import {
   VStack
 } from 'native-base';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import Blockie from '../../components/Blockie';
 import {
   parseBalance,
@@ -19,20 +18,14 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
-import KeyManagerContract from '@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json';
-import UniversalProfileContract from '@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json';
-import { ethers } from 'ethers';
+import { ethers, TransactionReceipt } from 'ethers';
 import { Linking } from 'react-native';
 import { useToast } from 'react-native-toast-notifications';
 import Button from '../../components/Button';
 import Fail from '../../components/modals/modules/Fail';
 import Success from '../../components/modals/modules/Success';
-import useAccount from '../../hooks/scaffold-eth/useAccount';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
-import { useSecureStorage } from '../../hooks/useSecureStorage';
-import { Controller } from '../../hooks/useWallet';
 import { Profile } from '../../store/reducers/Profiles';
-import { addRecipient } from '../../store/reducers/Recipients';
 
 interface TxData {
   from: Profile;
@@ -48,7 +41,7 @@ type Props = {
       estimateGasCost: bigint | null;
       token: string;
       isNativeToken: boolean;
-      onConfirm: () => void;
+      onTransfer: () => Promise<TransactionReceipt | undefined>;
     };
   };
 };
@@ -56,14 +49,8 @@ type Props = {
 export default function TransferConfirmationModal({
   modal: { closeModal, params }
 }: Props) {
-  const dispatch = useDispatch();
-
   const toast = useToast();
-
-  const account = useAccount();
   const network = useNetwork();
-
-  const { getItem } = useSecureStorage();
 
   const [isTransferring, setIsTransferring] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -86,47 +73,17 @@ export default function TransferConfirmationModal({
   };
 
   const transfer = async () => {
-    const provider = new ethers.JsonRpcProvider(network.provider);
-    const controller: Controller = (await getItem('controller')) as Controller;
-    const controllerWallet = new ethers.Wallet(controller.privateKey).connect(
-      provider
-    );
-
-    const universalProfile = new ethers.Contract(
-      params.txData.from.address,
-      UniversalProfileContract.abi,
-      controllerWallet
-    );
-
-    const keyManager = new ethers.Contract(
-      account.keyManager,
-      KeyManagerContract.abi,
-      controllerWallet
-    );
-
     try {
       setIsTransferring(true);
 
-      const executeData = universalProfile.interface.encodeFunctionData(
-        'execute',
-        [
-          0, // Operation type (0 for call)
-          params.txData.to, // Target contract address
-          ethers.parseEther(params.txData.amount.toString()), // Value in LYX
-          '0x' // Encoded setData call
-        ]
-      );
+      const txReceipt = await params.onTransfer();
 
-      // Call execute on Key Manager
-      const tx = await keyManager.execute(executeData, { gasLimit: 1000000 });
-
-      const txReceipt = await tx.wait(1);
+      if (!txReceipt) return;
 
       setTxReceipt(txReceipt);
       setShowSuccessModal(true);
-
-      dispatch(addRecipient(params.txData.to));
     } catch (error) {
+      console.error(error)
       setShowFailModal(true);
       return;
     } finally {

@@ -8,15 +8,17 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import KeyManagerContract from '@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json';
 import UniversalProfileContract from '@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json';
-import { ethers, toBigInt } from 'ethers';
+import { ethers, toBigInt, TransactionReceipt } from 'ethers';
 import { useModal } from 'react-native-modalfy';
 import { useToast } from 'react-native-toast-notifications';
+import { useDispatch } from 'react-redux';
 import { GasCost } from '../../components/modals/SignTransactionModal';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
 import { useSecureStorage } from '../../hooks/useSecureStorage';
 import { Controller } from '../../hooks/useWallet';
+import { addRecipient } from '../../store/reducers/Recipients';
 import { DUMMY_ADDRESS } from '../../utils/constants';
 import { parseBalance, parseFloat } from '../../utils/helperFunctions';
 import Amount from './modules/Amount';
@@ -30,6 +32,8 @@ type Props = {};
 export default function NetworkTokenTransfer({}: Props) {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+
+  const dispatch = useDispatch();
 
   const { openModal } = useModal();
   const toast = useToast();
@@ -116,6 +120,45 @@ export default function NetworkTokenTransfer({}: Props) {
     }
   };
 
+  const transfer = async (): Promise<TransactionReceipt | undefined> => {
+    const provider = new ethers.JsonRpcProvider(network.provider);
+    const controller: Controller = (await getItem('controller')) as Controller;
+    const controllerWallet = new ethers.Wallet(controller.privateKey).connect(
+      provider
+    );
+
+    const universalProfile = new ethers.Contract(
+      account.address,
+      UniversalProfileContract.abi,
+      controllerWallet
+    );
+
+    const keyManager = new ethers.Contract(
+      account.keyManager,
+      KeyManagerContract.abi,
+      controllerWallet
+    );
+    
+      const executeData = universalProfile.interface.encodeFunctionData(
+        'execute',
+        [
+          0, // Operation type (0 for call)
+          recipient, // Target contract address
+          ethers.parseEther(amount), // Value in LYX
+          '0x' // Encoded setData call
+        ]
+      );
+
+      // Call execute on Key Manager
+      const tx = await keyManager.execute(executeData, { gasLimit: 1000000 });
+
+      const txReceipt = await tx.wait(1);
+
+      dispatch(addRecipient(recipient));
+
+      return txReceipt;
+  };
+
   const confirm = () => {
     if (!ethers.isAddress(recipient)) {
       toast.show('Invalid address', {
@@ -156,7 +199,8 @@ export default function NetworkTokenTransfer({}: Props) {
       },
       estimateGasCost: gasCost.min,
       token: network.token,
-      isNativeToken: true
+      isNativeToken: true,
+      onTransfer: transfer
     });
   };
 
