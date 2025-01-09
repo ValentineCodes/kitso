@@ -1,12 +1,11 @@
 import { HStack, Input, Text, VStack } from 'native-base';
-import React from 'react';
+import React, { useState } from 'react';
 import { COLORS } from '../../../utils/constants';
 import { FONT_SIZE } from '../../../utils/styles';
 
 type Props = {
   amount: string;
   isNativeToken?: boolean;
-  error: string;
   token: string;
   tokenImage: JSX.Element;
   onChange: (value: string) => void;
@@ -15,12 +14,31 @@ type Props = {
 
 export default function Amount({
   amount,
-  error,
   token,
   tokenImage,
   onChange,
   onConfirm
 }: Props) {
+  const [error, setError] = useState('');
+
+  const handleInputChange = (value: string) => {
+    onChange(value);
+
+    // let amount = Number(value);
+
+    // if (value.trim() && balance && !isNaN(amount) && gasCost) {
+    //   if (amount >= Number(ethers.formatEther(balance))) {
+    //     setError('Insufficient amount');
+    //   } else if (Number(ethers.formatEther(balance - gasCost)) < amount) {
+    //     setError('Insufficient amount for gas');
+    //   } else if (error) {
+    //     setError('');
+    //   }
+    // } else if (error) {
+    //   setError('');
+    // }
+  };
+
   return (
     <VStack space="2">
       <HStack alignItems="center" space="2">
@@ -36,7 +54,7 @@ export default function Amount({
         fontSize="lg"
         focusOutlineColor={COLORS.primary}
         placeholder={`0 ${token}`}
-        onChangeText={onChange}
+        onChangeText={handleInputChange}
         _input={{
           selectionColor: COLORS.primary,
           cursorColor: COLORS.primary

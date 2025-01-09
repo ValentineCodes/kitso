@@ -3,7 +3,6 @@ import { Divider, Image, VStack } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { BackHandler } from 'react-native';
 import Button from '../../components/Button';
-import { ALCHEMY_KEY } from '../../utils/constants';
 import { FONT_SIZE } from '../../utils/styles';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
@@ -13,7 +12,7 @@ import { useToast } from 'react-native-toast-notifications';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
-import { isENS, parseFloat } from '../../utils/helperFunctions';
+import { parseFloat } from '../../utils/helperFunctions';
 import Amount from './modules/Amount';
 import Header from './modules/Header';
 import PastRecipients from './modules/PastRecipients';
@@ -41,10 +40,8 @@ export default function NetworkTokenTransfer({}: Props) {
 
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
-  const [recipientError, setRecipientError] = useState('');
-  const [amountError, setAmountError] = useState('');
 
-  const getBalance = async () => {
+  const getGasCost = async () => {
     try {
       const provider = new ethers.JsonRpcProvider(network.provider);
       const balance = await provider.getBalance(account.address);
@@ -104,51 +101,6 @@ export default function NetworkTokenTransfer({}: Props) {
     });
   };
 
-  const handleRecipientChange = async (value: string) => {
-    setRecipient(value);
-
-    if (recipientError) {
-      setRecipientError('');
-    }
-
-    if (isENS(value)) {
-      try {
-        const provider = new ethers.JsonRpcProvider(
-          `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`
-        );
-
-        const address = await provider.resolveName(value);
-
-        if (address && ethers.isAddress(address)) {
-          setRecipient(address);
-        } else {
-          setRecipientError('Invalid ENS');
-        }
-      } catch (error) {
-        setRecipientError('Could not resolve ENS');
-        return;
-      }
-    }
-  };
-
-  const handleAmountChange = (value: string) => {
-    setAmount(value);
-
-    let amount = Number(value);
-
-    if (value.trim() && balance && !isNaN(amount) && gasCost) {
-      if (amount >= Number(ethers.formatEther(balance))) {
-        setAmountError('Insufficient amount');
-      } else if (Number(ethers.formatEther(balance - gasCost)) < amount) {
-        setAmountError('Insufficient amount for gas');
-      } else if (amountError) {
-        setAmountError('');
-      }
-    } else if (amountError) {
-      setAmountError('');
-    }
-  };
-
   const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
     navigation.goBack();
 
@@ -162,7 +114,7 @@ export default function NetworkTokenTransfer({}: Props) {
     provider.off('block');
 
     provider.on('block', blockNumber => {
-      getBalance();
+      getGasCost();
     });
 
     return () => {
@@ -183,16 +135,14 @@ export default function NetworkTokenTransfer({}: Props) {
 
       <Recipient
         recipient={recipient}
-        error={recipientError}
-        onChange={handleRecipientChange}
+        onChange={setRecipient}
         onSubmit={confirm}
       />
 
       <Amount
         amount={amount}
-        error={amountError}
         token={network.token}
-        onChange={handleAmountChange}
+        onChange={setAmount}
         onConfirm={confirm}
         tokenImage={
           <Image
