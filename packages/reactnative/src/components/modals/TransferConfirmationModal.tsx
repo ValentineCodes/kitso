@@ -1,13 +1,18 @@
-import { Divider, HStack, Button as RNButton, Text, VStack } from 'native-base';
+import {
+  Divider,
+  HStack,
+  Button as RNButton,
+  Text,
+  View,
+  VStack
+} from 'native-base';
 import React, { useState } from 'react';
-import Modal from 'react-native-modal';
-import { useDispatch, useSelector } from 'react-redux';
-import Blockie from '../../../components/Blockie';
-import { parseFloat, truncateAddress } from '../../../utils/helperFunctions';
-import { FONT_SIZE } from '../../../utils/styles';
+import { useDispatch } from 'react-redux';
+import Blockie from '../../components/Blockie';
+import { parseFloat, truncateAddress } from '../../utils/helperFunctions';
+import { FONT_SIZE, WINDOW_WIDTH } from '../../utils/styles';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
-import { Network } from '../../../store/reducers/Networks';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import KeyManagerContract from '@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json';
@@ -15,15 +20,16 @@ import UniversalProfileContract from '@lukso/lsp-smart-contracts/artifacts/Unive
 import { ethers } from 'ethers';
 import { Linking } from 'react-native';
 import { useToast } from 'react-native-toast-notifications';
-import Button from '../../../components/Button';
-import Fail from '../../../components/modals/modules/Fail';
-import Success from '../../../components/modals/modules/Success';
-import useAccount from '../../../hooks/scaffold-eth/useAccount';
-import useNetwork from '../../../hooks/scaffold-eth/useNetwork';
-import { useSecureStorage } from '../../../hooks/useSecureStorage';
-import { Controller } from '../../../hooks/useWallet';
-import { Profile } from '../../../store/reducers/Profiles';
-import { addRecipient } from '../../../store/reducers/Recipients';
+import Button from '../../components/Button';
+import Fail from '../../components/modals/modules/Fail';
+import Success from '../../components/modals/modules/Success';
+import useAccount from '../../hooks/scaffold-eth/useAccount';
+import useBalance from '../../hooks/scaffold-eth/useBalance';
+import useNetwork from '../../hooks/scaffold-eth/useNetwork';
+import { useSecureStorage } from '../../hooks/useSecureStorage';
+import { Controller } from '../../hooks/useWallet';
+import { Profile } from '../../store/reducers/Profiles';
+import { addRecipient } from '../../store/reducers/Recipients';
 
 interface TxData {
   from: Profile;
@@ -32,17 +38,19 @@ interface TxData {
   fromBalance: bigint | null;
 }
 type Props = {
-  isVisible: boolean;
-  onClose: () => void;
-  txData: TxData;
-  estimateGasCost: bigint | null;
+  modal: {
+    closeModal: (modal?: string, callback?: () => void) => void;
+    params: {
+      txData: TxData;
+      estimateGasCost: bigint | null;
+      token: string;
+      onConfirm: () => void;
+    };
+  };
 };
 
-export default function ConfirmationModal({
-  isVisible,
-  onClose,
-  txData,
-  estimateGasCost
+export default function TransferConfirmationModal({
+  modal: { closeModal, params }
 }: Props) {
   const dispatch = useDispatch();
 
@@ -53,9 +61,9 @@ export default function ConfirmationModal({
 
   const { getItem } = useSecureStorage();
 
-  const connectedNetwork: Network = useSelector((state: any) =>
-    state.networks.find((network: Network) => network.isConnected)
-  );
+  const { balance } = useBalance({
+    address: account.address
+  });
 
   const [isTransferring, setIsTransferring] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -64,18 +72,13 @@ export default function ConfirmationModal({
     null
   );
 
-  const formatBalance = () => {
-    return txData.fromBalance && Number(ethers.formatEther(txData.fromBalance))
-      ? parseFloat(Number(ethers.formatEther(txData.fromBalance)).toString(), 4)
-      : 0;
-  };
-
   const calcTotal = () => {
     return String(
-      estimateGasCost &&
+      params.estimateGasCost &&
         parseFloat(
           (
-            txData.amount + Number(ethers.formatEther(estimateGasCost))
+            params.txData.amount +
+            Number(ethers.formatEther(params.estimateGasCost))
           ).toString(),
           8
         )
@@ -90,7 +93,7 @@ export default function ConfirmationModal({
     );
 
     const universalProfile = new ethers.Contract(
-      txData.from.address,
+      params.txData.from.address,
       UniversalProfileContract.abi,
       controllerWallet
     );
@@ -108,8 +111,8 @@ export default function ConfirmationModal({
         'execute',
         [
           0, // Operation type (0 for call)
-          txData.to, // Target contract address
-          ethers.parseEther(txData.amount.toString()), // Value in LYX
+          params.txData.to, // Target contract address
+          ethers.parseEther(params.txData.amount.toString()), // Value in LYX
           '0x' // Encoded setData call
         ]
       );
@@ -122,7 +125,7 @@ export default function ConfirmationModal({
       setTxReceipt(txReceipt);
       setShowSuccessModal(true);
 
-      dispatch(addRecipient(txData.to));
+      dispatch(addRecipient(params.txData.to));
     } catch (error) {
       setShowFailModal(true);
       return;
@@ -132,12 +135,10 @@ export default function ConfirmationModal({
   };
 
   const viewTxDetails = async () => {
-    if (!connectedNetwork.blockExplorer || !txReceipt) return;
+    if (!network.blockExplorer || !txReceipt) return;
 
     try {
-      await Linking.openURL(
-        `${connectedNetwork.blockExplorer}/tx/${txReceipt.hash}`
-      );
+      await Linking.openURL(`${network.blockExplorer}/tx/${txReceipt.hash}`);
     } catch (error) {
       toast.show('Cannot open url', {
         type: 'danger'
@@ -146,13 +147,7 @@ export default function ConfirmationModal({
   };
 
   return (
-    <Modal
-      isVisible={isVisible}
-      animationIn="slideInUp"
-      animationOut="zoomOut"
-      onBackButtonPress={onClose}
-      onBackdropPress={onClose}
-    >
+    <View bgColor="white" borderRadius="30" w={WINDOW_WIDTH * 0.9}>
       <VStack bgColor="white" borderRadius="30" p="5" space={4}>
         <VStack space="2">
           <Text fontSize={FONT_SIZE['lg']} fontWeight="medium">
@@ -168,14 +163,14 @@ export default function ConfirmationModal({
           >
             <HStack alignItems="center" space="2">
               <Blockie
-                address={txData.from.address}
+                address={params.txData.from.address}
                 size={1.8 * FONT_SIZE['xl']}
               />
 
               <VStack w="75%">
-                {/* <Text fontSize={FONT_SIZE['xl']} fontWeight="medium">{txData.from.name}</Text> */}
+                {/* <Text fontSize={FONT_SIZE['xl']} fontWeight="medium">{params.txData.from.name}</Text> */}
                 <Text fontSize={FONT_SIZE['md']}>
-                  Balance: {formatBalance()} {connectedNetwork.token}
+                  Balance: {balance} {params.token}
                 </Text>
               </VStack>
             </HStack>
@@ -194,9 +189,9 @@ export default function ConfirmationModal({
             borderRadius="10"
             p="2"
           >
-            <Blockie address={txData.to} size={1.8 * FONT_SIZE['xl']} />
+            <Blockie address={params.txData.to} size={1.8 * FONT_SIZE['xl']} />
             <Text fontSize={FONT_SIZE['xl']} fontWeight="medium">
-              {truncateAddress(txData.to)}
+              {truncateAddress(params.txData.to)}
             </Text>
           </HStack>
         </VStack>
@@ -210,7 +205,7 @@ export default function ConfirmationModal({
           AMOUNT
         </Text>
         <Text fontSize={2 * FONT_SIZE['xl']} bold textAlign="center">
-          {txData.amount} {connectedNetwork.token}
+          {params.txData.amount} {params.token}
         </Text>
 
         <VStack borderWidth="1" borderColor="muted.300" borderRadius="10">
@@ -230,10 +225,10 @@ export default function ConfirmationModal({
               textAlign="right"
             >
               {String(
-                estimateGasCost &&
-                  parseFloat(ethers.formatEther(estimateGasCost), 8)
+                params.estimateGasCost &&
+                  parseFloat(ethers.formatEther(params.estimateGasCost), 8)
               )}{' '}
-              {connectedNetwork.token}
+              {params.token}
             </Text>
           </HStack>
 
@@ -249,7 +244,7 @@ export default function ConfirmationModal({
               w="50%"
               textAlign="right"
             >
-              {calcTotal()} {connectedNetwork.token}
+              {calcTotal()} {params.token}
             </Text>
           </HStack>
         </VStack>
@@ -259,7 +254,7 @@ export default function ConfirmationModal({
             py="4"
             bgColor="red.100"
             w="50%"
-            onPress={onClose}
+            onPress={() => closeModal()}
             _pressed={{ background: 'red.200' }}
           >
             <Text color="red.400" bold fontSize="md">
@@ -279,7 +274,7 @@ export default function ConfirmationModal({
         isVisible={showSuccessModal}
         onClose={() => {
           setShowSuccessModal(false);
-          onClose();
+          closeModal();
         }}
         onViewDetails={viewTxDetails}
       />
@@ -292,6 +287,6 @@ export default function ConfirmationModal({
           transfer();
         }}
       />
-    </Modal>
+    </View>
   );
 }

@@ -19,6 +19,7 @@ import ReceiveModal from '../components/modals/ReceiveModal';
 import SignMessageModal from '../components/modals/SignMessageModal';
 import SignTransactionModal from '../components/modals/SignTransactionModal';
 import SignTransferModal from '../components/modals/SignTransferModal';
+import TransferConfirmationModal from '../components/modals/TransferConfirmationModal';
 import TxReceiptModal from '../components/modals/TxReceiptModal';
 // Contexts
 import { ProcedureProvider } from '../context/ProcedureContext';
@@ -39,7 +40,8 @@ const modalConfig = {
   ReceiveModal,
   PrivateKeyModal,
   QRCodeModal,
-  QRCodeScanner
+  QRCodeScanner,
+  TransferConfirmationModal
 };
 const defaultOptions: ModalOptions = {
   backdropOpacity: 0.6,

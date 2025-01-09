@@ -1,9 +1,5 @@
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import {
-  Divider,
-  Image,
-  VStack
-} from 'native-base';
+import { Divider, Image, VStack } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { BackHandler } from 'react-native';
 import Button from '../../components/Button';
@@ -12,16 +8,13 @@ import { FONT_SIZE } from '../../utils/styles';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import { ethers, toBigInt } from 'ethers';
+import { useModal } from 'react-native-modalfy';
 import { useToast } from 'react-native-toast-notifications';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
-import {
-  isENS,
-  parseFloat,
-} from '../../utils/helperFunctions';
+import { isENS, parseFloat } from '../../utils/helperFunctions';
 import Amount from './modules/Amount';
-import ConfirmationModal from './modules/ConfirmationModal';
 import Header from './modules/Header';
 import PastRecipients from './modules/PastRecipients';
 import Recipient from './modules/Recipient';
@@ -33,6 +26,7 @@ export default function NetworkTokenTransfer({}: Props) {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
+  const { openModal } = useModal();
   const toast = useToast();
 
   const account = useAccount();
@@ -47,7 +41,6 @@ export default function NetworkTokenTransfer({}: Props) {
 
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [recipientError, setRecipientError] = useState('');
   const [amountError, setAmountError] = useState('');
 
@@ -99,7 +92,16 @@ export default function NetworkTokenTransfer({}: Props) {
       }
     }
 
-    setShowConfirmationModal(true);
+    openModal('TransferConfirmationModal', {
+      txData: {
+        from: account,
+        to: recipient,
+        amount: parseFloat(amount, 8),
+        fromBalance: balance
+      },
+      estimateGasCost: gasCost,
+      token: network.token
+    });
   };
 
   const handleRecipientChange = async (value: string) => {
@@ -209,20 +211,6 @@ export default function NetworkTokenTransfer({}: Props) {
       <PastRecipients onSelect={setRecipient} />
 
       <Button text="Next" onPress={confirm} />
-
-      {showConfirmationModal && (
-        <ConfirmationModal
-          isVisible={showConfirmationModal}
-          onClose={() => setShowConfirmationModal(false)}
-          txData={{
-            from: account,
-            to: recipient,
-            amount: parseFloat(amount, 8),
-            fromBalance: balance
-          }}
-          estimateGasCost={gasCost}
-        />
-      )}
     </VStack>
   );
 }

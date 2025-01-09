@@ -19,7 +19,6 @@ type Props = {
       isOkLoading?: boolean;
       isCancelLoading?: boolean;
       onAccept: () => void;
-      onClose: () => void;
     };
   };
 };
@@ -33,8 +32,7 @@ export default function ConsentModal({ modal: { closeModal, params } }: Props) {
     cancelText,
     isOkLoading,
     isCancelLoading,
-    onAccept,
-    onClose
+    onAccept
   } = params;
 
   const handleOnAccept = () => {
