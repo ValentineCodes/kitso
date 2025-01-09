@@ -9,7 +9,11 @@ import {
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Blockie from '../../components/Blockie';
-import { parseFloat, truncateAddress } from '../../utils/helperFunctions';
+import {
+  parseBalance,
+  parseFloat,
+  truncateAddress
+} from '../../utils/helperFunctions';
 import { FONT_SIZE, WINDOW_WIDTH } from '../../utils/styles';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
@@ -24,7 +28,6 @@ import Button from '../../components/Button';
 import Fail from '../../components/modals/modules/Fail';
 import Success from '../../components/modals/modules/Success';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
-import useBalance from '../../hooks/scaffold-eth/useBalance';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
 import { useSecureStorage } from '../../hooks/useSecureStorage';
 import { Controller } from '../../hooks/useWallet';
@@ -35,7 +38,7 @@ interface TxData {
   from: Profile;
   to: string;
   amount: number;
-  fromBalance: bigint | null;
+  balance: bigint | null;
 }
 type Props = {
   modal: {
@@ -60,10 +63,6 @@ export default function TransferConfirmationModal({
   const network = useNetwork();
 
   const { getItem } = useSecureStorage();
-
-  const { balance } = useBalance({
-    address: account.address
-  });
 
   const [isTransferring, setIsTransferring] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -170,7 +169,10 @@ export default function TransferConfirmationModal({
               <VStack w="75%">
                 {/* <Text fontSize={FONT_SIZE['xl']} fontWeight="medium">{params.txData.from.name}</Text> */}
                 <Text fontSize={FONT_SIZE['md']}>
-                  Balance: {balance} {params.token}
+                  Balance:{' '}
+                  {params.txData.balance !== null
+                    ? `${parseBalance(params.txData.balance)} ${params.token}`
+                    : null}
                 </Text>
               </VStack>
             </HStack>

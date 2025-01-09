@@ -3,7 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Blockie from '../../components/Blockie';
 import { Account } from '../../store/reducers/Accounts';
-import { parseFloat, truncateAddress } from '../../utils/helperFunctions';
+import {
+  parseBalance,
+  parseFloat,
+  truncateAddress
+} from '../../utils/helperFunctions';
 import { FONT_SIZE, WINDOW_WIDTH } from '../../utils/styles';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
@@ -195,7 +199,10 @@ export default function SignTransferModal({
                   {profile?.name}
                 </Text>
                 <Text fontSize={FONT_SIZE['md']}>
-                  Balance: {balance && `${balance} ${network.token}`}
+                  Balance:{' '}
+                  {balance !== null
+                    ? `${parseBalance(balance)} ${network.token}`
+                    : null}
                 </Text>
               </VStack>
             </HStack>

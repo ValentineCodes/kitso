@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import { HStack, Input, Text, VStack } from 'native-base';
 import React, { useState } from 'react';
 import { COLORS } from '../../../utils/constants';
@@ -8,6 +9,8 @@ type Props = {
   isNativeToken?: boolean;
   token: string;
   tokenImage: JSX.Element;
+  balance: bigint | null;
+  gasCost: bigint | null;
   onChange: (value: string) => void;
   onConfirm: () => void;
 };
@@ -16,6 +19,8 @@ export default function Amount({
   amount,
   token,
   tokenImage,
+  balance,
+  gasCost,
   onChange,
   onConfirm
 }: Props) {
@@ -24,19 +29,19 @@ export default function Amount({
   const handleInputChange = (value: string) => {
     onChange(value);
 
-    // let amount = Number(value);
+    let amount = Number(value);
 
-    // if (value.trim() && balance && !isNaN(amount) && gasCost) {
-    //   if (amount >= Number(ethers.formatEther(balance))) {
-    //     setError('Insufficient amount');
-    //   } else if (Number(ethers.formatEther(balance - gasCost)) < amount) {
-    //     setError('Insufficient amount for gas');
-    //   } else if (error) {
-    //     setError('');
-    //   }
-    // } else if (error) {
-    //   setError('');
-    // }
+    if (value.trim() && balance && !isNaN(amount) && gasCost) {
+      if (amount >= Number(ethers.formatEther(balance))) {
+        setError('Insufficient amount');
+      } else if (Number(ethers.formatEther(balance - gasCost)) < amount) {
+        setError('Insufficient amount for gas');
+      } else if (error) {
+        setError('');
+      }
+    } else if (error) {
+      setError('');
+    }
   };
 
   return (

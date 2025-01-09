@@ -10,6 +10,7 @@ import { useProfile } from '../../context/ProfileContext';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
+import { parseBalance } from '../../utils/helperFunctions';
 import { FONT_SIZE, WINDOW_HEIGHT, WINDOW_WIDTH } from '../../utils/styles';
 import Blockie from '../Blockie';
 import Button from '../Button';
@@ -72,7 +73,9 @@ export default function SignMessageModal({
         <VStack alignItems={'flex-end'}>
           <Text fontSize={'md'}>Balance</Text>
           <Text fontSize={'sm'} fontWeight={'medium'}>
-            {balance && `${balance} ${network.token}`}
+            {balance !== null
+              ? `${parseBalance(balance)} ${network.token}`
+              : null}
           </Text>
         </VStack>
       </HStack>

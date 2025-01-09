@@ -5,6 +5,7 @@ import useAccount from '../../../hooks/scaffold-eth/useAccount';
 import useBalance from '../../../hooks/scaffold-eth/useBalance';
 import { useCryptoPrice } from '../../../hooks/scaffold-eth/useCryptoPrice';
 import useNetwork from '../../../hooks/scaffold-eth/useNetwork';
+import { parseBalance } from '../../../utils/helperFunctions';
 import { WINDOW_WIDTH } from '../../../utils/styles';
 
 type Props = {};
@@ -17,7 +18,7 @@ export default function NetworkToken({}: Props) {
   const { price, fetchPrice } = useCryptoPrice({ enabled: false });
 
   useEffect(() => {
-    if (balance.length > 0) return;
+    if (!!balance && parseBalance(balance).length > 0) return;
     fetchPrice();
   }, [balance]);
 
@@ -56,7 +57,7 @@ export default function NetworkToken({}: Props) {
 
           <HStack alignItems={'center'} space={2}>
             <Text fontSize={'2xl'} bold>
-              {balance !== '' && balance}
+              {balance !== null ? parseBalance(balance) : null}
             </Text>
             <Text fontSize={'md'} bold color={'gray.400'}>
               {network.token}
@@ -65,8 +66,9 @@ export default function NetworkToken({}: Props) {
           <Text fontSize={'sm'} fontWeight={'medium'} color={'gray.600'}>
             $
             {price &&
-              balance.length > 0 &&
-              (price * Number(balance)).toFixed(2)}
+              balance !== null &&
+              parseBalance(balance).length > 0 &&
+              (price * Number(parseBalance(balance))).toFixed(2)}
           </Text>
         </VStack>
       </HStack>
