@@ -1,4 +1,8 @@
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import {
+  useIsFocused,
+  useNavigation,
+  useRoute
+} from '@react-navigation/native';
 import { Divider, Image, VStack } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { BackHandler } from 'react-native';
@@ -16,6 +20,7 @@ import useAccount from '../../hooks/scaffold-eth/useAccount';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
 import { useSecureStorage } from '../../hooks/useSecureStorage';
+import useTokenBalance from '../../hooks/useTokenBalance';
 import { Controller } from '../../hooks/useWallet';
 import { DUMMY_ADDRESS } from '../../utils/constants';
 import { parseBalance, parseFloat } from '../../utils/helperFunctions';
@@ -27,9 +32,13 @@ import Sender from './modules/Sender';
 
 type Props = {};
 
-export default function NetworkTokenTransfer({}: Props) {
+export default function LSP7TokenTransfer({}: Props) {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const route = useRoute();
+
+  // @ts-ignore
+  const { tokenAddress, metadata } = route.params;
 
   const { openModal } = useModal();
   const toast = useToast();
@@ -39,8 +48,9 @@ export default function NetworkTokenTransfer({}: Props) {
 
   const [controller, setController] = useState<string>();
 
-  const { balance } = useBalance({
-    address: account.address
+  const { balance } = useTokenBalance({
+    tokenAddress,
+    type: 'LSP7'
   });
 
   const { balance: controllerBalance } = useBalance({
@@ -155,8 +165,7 @@ export default function NetworkTokenTransfer({}: Props) {
         balance: balance
       },
       estimateGasCost: gasCost.min,
-      token: network.token,
-      isNativeToken: true
+      token: metadata.symbol
     });
   };
 
@@ -188,11 +197,13 @@ export default function NetworkTokenTransfer({}: Props) {
 
   return (
     <VStack flex="1" bgColor="white" p="15" space="6">
-      <Header token={network.token} />
+      <Header token={metadata ? metadata.symbol : ''} />
 
       <Sender
         balance={
-          balance !== null ? `${parseBalance(balance)} ${network.token}` : null
+          balance !== null
+            ? `${parseBalance(balance)} ${metadata?.symbol}`
+            : null
         }
       />
 
@@ -204,18 +215,20 @@ export default function NetworkTokenTransfer({}: Props) {
 
       <Amount
         amount={amount}
-        token={network.token}
+        token={metadata ? metadata.symbol : ''}
         balance={controllerBalance}
         gasCost={gasCost.min}
+        isToken
         onChange={setAmount}
         onConfirm={confirm}
         tokenImage={
           <Image
-            source={require('../../../assets/images/lukso_logo.png')}
+            source={{ uri: metadata.image }}
             alt={network.name}
             width={2 * FONT_SIZE['lg']}
             height={2 * FONT_SIZE['lg']}
             ml={2}
+            borderRadius={100}
           />
         }
       />

@@ -47,6 +47,7 @@ type Props = {
       txData: TxData;
       estimateGasCost: bigint | null;
       token: string;
+      isNativeToken: boolean;
       onConfirm: () => void;
     };
   };
@@ -230,25 +231,33 @@ export default function TransferConfirmationModal({
                 params.estimateGasCost &&
                   parseFloat(ethers.formatEther(params.estimateGasCost), 8)
               )}{' '}
-              {params.token}
+              {network.token}
             </Text>
           </HStack>
 
-          <Divider bgColor="muted.100" />
+          {params.isNativeToken && (
+            <>
+              <Divider bgColor="muted.100" />
 
-          <HStack p="3" alignItems="flex-start" justifyContent="space-between">
-            <Text fontSize={FONT_SIZE['lg']} fontWeight="medium">
-              Total
-            </Text>
-            <Text
-              fontSize={FONT_SIZE['lg']}
-              fontWeight="medium"
-              w="50%"
-              textAlign="right"
-            >
-              {calcTotal()} {params.token}
-            </Text>
-          </HStack>
+              <HStack
+                p="3"
+                alignItems="flex-start"
+                justifyContent="space-between"
+              >
+                <Text fontSize={FONT_SIZE['lg']} fontWeight="medium">
+                  Total
+                </Text>
+                <Text
+                  fontSize={FONT_SIZE['lg']}
+                  fontWeight="medium"
+                  w="50%"
+                  textAlign="right"
+                >
+                  {calcTotal()} {params.token}
+                </Text>
+              </HStack>
+            </>
+          )}
         </VStack>
 
         <HStack w="full" alignItems="center" justifyContent="space-between">

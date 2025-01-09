@@ -11,6 +11,7 @@ type Props = {
   tokenImage: JSX.Element;
   balance: bigint | null;
   gasCost: bigint | null;
+  isToken?: boolean;
   onChange: (value: string) => void;
   onConfirm: () => void;
 };
@@ -21,6 +22,7 @@ export default function Amount({
   tokenImage,
   balance,
   gasCost,
+  isToken,
   onChange,
   onConfirm
 }: Props) {
@@ -28,6 +30,8 @@ export default function Amount({
 
   const handleInputChange = (value: string) => {
     onChange(value);
+
+    if (isToken) return;
 
     let amount = Number(value);
 

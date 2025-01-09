@@ -14,6 +14,7 @@ import Dashboard from './Dashboard';
 import EditProfile from './EditProfile';
 import LSP7TokenDetails from './TokenDetails/LSP7TokenDetails';
 import NetworkTokenDetails from './TokenDetails/NetworkTokenDetails';
+import LSP7TokenTransfer from './Transfer/LSP7TokenTransfer';
 import NetworkTokenTransfer from './Transfer/NetworkTokenTransfer';
 
 type Props = {};
@@ -38,6 +39,14 @@ type AppStackParamsList = {
   Dashboard: undefined;
   EditProfile: undefined;
   NetworkTokenTransfer: undefined;
+  LSP7TokenTransfer: {
+    assetAddress: string;
+    metadata: {
+      name: string;
+      symbol: string;
+      image: string;
+    };
+  };
   NetworkTokenDetails: undefined;
   LSP7TokenDetails: {
     assetAddress: string;
@@ -77,6 +86,10 @@ export default function Navigation({}: Props) {
         <AppStack.Screen
           name="NetworkTokenTransfer"
           component={NetworkTokenTransfer}
+        />
+        <AppStack.Screen
+          name="LSP7TokenTransfer"
+          component={LSP7TokenTransfer}
         />
         <AppStack.Screen
           name="NetworkTokenDetails"

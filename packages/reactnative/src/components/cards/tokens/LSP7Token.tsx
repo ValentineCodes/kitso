@@ -76,7 +76,7 @@ export default function LSP7Token({ address, image, name, symbol }: Props) {
 
           <HStack alignItems={'center'} space={2}>
             <Text fontSize={'2xl'} bold>
-              {balance && Number(ethers.formatEther(balance))}
+              {balance !== null ? Number(ethers.formatEther(balance)) : null}
             </Text>
             <Text fontSize={'md'} bold color={'gray.400'}>
               {symbol}
@@ -87,7 +87,16 @@ export default function LSP7Token({ address, image, name, symbol }: Props) {
 
       <Pressable
         // @ts-ignore
-        onPress={() => navigation.navigate('Transfer')}
+        onPress={() =>
+          navigation.navigate('LSP7TokenTransfer', {
+            tokenAddress: address,
+            metadata: {
+              name,
+              symbol,
+              image
+            }
+          })
+        }
         alignSelf={'flex-end'}
         mt={3}
         px={'4'}
