@@ -6,12 +6,18 @@ import Button from '../../components/Button';
 import { FONT_SIZE } from '../../utils/styles';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
-import { ethers } from 'ethers';
+import KeyManagerContract from '@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json';
+import UniversalProfileContract from '@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json';
+import { ethers, toBigInt } from 'ethers';
 import { useModal } from 'react-native-modalfy';
 import { useToast } from 'react-native-toast-notifications';
+import { GasCost } from '../../components/modals/SignTransactionModal';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
+import { useSecureStorage } from '../../hooks/useSecureStorage';
+import useWallet, { Controller } from '../../hooks/useWallet';
+import { DUMMY_ADDRESS } from '../../utils/constants';
 import { parseBalance, parseFloat } from '../../utils/helperFunctions';
 import Amount from './modules/Amount';
 import Header from './modules/Header';
@@ -25,31 +31,89 @@ export default function NetworkTokenTransfer({}: Props) {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
+  const { getController } = useWallet();
   const { openModal } = useModal();
   const toast = useToast();
 
   const account = useAccount();
   const network = useNetwork();
 
+  const [controller, setController] = useState<string>();
+
   const { balance } = useBalance({
     address: account.address
   });
 
-  const [gasCost, setGasCost] = useState<bigint | null>(null);
+  const { balance: controllerBalance } = useBalance({
+    address: controller || account.address
+  });
+  const [gasCost, setGasCost] = useState<GasCost>({
+    min: null,
+    max: null
+  });
 
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
 
-  const getGasCost = async () => {
+  const { getItem } = useSecureStorage();
+
+  const estimateGasCost = async () => {
     try {
       const provider = new ethers.JsonRpcProvider(network.provider);
-      const gasPrice = (await provider.getFeeData()).gasPrice;
+      const controller: Controller = (await getItem(
+        'controller'
+      )) as Controller;
+      setController(controller.address);
+      const controllerWallet = new ethers.Wallet(controller.privateKey).connect(
+        provider
+      );
 
-      const gasCost = (gasPrice || 0n) * 21000n;
+      const universalProfile = new ethers.Contract(
+        account.address,
+        UniversalProfileContract.abi,
+        controllerWallet
+      );
+
+      const keyManager = new ethers.Contract(
+        account.keyManager,
+        KeyManagerContract.abi,
+        controllerWallet
+      );
+
+      const executeData = universalProfile.interface.encodeFunctionData(
+        'execute',
+        [
+          0, // Operation type (0 for call)
+          DUMMY_ADDRESS, // Target contract address
+          0, // Value in LYX
+          '0x' // Encoded setData call
+        ]
+      );
+
+      // Estimate gas
+      const gasEstimate = await keyManager.execute.estimateGas(executeData, {
+        gasLimit: 1000000
+      });
+
+      const feeData = await provider.getFeeData();
+
+      const gasCost: GasCost = {
+        min: null,
+        max: null
+      };
+
+      if (feeData.gasPrice) {
+        gasCost.min = toBigInt(gasEstimate) * feeData.gasPrice;
+      }
+
+      if (feeData.maxFeePerGas) {
+        gasCost.max = toBigInt(gasEstimate) * feeData.maxFeePerGas;
+      }
 
       setGasCost(gasCost);
     } catch (error) {
-      return;
+      toast.show('Transaction might fail', { type: 'danger' });
+      console.error(error);
     }
   };
 
@@ -70,13 +134,13 @@ export default function NetworkTokenTransfer({}: Props) {
       return;
     }
 
-    if (amount.trim() && balance && gasCost && !isNaN(_amount)) {
+    if (amount.trim() && balance && gasCost.min && !isNaN(_amount)) {
       if (_amount >= Number(ethers.formatEther(balance))) {
         toast.show('Insufficient amount', {
           type: 'danger'
         });
         return;
-      } else if (Number(ethers.formatEther(balance - gasCost)) < _amount) {
+      } else if (Number(ethers.formatEther(balance - gasCost.min)) < _amount) {
         toast.show('Insufficient amount for gas', {
           type: 'danger'
         });
@@ -91,7 +155,7 @@ export default function NetworkTokenTransfer({}: Props) {
         amount: parseFloat(amount, 8),
         balance: balance
       },
-      estimateGasCost: gasCost,
+      estimateGasCost: gasCost.min,
       token: network.token
     });
   };
@@ -108,10 +172,10 @@ export default function NetworkTokenTransfer({}: Props) {
 
     provider.off('block');
 
-    getGasCost();
+    estimateGasCost();
 
     provider.on('block', blockNumber => {
-      getGasCost();
+      estimateGasCost();
     });
 
     return () => {
@@ -141,8 +205,8 @@ export default function NetworkTokenTransfer({}: Props) {
       <Amount
         amount={amount}
         token={network.token}
-        balance={balance}
-        gasCost={gasCost}
+        balance={controllerBalance}
+        gasCost={gasCost.min}
         onChange={setAmount}
         onConfirm={confirm}
         tokenImage={

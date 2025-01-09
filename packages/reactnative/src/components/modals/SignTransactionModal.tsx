@@ -33,7 +33,7 @@ type Props = {
   };
 };
 
-interface GasCost {
+export interface GasCost {
   min: bigint | null;
   max: bigint | null;
 }

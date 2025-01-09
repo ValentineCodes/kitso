@@ -20,3 +20,6 @@ export const STORAGE_KEY = {
 
 // Digital asset types
 export const TOKEN_TYPES = ['LSP7', 'LSP8', 'LSP8 COLLECTION'];
+
+// Dummy ethereum address
+export const DUMMY_ADDRESS = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
