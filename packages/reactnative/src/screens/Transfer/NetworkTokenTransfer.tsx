@@ -16,7 +16,7 @@ import useAccount from '../../hooks/scaffold-eth/useAccount';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
 import { useSecureStorage } from '../../hooks/useSecureStorage';
-import useWallet, { Controller } from '../../hooks/useWallet';
+import { Controller } from '../../hooks/useWallet';
 import { DUMMY_ADDRESS } from '../../utils/constants';
 import { parseBalance, parseFloat } from '../../utils/helperFunctions';
 import Amount from './modules/Amount';
@@ -31,7 +31,6 @@ export default function NetworkTokenTransfer({}: Props) {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
-  const { getController } = useWallet();
   const { openModal } = useModal();
   const toast = useToast();
 
