@@ -11,10 +11,12 @@ import { FONT_SIZE } from '../../utils/styles';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import KeyManagerContract from '@lukso/lsp-smart-contracts/artifacts/LSP6KeyManager.json';
+import LSP7DigitalAssetContract from '@lukso/lsp-smart-contracts/artifacts/LSP7DigitalAsset.json';
 import UniversalProfileContract from '@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json';
-import { ethers, toBigInt } from 'ethers';
+import { ethers, toBigInt, TransactionReceipt } from 'ethers';
 import { useModal } from 'react-native-modalfy';
 import { useToast } from 'react-native-toast-notifications';
+import { useDispatch } from 'react-redux';
 import { GasCost } from '../../components/modals/SignTransactionModal';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
@@ -22,6 +24,7 @@ import useNetwork from '../../hooks/scaffold-eth/useNetwork';
 import { useSecureStorage } from '../../hooks/useSecureStorage';
 import useTokenBalance from '../../hooks/useTokenBalance';
 import { Controller } from '../../hooks/useWallet';
+import { addRecipient } from '../../store/reducers/Recipients';
 import { DUMMY_ADDRESS } from '../../utils/constants';
 import { parseBalance, parseFloat } from '../../utils/helperFunctions';
 import Amount from './modules/Amount';
@@ -36,6 +39,8 @@ export default function LSP7TokenTransfer({}: Props) {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const route = useRoute();
+
+  const dispatch = useDispatch();
 
   // @ts-ignore
   const { tokenAddress, metadata } = route.params;
@@ -72,7 +77,6 @@ export default function LSP7TokenTransfer({}: Props) {
       const controller: Controller = (await getItem(
         'controller'
       )) as Controller;
-      setController(controller.address);
       const controllerWallet = new ethers.Wallet(controller.privateKey).connect(
         provider
       );
@@ -89,17 +93,31 @@ export default function LSP7TokenTransfer({}: Props) {
         controllerWallet
       );
 
+      const lsp7Token = new ethers.Contract(
+        tokenAddress, // Address of the LSP7 token contract
+        LSP7DigitalAssetContract.abi, // ABI of the LSP7 token contract
+        controllerWallet
+      );
+
+      const transferData = lsp7Token.interface.encodeFunctionData('transfer', [
+        account.address, // From address (Universal Profile address)
+        DUMMY_ADDRESS, // To address
+        0, // Token amount (ensure the correct decimals are considered)
+        true, // Whether the recipient must notify (true/false)
+        '0x' // Additional data (can be empty)
+      ]);
+
       const executeData = universalProfile.interface.encodeFunctionData(
         'execute',
         [
           0, // Operation type (0 for call)
-          DUMMY_ADDRESS, // Target contract address
-          0, // Value in LYX
-          '0x' // Encoded setData call
+          tokenAddress, // LSP7 token contract address
+          0, // Value in LYX (should be 0 for token transfer)
+          transferData // Encoded LSP7 transfer call
         ]
       );
 
-      // Estimate gas
+      // Call execute on Key Manager
       const gasEstimate = await keyManager.execute.estimateGas(executeData, {
         gasLimit: 1000000
       });
@@ -124,6 +142,59 @@ export default function LSP7TokenTransfer({}: Props) {
       toast.show('Transaction might fail', { type: 'danger' });
       console.error(error);
     }
+  };
+
+  const transfer = async (): Promise<TransactionReceipt | undefined> => {
+    const provider = new ethers.JsonRpcProvider(network.provider);
+    const controller: Controller = (await getItem('controller')) as Controller;
+    const controllerWallet = new ethers.Wallet(controller.privateKey).connect(
+      provider
+    );
+
+    const universalProfile = new ethers.Contract(
+      account.address,
+      UniversalProfileContract.abi,
+      controllerWallet
+    );
+
+    const keyManager = new ethers.Contract(
+      account.keyManager,
+      KeyManagerContract.abi,
+      controllerWallet
+    );
+
+    const lsp7Token = new ethers.Contract(
+      tokenAddress, // Address of the LSP7 token contract
+      LSP7DigitalAssetContract.abi, // ABI of the LSP7 token contract
+      controllerWallet
+    );
+
+    const transferData = lsp7Token.interface.encodeFunctionData('transfer', [
+      account.address, // From address (Universal Profile address)
+      recipient, // To address
+      ethers.parseEther(amount), // Token amount (ensure the correct decimals are considered)
+      true, // Whether the recipient must notify (true/false)
+      '0x' // Additional data (can be empty)
+    ]);
+
+    const executeData = universalProfile.interface.encodeFunctionData(
+      'execute',
+      [
+        0, // Operation type (0 for call)
+        tokenAddress, // LSP7 token contract address
+        0, // Value in LYX (should be 0 for token transfer)
+        transferData // Encoded LSP7 transfer call
+      ]
+    );
+
+    // Call execute on Key Manager
+    const tx = await keyManager.execute(executeData, { gasLimit: 1000000 });
+
+    const txReceipt = await tx.wait(1);
+
+    dispatch(addRecipient(recipient));
+
+    return txReceipt;
   };
 
   const confirm = () => {
@@ -165,7 +236,8 @@ export default function LSP7TokenTransfer({}: Props) {
         balance: balance
       },
       estimateGasCost: gasCost.min,
-      token: metadata.symbol
+      token: metadata.symbol,
+      onTransfer: transfer
     });
   };
 

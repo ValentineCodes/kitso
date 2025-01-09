@@ -138,25 +138,25 @@ export default function NetworkTokenTransfer({}: Props) {
       KeyManagerContract.abi,
       controllerWallet
     );
-    
-      const executeData = universalProfile.interface.encodeFunctionData(
-        'execute',
-        [
-          0, // Operation type (0 for call)
-          recipient, // Target contract address
-          ethers.parseEther(amount), // Value in LYX
-          '0x' // Encoded setData call
-        ]
-      );
 
-      // Call execute on Key Manager
-      const tx = await keyManager.execute(executeData, { gasLimit: 1000000 });
+    const executeData = universalProfile.interface.encodeFunctionData(
+      'execute',
+      [
+        0, // Operation type (0 for call)
+        recipient, // Target contract address
+        ethers.parseEther(amount), // Value in LYX
+        '0x' // Encoded setData call
+      ]
+    );
 
-      const txReceipt = await tx.wait(1);
+    // Call execute on Key Manager
+    const tx = await keyManager.execute(executeData, { gasLimit: 1000000 });
 
-      dispatch(addRecipient(recipient));
+    const txReceipt = await tx.wait(1);
 
-      return txReceipt;
+    dispatch(addRecipient(recipient));
+
+    return txReceipt;
   };
 
   const confirm = () => {

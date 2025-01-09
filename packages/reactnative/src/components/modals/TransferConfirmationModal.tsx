@@ -83,7 +83,7 @@ export default function TransferConfirmationModal({
       setTxReceipt(txReceipt);
       setShowSuccessModal(true);
     } catch (error) {
-      console.error(error)
+      console.error(error);
       setShowFailModal(true);
       return;
     } finally {
