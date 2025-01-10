@@ -86,8 +86,8 @@ export default function LSP7Token({ address, image, name, symbol }: Props) {
       </HStack>
 
       <Pressable
-        // @ts-ignore
-        onPress={() =>
+        onPress={() => {
+          // @ts-ignore
           navigation.navigate('LSP7TokenTransfer', {
             tokenAddress: address,
             metadata: {
@@ -95,8 +95,8 @@ export default function LSP7Token({ address, image, name, symbol }: Props) {
               symbol,
               image
             }
-          })
-        }
+          });
+        }}
         alignSelf={'flex-end'}
         mt={3}
         px={'4'}

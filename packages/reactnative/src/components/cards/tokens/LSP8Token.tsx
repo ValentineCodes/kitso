@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { useNavigation } from '@react-navigation/native';
 import {
   Divider,
   HStack,
@@ -85,6 +85,7 @@ export default function LSP8Token({
   symbol,
   type
 }: Props) {
+  const navigation = useNavigation();
   const { balance } = useTokenBalance({ tokenAddress: address, type: 'LSP8' });
 
   return (
@@ -129,13 +130,24 @@ export default function LSP8Token({
             Owns
           </Text>
           <Text bold fontSize={'xs'}>
-            {balance && ethers.formatUnits(balance, '0')}
+            {balance !== null ? balance.toString() : null}
           </Text>
         </HStack>
 
         <Creators />
 
         <Pressable
+          onPress={() => {
+            // @ts-ignore
+            navigation.navigate('LSP8TokenTransfer', {
+              tokenAddress: address,
+              metadata: {
+                name,
+                symbol,
+                image
+              }
+            });
+          }}
           alignSelf={'flex-end'}
           mt={4}
           px={'4'}
