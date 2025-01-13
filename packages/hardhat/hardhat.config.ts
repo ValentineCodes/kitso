@@ -26,7 +26,7 @@ const localProvider = process.env.LOCAL_PROVIDER || 'http://127.0.0.1:8545';
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: '0.8.19',
+    version: '0.8.28',
     settings: {
       optimizer: {
         enabled: true,
