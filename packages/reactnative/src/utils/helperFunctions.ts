@@ -166,3 +166,7 @@ export const parseBalance = (value: bigint): string => {
 
   return balance.toString();
 };
+
+export const convertBytesToNumber = (value: any): number => {
+  return Number(ethers.toBigInt(value));
+};

@@ -12,6 +12,7 @@ import { ToastProvider } from 'react-native-toast-notifications';
 import BioModal from '../components/modals/BioModal';
 import ConsentModal from '../components/modals/ConsentModal';
 import ImageCaptureModal from '../components/modals/ImageCaptureModal';
+import LSP8TransferConfirmationModal from '../components/modals/LSP8TransferConfirmationModal';
 import PrivateKeyModal from '../components/modals/PrivateKeyModal';
 import QRCodeModal from '../components/modals/QRCodeModal';
 import QRCodeScanner from '../components/modals/QRCodeScanner';
@@ -41,7 +42,8 @@ const modalConfig = {
   PrivateKeyModal,
   QRCodeModal,
   QRCodeScanner,
-  TransferConfirmationModal
+  TransferConfirmationModal,
+  LSP8TransferConfirmationModal
 };
 const defaultOptions: ModalOptions = {
   backdropOpacity: 0.6,

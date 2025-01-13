@@ -54,6 +54,7 @@ type AppStackParamsList = {
       name: string;
       symbol: string;
       image: string;
+      tokenId: any;
     };
   };
   NetworkTokenDetails: undefined;

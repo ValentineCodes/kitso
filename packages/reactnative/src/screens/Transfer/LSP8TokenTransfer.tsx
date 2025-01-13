@@ -95,12 +95,10 @@ export default function LSP8TokenTransfer({}: Props) {
         controllerWallet
       );
 
-      const tokenId = ethers.zeroPadValue(ethers.toBeHex(1), 32); // Replace '1' with your tokenId
-
       const transferData = lsp8Token.interface.encodeFunctionData('transfer', [
         account.address, // From address (Universal Profile address)
         DUMMY_ADDRESS, // To address
-        tokenId, // Unique token ID to transfer
+        metadata.tokenId, // Unique token ID to transfer
         true, // Whether the recipient must notify (true/false)
         '0x' // Additional data (can be empty)
       ]);
@@ -170,7 +168,7 @@ export default function LSP8TokenTransfer({}: Props) {
     const transferData = lsp8Token.interface.encodeFunctionData('transfer', [
       account.address, // From address (Universal Profile address)
       recipient, // To address
-      1, // Unique token ID to transfer
+      metadata.tokenId, // Unique token ID to transfer
       true, // Whether the recipient must notify (true/false)
       '0x' // Additional data (can be empty)
     ]);
@@ -203,11 +201,11 @@ export default function LSP8TokenTransfer({}: Props) {
       return;
     }
 
-    openModal('TransferConfirmationModal', {
+    openModal('LSP8TransferConfirmationModal', {
       txData: {
         from: account,
         to: recipient,
-        balance: balance
+        tokenId: metadata.tokenId
       },
       estimateGasCost: gasCost.min,
       token: metadata.symbol,
