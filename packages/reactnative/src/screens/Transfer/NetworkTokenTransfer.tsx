@@ -26,6 +26,7 @@ import Header from './modules/Header';
 import PastRecipients from './modules/PastRecipients';
 import Recipient from './modules/Recipient';
 import Sender from './modules/Sender';
+import ProfileSuggestions from './modules/ProfileSuggestions';
 
 type Props = {};
 
@@ -267,6 +268,11 @@ export default function NetworkTokenTransfer({}: Props) {
       <Divider bgColor="muted.300" my="2" />
 
       <PastRecipients onSelect={setRecipient} />
+
+      {/* <ProfileSuggestions
+      profiles={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
+      onSelect={setRecipient}
+      /> */}
 
       <Button text="Next" onPress={confirm} />
     </VStack>
