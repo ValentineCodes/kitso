@@ -19,7 +19,7 @@ import useNetwork from '../../hooks/scaffold-eth/useNetwork';
 import { useIPFSGateway } from '../../hooks/useIPFSGateway';
 import useWallet, { Controller } from '../../hooks/useWallet';
 import { WINDOW_WIDTH } from '../../styles/screenDimensions';
-import { truncateAddress } from '../../utils/helperFunctions';
+import { parseBalance, truncateAddress } from '../../utils/helperFunctions';
 import Blockie from '../Blockie';
 import CopyableText from '../CopyableText';
 
@@ -164,7 +164,7 @@ export default function Account({ type }: AccountCardProps) {
         <HStack alignSelf={'flex-end'} space={2} mt={1}>
           <HStack alignItems={'center'} space={2}>
             <Text fontSize={'md'} bold>
-              {balance !== '' && balance}
+              {balance !== null ? parseBalance(balance) : null}
             </Text>
             <Text fontSize={'md'} bold color={'gray.400'}>
               {network.token}
@@ -182,8 +182,9 @@ export default function Account({ type }: AccountCardProps) {
           >
             $
             {price &&
-              balance.length > 0 &&
-              (price * Number(balance)).toFixed(2)}
+              balance !== null &&
+              parseBalance(balance).length > 0 &&
+              (price * Number(parseBalance(balance))).toFixed(2)}
           </Text>
         </HStack>
 

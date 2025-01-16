@@ -12,12 +12,15 @@ import { ToastProvider } from 'react-native-toast-notifications';
 import BioModal from '../components/modals/BioModal';
 import ConsentModal from '../components/modals/ConsentModal';
 import ImageCaptureModal from '../components/modals/ImageCaptureModal';
+import LSP8TransferConfirmationModal from '../components/modals/LSP8TransferConfirmationModal';
 import PrivateKeyModal from '../components/modals/PrivateKeyModal';
 import QRCodeModal from '../components/modals/QRCodeModal';
+import QRCodeScanner from '../components/modals/QRCodeScanner';
 import ReceiveModal from '../components/modals/ReceiveModal';
 import SignMessageModal from '../components/modals/SignMessageModal';
 import SignTransactionModal from '../components/modals/SignTransactionModal';
 import SignTransferModal from '../components/modals/SignTransferModal';
+import TransferConfirmationModal from '../components/modals/TransferConfirmationModal';
 import TxReceiptModal from '../components/modals/TxReceiptModal';
 // Contexts
 import { ProcedureProvider } from '../context/ProcedureContext';
@@ -37,7 +40,10 @@ const modalConfig = {
   ImageCaptureModal,
   ReceiveModal,
   PrivateKeyModal,
-  QRCodeModal
+  QRCodeModal,
+  QRCodeScanner,
+  TransferConfirmationModal,
+  LSP8TransferConfirmationModal
 };
 const defaultOptions: ModalOptions = {
   backdropOpacity: 0.6,

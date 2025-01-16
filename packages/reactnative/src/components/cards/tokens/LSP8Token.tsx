@@ -1,4 +1,5 @@
-import { ethers } from 'ethers';
+import LSP8IdentifiableDigitalAsset from '@lukso/lsp-smart-contracts/artifacts/LSP8IdentifiableDigitalAsset.json';
+import { useNavigation } from '@react-navigation/native';
 import {
   Divider,
   HStack,
@@ -12,9 +13,13 @@ import {
 import React from 'react';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
-import useTokenBalance from '../../../hooks/useTokenBalance';
+import useAccount from '../../../hooks/scaffold-eth/useAccount';
+import useContractRead from '../../../hooks/scaffold-eth/useContractRead';
 import { COLORS } from '../../../utils/constants';
-import { truncateAddress } from '../../../utils/helperFunctions';
+import {
+  convertBytesToNumber,
+  truncateAddress
+} from '../../../utils/helperFunctions';
 import { WINDOW_WIDTH } from '../../../utils/styles';
 import Blockie from '../../Blockie';
 
@@ -85,7 +90,14 @@ export default function LSP8Token({
   symbol,
   type
 }: Props) {
-  const { balance } = useTokenBalance({ tokenAddress: address, type: 'LSP8' });
+  const navigation = useNavigation();
+  const { address: userAddress } = useAccount();
+  const { data: tokenIds } = useContractRead({
+    abi: LSP8IdentifiableDigitalAsset.abi,
+    address,
+    functionName: 'tokenIdsOf',
+    args: [userAddress]
+  });
 
   return (
     <VStack
@@ -129,25 +141,38 @@ export default function LSP8Token({
             Owns
           </Text>
           <Text bold fontSize={'xs'}>
-            {balance && ethers.formatUnits(balance, '0')}
+            {tokenIds
+              ? tokenIds.length === 1
+                ? convertBytesToNumber(tokenIds[0])
+                : tokenIds.length
+              : 0}
           </Text>
         </HStack>
 
         <Creators />
 
-        <Pressable>
-          <Text
-            alignSelf={'flex-end'}
-            mt={4}
-            px={'4'}
-            py={'1'}
-            borderWidth={'1'}
-            borderRadius={'lg'}
-            borderColor={'gray.300'}
-            fontWeight={'medium'}
-          >
-            Send
-          </Text>
+        <Pressable
+          onPress={() => {
+            // @ts-ignore
+            navigation.navigate('LSP8TokenTransfer', {
+              tokenAddress: address,
+              metadata: {
+                name,
+                symbol,
+                image,
+                tokenId: tokenIds[0]
+              }
+            });
+          }}
+          alignSelf={'flex-end'}
+          mt={4}
+          px={'4'}
+          py={'1'}
+          borderWidth={'1'}
+          borderRadius={'lg'}
+          borderColor={'gray.300'}
+        >
+          <Text fontWeight={'medium'}>Send</Text>
         </Pressable>
 
         <Divider my={4} />

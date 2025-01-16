@@ -2,7 +2,7 @@ import { Text } from 'native-base';
 import React from 'react';
 import { TextStyle } from 'react-native';
 import useBalance from '../../hooks/scaffold-eth/useBalance';
-import useNetwork from '../../hooks/scaffold-eth/useNetwork';
+import { parseBalance } from '../../utils/helperFunctions';
 
 type Props = {
   address: string;
@@ -10,14 +10,13 @@ type Props = {
 };
 
 export default function Balance({ address, style }: Props) {
-  const network = useNetwork();
   const { balance, isLoading } = useBalance({ address });
 
   if (isLoading) return;
 
   return (
     <Text fontSize={'md'} fontWeight={'medium'} style={style}>
-      {balance} {network.currencySymbol}
+      {balance !== null ? `${parseBalance(balance)} ` : null}
     </Text>
   );
 }

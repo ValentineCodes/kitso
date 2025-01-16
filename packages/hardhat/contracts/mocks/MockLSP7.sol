@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.19;
+pragma solidity 0.8.28;
 
 import { LSP7DigitalAsset as LSP7 } from "@lukso/lsp7-contracts/contracts/LSP7DigitalAsset.sol";
 

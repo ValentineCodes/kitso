@@ -2,7 +2,11 @@ import { Divider, HStack, Button as RNButton, Text, VStack } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import useAccount from '../../hooks/scaffold-eth/useAccount';
 import useNetwork from '../../hooks/scaffold-eth/useNetwork';
-import { parseFloat, truncateAddress } from '../../utils/helperFunctions';
+import {
+  parseBalance,
+  parseFloat,
+  truncateAddress
+} from '../../utils/helperFunctions';
 import { FONT_SIZE, WINDOW_WIDTH } from '../../utils/styles';
 import Blockie from '../Blockie';
 import Button from '../Button';
@@ -29,7 +33,7 @@ type Props = {
   };
 };
 
-interface GasCost {
+export interface GasCost {
   min: bigint | null;
   max: bigint | null;
 }
@@ -158,7 +162,10 @@ export default function SignTransactionModal({
                 {profile?.name}
               </Text>
               <Text fontSize={FONT_SIZE['md']}>
-                Balance: {balance && `${balance} ${network.token}`}
+                Balance:{' '}
+                {balance !== null
+                  ? `${parseBalance(balance)} ${network.token}`
+                  : null}
               </Text>
             </VStack>
           </HStack>

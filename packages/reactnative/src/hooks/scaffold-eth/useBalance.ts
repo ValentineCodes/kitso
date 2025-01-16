@@ -17,7 +17,7 @@ interface UseBalanceConfig {
 export default function useBalance({ address }: UseBalanceConfig) {
   const network = useNetwork();
 
-  const [balance, setBalance] = useState('');
+  const [balance, setBalance] = useState<bigint | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefetching, setIsRefetching] = useState(false);
   const [error, setError] = useState<any>(null);
@@ -28,11 +28,8 @@ export default function useBalance({ address }: UseBalanceConfig) {
     try {
       const provider = new ethers.JsonRpcProvider(network.provider);
       const balance = await provider.getBalance(address);
-      const _balance = Number(ethers.formatEther(balance))
-        ? parseFloat(Number(ethers.formatEther(balance)).toString(), 4)
-        : 0;
 
-      setBalance(_balance.toString());
+      setBalance(balance);
 
       if (error) {
         setError(null);
