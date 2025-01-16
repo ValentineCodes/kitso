@@ -24,9 +24,9 @@ import { parseBalance, parseFloat } from '../../utils/helperFunctions';
 import Amount from './modules/Amount';
 import Header from './modules/Header';
 import PastRecipients from './modules/PastRecipients';
+import ProfileSuggestions from './modules/ProfileSuggestions';
 import Recipient from './modules/Recipient';
 import Sender from './modules/Sender';
-import ProfileSuggestions from './modules/ProfileSuggestions';
 
 type Props = {};
 

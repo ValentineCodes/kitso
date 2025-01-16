@@ -44,23 +44,21 @@ function Profile({ image, address, name }: ProfileProps) {
         </View>
       </View>
 
-      {
-        name? (
-            <HStack alignItems={'center'}>
-            <Text color={'black'} bold fontSize="lg">
-              @{name}
-            </Text>
-    
-            <Text bold color={'gray.400'} fontSize="lg">
-              #{getFirst4Hex(address)}
-            </Text>
-          </HStack>
-        ): (
-            <Text color={'black'} bold fontSize="lg">
-            @{truncateAddress(address)}
+      {name ? (
+        <HStack alignItems={'center'}>
+          <Text color={'black'} bold fontSize="lg">
+            @{name}
           </Text>
-        )
-      }
+
+          <Text bold color={'gray.400'} fontSize="lg">
+            #{getFirst4Hex(address)}
+          </Text>
+        </HStack>
+      ) : (
+        <Text color={'black'} bold fontSize="lg">
+          @{truncateAddress(address)}
+        </Text>
+      )}
     </HStack>
   );
 }
@@ -72,12 +70,12 @@ export default function ProfileSuggestions({ profiles, onSelect }: Props) {
         keyExtractor={item => item}
         data={profiles}
         renderItem={({ item }) => (
-            <Pressable onPress={() => onSelect(item)}>
-          <Profile
-            image="https://img.com"
-            address="0x80d898c5a3a0b118a0c8c8adcdbb260fc687f1ce"
-            name="valentine"
-          />
+          <Pressable onPress={() => onSelect(item)}>
+            <Profile
+              image="https://img.com"
+              address="0x80d898c5a3a0b118a0c8c8adcdbb260fc687f1ce"
+              name="valentine"
+            />
           </Pressable>
         )}
       />
