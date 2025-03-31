@@ -1,18 +1,24 @@
+import ERC725 from '@erc725/erc725.js';
+// ERC725.js schemas
+import LSP1UniversalReceiverDelegateSchemas from '@erc725/erc725.js/schemas/LSP1UniversalReceiverDelegate.json';
+import LSP3ProfileMetadataSchemas from '@erc725/erc725.js/schemas/LSP3ProfileMetadata.json';
+import LSP6KeyManagerSchemas from '@erc725/erc725.js/schemas/LSP6KeyManager.json';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import axios from 'axios';
+import { AbiCoder, ethers } from 'ethers';
 import { Divider, Icon, Text, View, VStack } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { useToast } from 'react-native-toast-notifications';
+import uuid from 'react-native-uuid';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
 import { useDispatch } from 'react-redux';
-import ProfileAPI from '../../../apis/ProfileAPI';
 import Button from '../../../components/Button';
 import ProgressIndicatorHeader from '../../../components/headers/ProgressIndicatorHeader';
 import { useSecureStorage } from '../../../hooks/useSecureStorage';
 import { Controller } from '../../../hooks/useWallet';
 import { loginUser } from '../../../store/reducers/Auth';
-import { initProfiles } from '../../../store/reducers/Profiles';
 import styles from '../../../styles/global';
 import { COLORS } from '../../../utils/constants';
 import { FONT_SIZE } from '../../../utils/styles';
@@ -37,30 +43,109 @@ export default function DeployProfile() {
     navigation.navigate('SetupRecovery');
   };
 
+  const generatePostDeploymentCalldata = async () => {
+    // instantiate the erc725 class
+    const erc725 = new ERC725([
+      ...LSP6KeyManagerSchemas,
+      ...LSP3ProfileMetadataSchemas,
+      ...LSP1UniversalReceiverDelegateSchemas
+    ]);
+
+    const controller = (await getItem('controller')) as Controller;
+
+    const universalReceiverAddress =
+      '0x7870C5B8BC9572A8001C3f96f7ff59961B23500D';
+    const mainController = controller.address;
+
+    // create the permissions data keys
+    const setDataKeysAndValues = erc725.encodeData([
+      { keyName: 'LSP3Profile', value: lsp3DataValue }, // LSP3Metadata data key and value
+      {
+        keyName: 'LSP1UniversalReceiverDelegate',
+        value: universalReceiverAddress
+      }, // Universal Receiver data key and value
+      {
+        keyName: 'AddressPermissions:Permissions:<address>',
+        dynamicKeyParts: [universalReceiverAddress],
+        value: erc725.encodePermissions({
+          REENTRANCY: true,
+          SUPER_SETDATA: true
+        })
+      }, // Universal Receiver Delegate permissions data key and value
+      {
+        keyName: 'AddressPermissions:Permissions:<address>',
+        dynamicKeyParts: [mainController],
+        value: erc725.encodePermissions({
+          CHANGEOWNER: true,
+          ADDCONTROLLER: true,
+          EDITPERMISSIONS: true,
+          ADDEXTENSIONS: true,
+          CHANGEEXTENSIONS: true,
+          ADDUNIVERSALRECEIVERDELEGATE: true,
+          CHANGEUNIVERSALRECEIVERDELEGATE: true,
+          REENTRANCY: false,
+          SUPER_TRANSFERVALUE: true,
+          TRANSFERVALUE: true,
+          SUPER_CALL: true,
+          CALL: true,
+          SUPER_STATICCALL: true,
+          STATICCALL: true,
+          SUPER_DELEGATECALL: false,
+          DELEGATECALL: false,
+          DEPLOY: true,
+          SUPER_SETDATA: true,
+          SETDATA: true,
+          ENCRYPT: true,
+          DECRYPT: true,
+          SIGN: true,
+          EXECUTE_RELAY_CALL: true
+        }) // Main Controller permissions data key and value
+      },
+      // length of the Address Permissions array and their respective indexed keys and values
+      {
+        keyName: 'AddressPermissions[]',
+        value: [universalReceiverAddress, mainController]
+      }
+    ]);
+
+    const abiCoder = new AbiCoder();
+
+    const initializeEncodedBytes = abiCoder.encode(
+      ['bytes32[]', 'bytes[]'],
+      [setDataKeysAndValues.keys, setDataKeysAndValues.values]
+    );
+
+    return initializeEncodedBytes;
+  };
+
   const deployProfile = async () => {
     setDeploymentStatus('loading');
 
+    const apiKey = 'c458a062-86ec-44d2-af86-3767d00e40c7';
+    const url =
+      'https://relayer-api.testnet.lukso.network/v1/relayer/universal-profile';
+
+    const data = {
+      salt: ethers.hexlify(ethers.randomBytes(32)),
+      postDeploymentCallData: await generatePostDeploymentCalldata(),
+      userId: uuid.v4()
+    };
+
     try {
-      const controller = (await getItem('controller')) as Controller;
+      const response = await axios.post(url, data, {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
-      const data = {
-        lsp3DataValue,
-        mainController: controller.address,
-        universalReceiverAddress: '0x7870C5B8BC9572A8001C3f96f7ff59961B23500D'
-      };
-
-      const profile = await ProfileAPI.createProfile(data);
-      dispatch(
-        initProfiles({
-          address: profile.universalProfileAddress,
-          keyManager: profile.keyManagerAddress
-        })
-      );
+      console.log('Universal Profile deployed:', response.data);
 
       setDeploymentStatus('success');
     } catch (error) {
       setDeploymentStatus('error');
       toast.show('Deployment failed', { type: 'danger' });
+
       console.error(error);
     }
   };
